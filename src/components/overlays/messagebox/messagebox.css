@@ -1,0 +1,6 @@
+@layer optikos {
+  .op-messagebox__icon {
+    font-size: var(--op-font-size-xl);
+    color: var(--op-color-primary);
+  }
+}

@@ -1,0 +1,23 @@
+@layer optikos {
+  .op-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--op-pagination-gap, var(--op-space-1));
+    color: var(--op-color-fg);
+  }
+  .op-pagination__btn.is-current {
+    color: var(--op-color-primary-fg);
+    background: var(--op-color-primary);
+  }
+  .op-pagination__gap {
+    padding-inline: var(--op-space-1);
+    color: var(--op-color-fg-muted);
+  }
+  .op-pagination__info {
+    margin-inline-start: auto;
+    padding-inline-start: var(--op-space-3);
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+}

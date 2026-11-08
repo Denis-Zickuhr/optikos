@@ -1,0 +1,56 @@
+@layer optikos {
+  :root {
+    --op-dataview-item-width: 10rem;
+    --op-dataview-gap: var(--op-space-3);
+    --op-dataview-ring-width: 0.1875rem;
+  }
+  .op-dataview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-space-3);
+    min-inline-size: 0;
+    min-block-size: 0;
+    overflow: auto;
+  }
+  .op-dataview__items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--op-dataview-item-width), 1fr));
+    /* every row is as tall as the tallest card, so rows line up whatever each card's text does */
+    grid-auto-rows: 1fr;
+    gap: var(--op-dataview-gap);
+    padding: var(--op-space-1);
+  }
+  .op-dataview__item {
+    position: relative;
+    min-inline-size: 0;
+    border-radius: var(--op-dataview-item-radius, var(--op-radius));
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    user-select: none;
+  }
+  /* the card fills its cell: a short card stretches to the row instead of leaving a gap under it */
+  .op-dataview__item > * {
+    flex: 1;
+    min-block-size: 0;
+  }
+  .op-dataview__item:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-dataview__item.is-selected {
+    box-shadow: 0 0 0 var(--op-dataview-ring-width) var(--op-dataview-selected-ring, var(--op-color-primary));
+  }
+  .op-dataview__empty {
+    padding: var(--op-space-6);
+    color: var(--op-color-fg-muted);
+    text-align: center;
+  }
+  .op-dataview__empty[hidden] {
+    display: none;
+  }
+  .op-dataview__pager {
+    flex: none;
+    padding: var(--op-space-2);
+  }
+}

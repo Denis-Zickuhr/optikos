@@ -1,0 +1,37 @@
+@layer optikos {
+  :root {
+    --op-searchgrid-gap: var(--op-space-3);
+    --op-searchgrid-filters-padding: 0;
+    --op-searchgrid-field-width: 12rem;
+    --op-searchgrid-grid-min-height: 12rem;
+  }
+  .op-searchgrid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-searchgrid-gap);
+    block-size: 100%;
+    min-block-size: 0;
+  }
+  .op-searchgrid__filters {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--op-searchgrid-gap);
+    padding: var(--op-searchgrid-filters-padding);
+    background: var(--op-searchgrid-filters-bg, transparent);
+  }
+  .op-searchgrid__filters > .op-field {
+    flex: 1 1 var(--op-searchgrid-field-width);
+    min-inline-size: 0;
+  }
+  .op-searchgrid__buttons {
+    display: flex;
+    gap: var(--op-space-2);
+    margin-inline-start: auto;
+  }
+  .op-searchgrid > .op-grid {
+    flex: 1;
+    min-block-size: var(--op-searchgrid-grid-min-height);
+  }
+}

@@ -1,0 +1,107 @@
+@layer optikos {
+  :root {
+    --op-slider-track-height: 0.375rem;
+    --op-slider-knob-size: 1.25rem;
+    --op-slider-bubble-offset: 0.5rem;
+  }
+  .op-slider__box {
+    padding-block: calc(var(--op-slider-knob-size) / 2 + var(--op-space-2)) var(--op-space-1);
+    padding-inline: calc(var(--op-slider-knob-size) / 2);
+  }
+  .op-slider.has-bubble-always .op-slider__box {
+    padding-block-start: calc(var(--op-slider-knob-size) + var(--op-space-4));
+  }
+  .op-slider__track {
+    position: relative;
+    block-size: var(--op-slider-track-height);
+    background: var(--op-slider-track-bg, var(--op-color-border-strong));
+    border-radius: var(--op-radius-pill);
+    cursor: pointer;
+    touch-action: none;
+  }
+  .op-slider__fill {
+    position: absolute;
+    inset-block: 0;
+    background: var(--op-slider-fill-bg, var(--op-color-primary));
+    border-radius: inherit;
+  }
+  .op-slider__knob {
+    position: absolute;
+    inset-block-start: 50%;
+    inline-size: var(--op-slider-knob-size);
+    block-size: var(--op-slider-knob-size);
+    margin-inline-start: calc(var(--op-slider-knob-size) / -2);
+    margin-block-start: calc(var(--op-slider-knob-size) / -2);
+    box-sizing: border-box;
+    background: var(--op-slider-knob-bg, var(--op-color-surface));
+    border: calc(var(--op-border-width) * 2) solid var(--op-slider-knob-border, var(--op-color-primary));
+    border-radius: 50%;
+    box-shadow: var(--op-shadow-sm);
+    cursor: grab;
+    touch-action: none;
+  }
+  .op-slider.is-dragging .op-slider__knob {
+    cursor: grabbing;
+  }
+  .op-slider__knob:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-slider__knob[aria-valuenow] {
+    z-index: 1;
+  }
+  /* the bubble with the value: above the knob, while dragging or focused (or always / never) */
+  .op-slider__bubble {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-end: calc(100% + var(--op-slider-bubble-offset));
+    padding: 0 var(--op-space-2);
+    color: var(--op-slider-bubble-fg, var(--op-color-inverse-fg));
+    background: var(--op-slider-bubble-bg, var(--op-color-inverse-bg));
+    border-radius: var(--op-radius-sm);
+    font-size: var(--op-font-size-sm);
+    white-space: nowrap;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .op-slider.is-dragging .op-slider__bubble,
+  .op-slider.is-focus-knob .op-slider__knob:focus-visible .op-slider__bubble,
+  .op-slider.has-bubble-always .op-slider__bubble {
+    opacity: 1;
+  }
+  .op-slider.has-bubble-never .op-slider__bubble {
+    display: none;
+  }
+  .op-slider__mark {
+    position: absolute;
+    inset-block-start: 100%;
+    inline-size: var(--op-border-width);
+    block-size: var(--op-space-2);
+    margin-block-start: var(--op-space-1);
+    background: var(--op-color-border-strong);
+  }
+  .op-slider__mark-label {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 50%;
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+  .op-slider__scale {
+    display: flex;
+    justify-content: space-between;
+    margin-block-start: var(--op-space-3);
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-slider.is-disabled .op-slider__track,
+  .op-slider.is-readonly .op-slider__track {
+    cursor: not-allowed;
+  }
+  .op-slider.is-disabled {
+    opacity: 0.6;
+  }
+}

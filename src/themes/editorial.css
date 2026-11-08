@@ -1,0 +1,110 @@
+/* Editorial: warm paper, serif type, ink rules instead of boxes, underlined fields, oxblood accent. data-op-theme="editorial" */
+@layer optikos {
+  [data-op-theme~='editorial'] {
+    --op-color-bg: #f4eee1;
+    --op-color-surface: #fffdf7;
+    --op-color-surface-2: #efe7d4;
+    --op-color-fg: #1d1a16;
+    --op-color-fg-muted: #6c6455;
+    --op-color-border: #d8cdb4;
+    --op-color-border-strong: #8d826b;
+    --op-color-hover: #f1e9d6;
+    --op-color-selected: #ebdfc2;
+    --op-color-primary: #8b1e1e;
+    --op-color-primary-hover: #6e1515;
+    --op-color-primary-fg: #fff8ee;
+    --op-color-primary-soft: #f6e7e0;
+    --op-color-danger: #b3261e;
+    --op-color-danger-hover: #8f1d17;
+    --op-color-danger-fg: #fff8ee;
+    --op-color-danger-soft: #f8e1de;
+    --op-color-success: #2f6b3f;
+    --op-color-success-soft: #e2eedd;
+    --op-color-warning: #a86b00;
+    --op-color-warning-soft: #f7e9c9;
+    --op-color-info: #1f4e79;
+    --op-color-info-soft: #dde8f3;
+    --op-color-focus: #8b1e1e;
+    --op-color-disabled-fg: #a79e8a;
+    --op-color-disabled-bg: #ece4d0;
+    --op-color-overlay: rgb(40 30 10 / 0.45);
+
+    --op-font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    --op-border-width: 1px;
+    --op-font-size: 1rem;
+    --op-font-size-sm: 0.8125rem;
+    --op-font-size-lg: 1.125rem;
+    --op-line-height: 1.6;
+    --op-font-weight-medium: 500;
+    --op-font-weight-bold: 700;
+
+    --op-space-3: 0.875rem;
+    --op-space-4: 1.25rem;
+    --op-space-5: 2rem;
+    --op-control-height: 2.5rem;
+    --op-control-padding-x: 0.5rem;
+    --op-row-height: 2.75rem;
+    --op-radius-sm: 0;
+    --op-radius: 0;
+    --op-radius-lg: 0;
+    --op-radius-pill: 0;
+    --op-focus-width: 2px;
+    --op-icon-stroke: 1.5;
+
+    --op-shadow-sm: none;
+    --op-shadow: 0 2px 0 rgb(29 26 22 / 0.12);
+    --op-shadow-lg: 0 18px 40px rgb(40 30 10 / 0.25);
+    --op-easing: ease;
+
+    --op-panel-border: var(--op-color-border-strong);
+    --op-panel-header-bg: transparent;
+    --op-grid-header-bg: transparent;
+    --op-grid-border: transparent;
+    --op-tabs-tab-active-border: var(--op-color-primary);
+    --op-button-bg: transparent;
+    --op-button-border: var(--op-color-fg);
+  }
+  /* section titles get a double rule, like a newspaper column head */
+  [data-op-theme~='editorial'] .op-panel__header {
+    font-style: italic;
+    font-size: var(--op-font-size-lg);
+    border-block-end: 3px double var(--op-color-border-strong);
+  }
+  [data-op-theme~='editorial'] .op-button {
+    font-size: var(--op-font-size-sm);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  [data-op-theme~='editorial'] .op-button:hover:not(:disabled) {
+    color: var(--op-color-primary-fg);
+    background: var(--op-color-fg);
+  }
+  [data-op-theme~='editorial'] .op-button--primary:hover:not(:disabled) {
+    background: var(--op-color-primary-hover);
+  }
+  [data-op-theme~='editorial'] .op-button--ghost {
+    border-color: transparent;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  /* fields are a line to write on, not a box */
+  [data-op-theme~='editorial'] .op-textfield__input {
+    background: transparent;
+    border-width: 0 0 var(--op-border-width) 0;
+    border-color: var(--op-color-border-strong);
+  }
+  [data-op-theme~='editorial'] .op-textfield__input:focus {
+    outline: none;
+    border-color: var(--op-color-primary);
+    box-shadow: 0 var(--op-focus-width) 0 var(--op-color-primary);
+  }
+  [data-op-theme~='editorial'] .op-field__label {
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+  }
+  [data-op-theme~='editorial'] .op-grid__header {
+    border-block-end: 2px solid var(--op-color-fg);
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+  }
+}

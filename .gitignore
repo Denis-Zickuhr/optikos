@@ -1,0 +1,7 @@
+node_modules
+dist
+.dev
+coverage
+*.log
+*.tgz
+.claude/settings.local.json

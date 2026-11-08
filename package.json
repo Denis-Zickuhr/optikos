@@ -1,0 +1,97 @@
+{
+  "name": "optikos",
+  "version": "0.1.0",
+  "description": "Declarative UI components in plain TypeScript: forms, grids, windows and themes. No runtime dependencies.",
+  "keywords": [
+    "ui",
+    "ui-components",
+    "components",
+    "typescript",
+    "vanilla",
+    "no-dependencies",
+    "declarative",
+    "grid",
+    "form",
+    "design-tokens",
+    "theming",
+    "accessibility"
+  ],
+  "author": "Denis Zickuhr",
+  "license": "MIT",
+  "homepage": "https://github.com/Denis-Zickuhr/optikos#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Denis-Zickuhr/optikos.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Denis-Zickuhr/optikos/issues"
+  },
+  "type": "module",
+  "sideEffects": [
+    "**/*.css",
+    "./src/**",
+    "./dist/**"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/types/core/index.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./motion": {
+      "types": "./dist/types/motion/index.d.ts",
+      "import": "./dist/motion.js"
+    },
+    "./ui": {
+      "types": "./dist/types/ui/index.d.ts",
+      "import": "./dist/ui.js"
+    },
+    "./bind": {
+      "types": "./dist/types/bind/index.d.ts",
+      "import": "./dist/bind.js"
+    },
+    "./components/*": {
+      "types": "./dist/types/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    },
+    "./optikos.css": "./dist/optikos.css",
+    "./css/*": "./dist/css/*",
+    "./themes/*": "./dist/themes/*",
+    "./data": {
+      "types": "./dist/types/data/index.d.ts",
+      "import": "./dist/data.js"
+    }
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "sandbox": "node scripts/dev.mjs sandbox",
+    "demo": "node scripts/dev.mjs demo",
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "npm run gen && npm run typecheck && npm test && npm run build",
+    "new:component": "node scripts/new-component.mjs",
+    "release": "node scripts/release.mjs",
+    "theme": "node scripts/theme.mjs",
+    "gen": "node scripts/gen.mjs",
+    "site": "node scripts/site.mjs",
+    "mcp": "node scripts/mcp.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "esbuild": "^0.28.2",
+    "happy-dom": "^21.0.4",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

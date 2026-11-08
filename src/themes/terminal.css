@@ -1,0 +1,91 @@
+/* Terminal: phosphor green on black, monospace, square, dense, glowing focus. data-op-theme="terminal" */
+@layer optikos {
+  [data-op-theme~='terminal'] {
+    color-scheme: dark; /* native scrollbars and controls follow */
+    --op-color-bg: #040905;
+    --op-color-surface: #08110a;
+    --op-color-surface-2: #0d1a10;
+    --op-color-fg: #b6f5c4;
+    --op-color-fg-muted: #5f9b70;
+    --op-color-border: #1c4a28;
+    --op-color-border-strong: #2c7a40;
+    --op-color-hover: #11301a;
+    --op-color-selected: #164a24;
+    --op-color-primary: #39ff14;
+    --op-color-primary-hover: #7dff64;
+    --op-color-primary-fg: #021006;
+    --op-color-primary-soft: #0d2a12;
+    --op-color-danger: #ff5555;
+    --op-color-danger-hover: #ff8080;
+    --op-color-danger-fg: #1a0000;
+    --op-color-danger-soft: #2a0b0b;
+    --op-color-success: #39ff14;
+    --op-color-success-soft: #0d2a12;
+    --op-color-warning: #ffd166;
+    --op-color-warning-soft: #2e2408;
+    --op-color-info: #5ad1ff;
+    --op-color-info-soft: #0a2430;
+    --op-color-focus: #39ff14;
+    --op-color-disabled-fg: #3b6a49;
+    --op-color-disabled-bg: #0a140c;
+    --op-color-overlay: rgb(0 0 0 / 0.78);
+    --op-color-inverse-bg: #b6f5c4;
+    --op-color-inverse-fg: #040905;
+
+    --op-font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    --op-border-width: 1px;
+    --op-font-size: 0.8125rem;
+    --op-font-size-sm: 0.6875rem;
+    --op-line-height: 1.35;
+
+    --op-space-1: 0.125rem;
+    --op-space-2: 0.375rem;
+    --op-space-3: 0.5rem;
+    --op-space-4: 0.75rem;
+    --op-space-5: 1.125rem;
+    --op-control-height: 1.875rem;
+    --op-control-padding-x: 0.625rem;
+    --op-row-height: 1.75rem;
+    --op-radius-sm: 0;
+    --op-radius: 0;
+    --op-radius-lg: 0;
+    --op-radius-pill: 0;
+    --op-focus-width: 1px;
+    --op-focus-offset: 0;
+    --op-icon-stroke: 1.5;
+
+    --op-shadow-sm: 0 0 0 1px #1c4a28;
+    --op-shadow: 0 0 0 1px #2c7a40, 0 0 14px rgb(57 255 20 / 0.12);
+    --op-shadow-lg: 0 0 0 1px #39ff14, 0 0 32px rgb(57 255 20 / 0.2);
+    --op-duration: 0ms;
+
+    --op-panel-header-bg: transparent;
+    --op-grid-header-bg: var(--op-color-surface-2);
+    --op-grid-header-fg: var(--op-color-primary);
+    --op-tabs-tab-active-fg: var(--op-color-primary);
+  }
+  [data-op-theme~='terminal'] .op-panel__title::before {
+    content: '> ';
+    color: var(--op-color-primary);
+  }
+  [data-op-theme~='terminal'] .op-button:not(.op-button--ghost) {
+    border-color: var(--op-color-primary);
+  }
+  [data-op-theme~='terminal'] .op-button {
+    text-transform: lowercase;
+  }
+  [data-op-theme~='terminal'] .op-textfield__input {
+    caret-color: var(--op-color-primary);
+  }
+  [data-op-theme~='terminal'] .op-textfield__input:focus,
+  [data-op-theme~='terminal'] .op-button:focus-visible {
+    box-shadow: 0 0 10px rgb(57 255 20 / 0.35);
+  }
+  [data-op-theme~='terminal'] ::selection {
+    color: var(--op-color-primary-fg);
+    background: var(--op-color-primary);
+  }
+  [data-op-theme~='terminal'] .op-grid__hcell {
+    text-transform: uppercase;
+  }
+}

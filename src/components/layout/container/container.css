@@ -1,0 +1,5 @@
+@layer optikos {
+  .op-container {
+    min-width: 0;
+  }
+}

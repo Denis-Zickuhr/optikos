@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "optikos": { "command": "node", "args": ["scripts/mcp.mjs"] }
+  }
+}

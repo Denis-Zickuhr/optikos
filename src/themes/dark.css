@@ -1,0 +1,38 @@
+/* Dark theme: only semantic colors and shadows change. Use data-op-theme="dark" on any element. */
+@layer optikos {
+  [data-op-theme~='dark'] {
+    color-scheme: dark; /* native controls follow */
+    --op-color-bg: var(--op-gray-900);
+    --op-color-surface: var(--op-gray-800);
+    --op-color-surface-2: #273449;
+    --op-color-fg: var(--op-gray-100);
+    --op-color-fg-muted: var(--op-gray-400);
+    --op-color-border: var(--op-gray-700);
+    --op-color-border-strong: var(--op-gray-600);
+    --op-color-hover: #2b3a52;
+    --op-color-selected: #1e3a8a;
+    --op-color-primary: var(--op-blue-500);
+    --op-color-primary-hover: #60a5fa;
+    --op-color-primary-fg: var(--op-gray-900);
+    --op-color-primary-soft: #172554;
+    --op-color-danger: #f87171;
+    --op-color-danger-hover: #fca5a5;
+    --op-color-danger-fg: var(--op-gray-900);
+    --op-color-danger-soft: #450a0a;
+    --op-color-success: #4ade80;
+    --op-color-success-soft: #052e16;
+    --op-color-warning: #fbbf24;
+    --op-color-warning-soft: #422006;
+    --op-color-info: #60a5fa;
+    --op-color-info-soft: #172554;
+    --op-color-focus: #60a5fa;
+    --op-color-disabled-fg: var(--op-gray-500);
+    --op-color-disabled-bg: #1b2538;
+    --op-color-overlay: rgb(0 0 0 / 0.65);
+    --op-color-inverse-bg: var(--op-gray-100);
+    --op-color-inverse-fg: var(--op-gray-900);
+    --op-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --op-shadow: 0 4px 12px rgb(0 0 0 / 0.5);
+    --op-shadow-lg: 0 12px 32px rgb(0 0 0 / 0.6);
+  }
+}

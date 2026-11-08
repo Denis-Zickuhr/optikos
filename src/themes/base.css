@@ -1,0 +1,160 @@
+/*
+ * Optikos tokens. Three layers, all custom properties:
+ *   1. primitives   --op-blue-500            (raw palette, never used by components)
+ *   2. semantic     --op-color-primary       (what themes change)
+ *   3. component    --op-button-bg           (declared by each component, falls back to a semantic token)
+ * Everything lives in @layer optikos so unlayered user CSS always wins without !important.
+ * Scope a theme with data-op-theme="dark" (several allowed: "dark compact") on any element.
+ */
+@layer optikos {
+  :root,
+  [data-op-theme~='light'] {
+    /* primitives */
+    --op-gray-0: #ffffff;
+    --op-gray-50: #f8fafc;
+    --op-gray-100: #f1f5f9;
+    --op-gray-200: #e2e8f0;
+    --op-gray-300: #cbd5e1;
+    --op-gray-400: #94a3b8;
+    --op-gray-500: #64748b;
+    --op-gray-600: #475569;
+    --op-gray-700: #334155;
+    --op-gray-800: #1e293b;
+    --op-gray-900: #0f172a;
+    --op-blue-50: #eff6ff;
+    --op-blue-100: #dbeafe;
+    --op-blue-500: #3b82f6;
+    --op-blue-600: #2563eb;
+    --op-blue-700: #1d4ed8;
+    --op-red-50: #fef2f2;
+    --op-red-500: #ef4444;
+    --op-red-600: #dc2626;
+    --op-red-700: #b91c1c;
+    --op-green-50: #f0fdf4;
+    --op-green-600: #16a34a;
+    --op-green-700: #15803d;
+    --op-amber-50: #fffbeb;
+    --op-amber-600: #d97706;
+    --op-amber-700: #b45309;
+
+    /* semantic colors */
+    --op-color-bg: var(--op-gray-50);
+    --op-color-surface: var(--op-gray-0);
+    --op-color-surface-2: var(--op-gray-100);
+    --op-color-fg: var(--op-gray-900);
+    --op-color-fg-muted: var(--op-gray-500);
+    --op-color-border: var(--op-gray-200);
+    --op-color-border-strong: var(--op-gray-300);
+    --op-color-hover: var(--op-gray-100);
+    --op-color-selected: var(--op-blue-100);
+    --op-color-primary: var(--op-blue-600);
+    --op-color-primary-hover: var(--op-blue-700);
+    --op-color-primary-fg: var(--op-gray-0);
+    --op-color-primary-soft: var(--op-blue-50);
+    --op-color-danger: var(--op-red-600);
+    --op-color-danger-hover: var(--op-red-700);
+    --op-color-danger-fg: var(--op-gray-0);
+    --op-color-danger-soft: var(--op-red-50);
+    --op-color-success: var(--op-green-600);
+    --op-color-success-soft: var(--op-green-50);
+    --op-color-warning: var(--op-amber-600);
+    --op-color-warning-soft: var(--op-amber-50);
+    --op-color-info: var(--op-blue-600);
+    --op-color-info-soft: var(--op-blue-50);
+    --op-color-focus: var(--op-blue-500);
+    --op-color-disabled-fg: var(--op-gray-400);
+    --op-color-disabled-bg: var(--op-gray-100);
+    --op-color-overlay: rgb(15 23 42 / 0.5);
+    --op-color-inverse-bg: var(--op-gray-800);
+    --op-color-inverse-fg: var(--op-gray-50);
+
+    /* typography */
+    --op-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --op-font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --op-font-size: 0.875rem;
+    --op-font-size-sm: 0.75rem;
+    --op-font-size-lg: 1rem;
+    --op-font-size-xl: 1.25rem;
+    --op-line-height: 1.4;
+    --op-font-weight: 400;
+    --op-font-weight-medium: 500;
+    --op-font-weight-bold: 600;
+
+    /* spacing, density, shape */
+    --op-space-1: 0.25rem;
+    --op-space-2: 0.5rem;
+    --op-space-3: 0.75rem;
+    --op-space-4: 1rem;
+    --op-space-5: 1.5rem;
+    --op-space-6: 2rem;
+    --op-control-height: 2.25rem;
+    --op-control-padding-x: 0.75rem;
+    --op-row-height: 2.25rem;
+    --op-border-width: 1px;
+    --op-radius-sm: 0.25rem;
+    --op-radius: 0.375rem;
+    --op-radius-lg: 0.75rem;
+    --op-radius-pill: 62.5rem;
+    --op-focus-width: 2px;
+    --op-focus-offset: 2px;
+    --op-icon-size: 1.25em;
+    --op-icon-stroke: 2;
+
+    /* elevation and motion */
+    --op-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.08);
+    --op-shadow: 0 4px 12px rgb(15 23 42 / 0.12);
+    --op-shadow-lg: 0 12px 32px rgb(15 23 42 / 0.2);
+    --op-duration: 120ms;
+
+    /* scrollbars follow the theme: thin, thumb from the strong border, track transparent */
+    --op-scrollbar-width: thin;
+    --op-scrollbar-size: 0.5rem;
+    --op-scrollbar-thumb: var(--op-color-border-strong);
+    --op-scrollbar-track: transparent;
+    --op-easing: ease-out;
+    --op-z-layer: 1000;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root,
+    [data-op-theme] {
+      --op-duration: 0.01ms;
+    }
+  }
+
+  /* inherited: every scroll area below a themed element (and the global layer) picks it up */
+  :root,
+  [data-op-theme] {
+    scrollbar-width: var(--op-scrollbar-width);
+    scrollbar-color: var(--op-scrollbar-thumb) var(--op-scrollbar-track);
+  }
+  /* browsers without scrollbar-color (older Safari) */
+  @supports not (scrollbar-color: auto) {
+    :root ::-webkit-scrollbar,
+    [data-op-theme] ::-webkit-scrollbar {
+      inline-size: var(--op-scrollbar-size);
+      block-size: var(--op-scrollbar-size);
+    }
+    :root ::-webkit-scrollbar-thumb,
+    [data-op-theme] ::-webkit-scrollbar-thumb {
+      background: var(--op-scrollbar-thumb);
+      border-radius: var(--op-radius-pill);
+    }
+    :root ::-webkit-scrollbar-track,
+    [data-op-theme] ::-webkit-scrollbar-track {
+      background: var(--op-scrollbar-track);
+    }
+  }
+
+  /* Base look for any themed subtree, so a scoped theme repaints its background and text. */
+  [data-op-theme] {
+    color: var(--op-color-fg);
+    background: var(--op-color-bg);
+    font-family: var(--op-font-family);
+    font-size: var(--op-font-size);
+    line-height: var(--op-line-height);
+  }
+  :where(.op-layout, .op-component, .op-field, .op-panel, .op-container, .op-layer *) {
+    box-sizing: border-box;
+  }
+}

@@ -1,0 +1,17 @@
+@layer optikos {
+  :root {
+    --op-tooltip-max-width: 20rem;
+  }
+  .op-tooltip {
+    position: fixed;
+    box-sizing: border-box;
+    max-inline-size: var(--op-tooltip-max-width);
+    padding: var(--op-tooltip-padding, var(--op-space-1) var(--op-space-2));
+    color: var(--op-tooltip-fg, var(--op-color-inverse-fg));
+    background: var(--op-tooltip-bg, var(--op-color-inverse-bg));
+    border-radius: var(--op-tooltip-radius, var(--op-radius-sm));
+    font-size: var(--op-tooltip-font-size, var(--op-font-size-sm));
+    pointer-events: none;
+    overflow-wrap: anywhere;
+  }
+}

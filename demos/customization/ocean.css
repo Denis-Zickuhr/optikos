@@ -1,0 +1,21 @@
+/* A theme written as plain CSS: no JS. Activate with data-op-theme="ocean". Same tokens, same @layer. */
+@layer optikos {
+  [data-op-theme~='ocean'] {
+    --op-color-bg: #ecfeff;
+    --op-color-surface: #ffffff;
+    --op-color-surface-2: #cffafe;
+    --op-color-primary: #0e7490;
+    --op-color-primary-hover: #155e75;
+    --op-color-primary-soft: #cffafe;
+    --op-color-focus: #06b6d4;
+    --op-color-selected: #a5f3fc;
+    --op-color-border: #a5f3fc;
+    --op-radius: 0.125rem;
+    --op-button-font-weight: 700;
+  }
+}
+
+/* Unlayered CSS from the app always wins over the library, without !important. */
+.custom-note {
+  font-style: italic;
+}

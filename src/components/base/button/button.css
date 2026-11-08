@@ -1,0 +1,101 @@
+@layer optikos {
+  :root {
+    --op-button-spinner-size: 1em;
+  }
+
+  .op-button {
+    --_bg: var(--op-button-bg, var(--op-color-surface));
+    --_fg: var(--op-button-fg, var(--op-color-fg));
+    --_border: var(--op-button-border, var(--op-color-border-strong));
+    --_hover: var(--op-button-hover-bg, var(--op-color-hover));
+    --_active: var(--op-button-active-bg, var(--op-color-selected));
+    display: inline-grid;
+    place-items: center;
+    box-sizing: border-box;
+    min-block-size: var(--op-button-height, var(--op-control-height));
+    padding: var(--op-button-padding-y, 0) var(--op-button-padding-x, var(--op-control-padding-x));
+    font: inherit;
+    font-weight: var(--op-button-font-weight, var(--op-font-weight-medium));
+    color: var(--_fg);
+    background: var(--_bg);
+    border: var(--op-border-width) solid var(--_border);
+    border-radius: var(--op-button-radius, var(--op-radius));
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition: background var(--op-duration) var(--op-easing), border-color var(--op-duration) var(--op-easing), transform var(--op-motion-press-duration, 100ms) var(--op-motion-ease-out, ease-out);
+  }
+  .op-button:hover:not(:disabled) {
+    background: var(--_hover);
+  }
+  .op-button:active:not(:disabled),
+  .op-button.is-pressed {
+    background: var(--_active);
+  }
+  .op-button:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  /* normal face and loading face occupy the same grid cell */
+  .op-button__face,
+  .op-button__busy {
+    grid-area: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--op-button-gap, var(--op-space-2));
+  }
+  .op-button--icon-right .op-button__face {
+    flex-direction: row-reverse;
+  }
+  .op-button__busy {
+    visibility: hidden;
+  }
+  .op-button.is-loading .op-button__busy {
+    visibility: visible;
+  }
+  .op-button.is-loading .op-button__face {
+    visibility: hidden;
+  }
+  /* stableSize: false → only the active face takes space, the button fits its content */
+  .op-button:not(.op-stable) .op-button__busy,
+  .op-button:not(.op-stable).is-loading .op-button__face {
+    display: none;
+  }
+  .op-button:not(.op-stable).is-loading .op-button__busy {
+    display: inline-flex;
+  }
+
+  .op-button--primary {
+    --_bg: var(--op-button-primary-bg, var(--op-color-primary));
+    --_fg: var(--op-button-primary-fg, var(--op-color-primary-fg));
+    --_border: var(--op-button-primary-bg, var(--op-color-primary));
+    --_hover: var(--op-button-primary-hover-bg, var(--op-color-primary-hover));
+    --_active: var(--op-button-primary-hover-bg, var(--op-color-primary-hover));
+  }
+  .op-button--danger {
+    --_bg: var(--op-button-danger-bg, var(--op-color-danger));
+    --_fg: var(--op-button-danger-fg, var(--op-color-danger-fg));
+    --_border: var(--op-button-danger-bg, var(--op-color-danger));
+    --_hover: var(--op-button-danger-hover-bg, var(--op-color-danger-hover));
+    --_active: var(--op-button-danger-hover-bg, var(--op-color-danger-hover));
+  }
+  .op-button--ghost {
+    --_bg: transparent;
+    --_border: transparent;
+  }
+
+  .op-button:disabled {
+    cursor: not-allowed;
+    color: var(--op-color-disabled-fg);
+    background: var(--op-color-disabled-bg);
+    border-color: var(--op-color-border);
+  }
+  .op-button.is-loading {
+    cursor: progress;
+  }
+  .op-button__spinner {
+    --op-spinner-size: var(--op-button-spinner-size);
+    --op-spinner-color: currentColor;
+  }
+}

@@ -1,0 +1,14 @@
+@layer optikos {
+  .op-toolbar {
+    --op-layout-gap: var(--op-toolbar-gap, var(--op-space-2));
+    flex-wrap: wrap;
+    padding: var(--op-toolbar-padding, var(--op-space-2));
+    background: var(--op-toolbar-bg, var(--op-color-surface));
+    border-block-end: var(--op-border-width) solid var(--op-toolbar-border, var(--op-color-border));
+  }
+  /* toolbar items keep their size and wrap to a new row instead of being squeezed or cut */
+  .op-toolbar > * {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}

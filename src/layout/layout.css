@@ -1,0 +1,116 @@
+@layer optikos {
+  [hidden] {
+    display: none !important;
+  }
+  .op-layout {
+    box-sizing: border-box;
+  }
+  .op-layout-fit {
+    display: flex;
+    flex-direction: column;
+  }
+  .op-layout-fit > * {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+  }
+  .op-layout-hbox,
+  .op-layout-vbox {
+    display: flex;
+    gap: var(--op-layout-gap, var(--op-space-2));
+    align-items: var(--op-layout-align, stretch);
+    justify-content: var(--op-layout-justify, flex-start);
+    flex-wrap: var(--op-layout-wrap, nowrap);
+  }
+  .op-layout-hbox {
+    flex-direction: row;
+  }
+  .op-layout-vbox {
+    flex-direction: column;
+  }
+  .op-layout-hbox > *,
+  .op-layout-vbox > * {
+    min-width: 0;
+    min-height: 0;
+  }
+  /* a column keeps its children at their natural height (the container scrolls or clips instead of squashing them);
+     a child that sets `flex` (e.g. a grid with flex: 1) still grows and shrinks as asked */
+  .op-layout-vbox > * {
+    flex-shrink: 0;
+  }
+  /* content that is taller than its column scrolls inside it; it never spills over what comes next */
+  .op-layout-vbox {
+    overflow: auto;
+  }
+  .op-layout-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--op-layout-columns, 1), minmax(0, 1fr));
+    gap: var(--op-layout-gap, var(--op-space-2));
+  }
+  .op-layout-border {
+    display: grid;
+    grid-template-areas: 'north north north' 'west center east' 'south south south';
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: var(--op-layout-gap, 0);
+  }
+  .op-layout-border > * {
+    min-width: 0;
+    min-height: 0;
+  }
+  .op-layout-hbox.op-layout-stack.is-narrow {
+    flex-direction: column;
+  }
+  /* stacked children take their natural height (a `flex: 1` meant for the row would squash them in a column) */
+  .op-layout-hbox.op-layout-stack.is-narrow > * {
+    flex: 0 0 auto !important;
+  }
+  .op-layout-grid.is-narrow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .op-layout-grid.is-narrow > * {
+    grid-column: auto !important;
+  }
+
+  /* narrow border layout: one column; west/east become drawers sliding over the center */
+  :root {
+    --op-region-drawer-width: 20rem;
+    --op-region-drawer-z: 3;
+  }
+  .op-layout-border {
+    position: relative;
+  }
+  .op-layout-border.is-narrow {
+    grid-template-areas: 'north' 'center' 'south';
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .op-layout-border.is-narrow > [data-region='west'],
+  .op-layout-border.is-narrow > [data-region='east'] {
+    position: absolute;
+    inset-block: 0;
+    z-index: var(--op-region-drawer-z);
+    inline-size: min(var(--op-region-drawer-width), 100%) !important;
+    visibility: hidden;
+    transition: transform var(--op-duration) var(--op-easing), visibility var(--op-duration);
+    box-shadow: var(--op-shadow-lg);
+  }
+  .op-layout-border.is-narrow > [data-region='west'] {
+    inset-inline-start: 0;
+    transform: translateX(-100%);
+  }
+  .op-layout-border.is-narrow > [data-region='east'] {
+    inset-inline-end: 0;
+    transform: translateX(100%);
+  }
+  .op-layout-border.is-narrow > [data-region].is-open {
+    visibility: visible;
+    transform: none;
+  }
+  .op-layout-border.is-narrow.has-open-region::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: calc(var(--op-region-drawer-z) - 1);
+    background: var(--op-color-overlay);
+  }
+}

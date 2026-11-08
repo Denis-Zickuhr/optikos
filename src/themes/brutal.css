@@ -1,0 +1,100 @@
+/* Brutal: thick black borders, no rounding, hard offset shadows, loud yellow, uppercase labels. data-op-theme="brutal" */
+@layer optikos {
+  [data-op-theme~='brutal'] {
+    --op-color-bg: #fff4d6;
+    --op-color-surface: #ffffff;
+    --op-color-surface-2: #ffe9a8;
+    --op-color-fg: #111111;
+    --op-color-fg-muted: #4a4a4a;
+    --op-color-border: #111111;
+    --op-color-border-strong: #111111;
+    --op-color-hover: #ffe08a;
+    --op-color-selected: #ffd23f;
+    --op-color-primary: #ffd23f;
+    --op-color-primary-hover: #ffc400;
+    --op-color-primary-fg: #111111;
+    --op-color-primary-soft: #fff1b8;
+    --op-color-danger: #ff3b30;
+    --op-color-danger-hover: #e0261c;
+    --op-color-danger-fg: #ffffff;
+    --op-color-danger-soft: #ffd9d6;
+    --op-color-success: #1fa463;
+    --op-color-success-soft: #c9f2dc;
+    --op-color-warning: #ff9f1c;
+    --op-color-warning-soft: #ffe2b8;
+    --op-color-info: #2f6bff;
+    --op-color-info-soft: #d4e1ff;
+    --op-color-focus: #2f6bff;
+    --op-color-disabled-fg: #7a7a7a;
+    --op-color-disabled-bg: #ece3c6;
+    --op-color-overlay: rgb(17 17 17 / 0.55);
+    --op-color-inverse-bg: #111111;
+    --op-color-inverse-fg: #fff4d6;
+
+    --op-font-family: 'Helvetica Neue', Arial, sans-serif;
+    --op-font-size: 0.9375rem;
+    --op-font-weight-medium: 700;
+    --op-font-weight-bold: 800;
+
+    --op-space-2: 0.625rem;
+    --op-space-3: 0.875rem;
+    --op-space-4: 1.25rem;
+    --op-control-height: 2.75rem;
+    --op-control-padding-x: 1rem;
+    --op-row-height: 2.75rem;
+    --op-border-width: 3px;
+    --op-radius-sm: 0;
+    --op-radius: 0;
+    --op-radius-lg: 0;
+    --op-radius-pill: 0;
+    --op-focus-width: 3px;
+    --op-icon-stroke: 2.5;
+
+    --op-shadow-sm: 3px 3px 0 #111111;
+    --op-shadow: 5px 5px 0 #111111;
+    --op-shadow-lg: 9px 9px 0 #111111;
+    --op-duration: 60ms;
+    --op-easing: steps(3, end);
+
+    --op-panel-shadow: var(--op-shadow);
+    --op-panel-header-bg: var(--op-color-primary);
+    --op-grid-header-bg: var(--op-color-primary);
+    --op-field-label-weight: 800;
+    --op-tabs-tab-active-border: var(--op-color-fg);
+    --op-tabs-tab-active-fg: var(--op-color-fg);
+    --op-listbox-item-selected-fg: var(--op-color-fg);
+    --op-filterbuilder-chip-on-fg: var(--op-color-fg);
+    --op-grid-check-accent: var(--op-color-fg);
+  }
+
+  /* buttons lift on hover and sink when pressed, like a physical block */
+  [data-op-theme~='brutal'] .op-button {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: var(--op-shadow-sm);
+    transition: transform var(--op-duration) var(--op-easing), box-shadow var(--op-duration) var(--op-easing);
+  }
+  [data-op-theme~='brutal'] .op-button:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--op-shadow);
+  }
+  [data-op-theme~='brutal'] .op-button:active:not(:disabled),
+  [data-op-theme~='brutal'] .op-button.is-pressed {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+  [data-op-theme~='brutal'] .op-button--ghost {
+    box-shadow: none;
+  }
+  [data-op-theme~='brutal'] :is(.op-panel__header, .op-grid__header, .op-tabs__tab, .op-field__label) {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  [data-op-theme~='brutal'] .op-textfield__input:focus {
+    box-shadow: 4px 4px 0 var(--op-color-focus);
+  }
+  [data-op-theme~='brutal'] .op-grid__body-row:hover {
+    outline: var(--op-border-width) solid var(--op-color-fg);
+    outline-offset: calc(var(--op-border-width) * -1);
+  }
+}

@@ -1,0 +1,53 @@
+@layer optikos {
+  :root {
+    --op-radio-size: 1.125rem;
+  }
+  .op-radiogroup__options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-radiogroup-gap, var(--op-space-1));
+  }
+  .op-radiogroup__options--horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--op-radiogroup-gap, var(--op-space-4));
+  }
+  .op-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    min-block-size: var(--op-control-height);
+    cursor: pointer;
+  }
+  .op-radio__input {
+    position: absolute;
+    opacity: 0;
+    inline-size: 0;
+    block-size: 0;
+  }
+  .op-radio__dot {
+    flex: none;
+    box-sizing: border-box;
+    inline-size: var(--op-radio-size);
+    block-size: var(--op-radio-size);
+    background: var(--op-radio-bg, var(--op-color-surface));
+    border: var(--op-border-width) solid var(--op-radio-border, var(--op-color-border-strong));
+    border-radius: 50%;
+  }
+  .op-radio.is-checked .op-radio__dot {
+    background: var(--op-radio-checked-bg, var(--op-color-primary));
+    border-color: var(--op-radio-checked-bg, var(--op-color-primary));
+    box-shadow: inset 0 0 0 var(--op-space-1) var(--op-radio-bg, var(--op-color-surface));
+  }
+  .op-radio__input:focus-visible + .op-radio__dot {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-radio:has(:disabled) {
+    cursor: not-allowed;
+    color: var(--op-color-disabled-fg);
+  }
+  .op-radiogroup.is-invalid .op-radio__dot {
+    border-color: var(--op-field-invalid-border, var(--op-color-danger));
+  }
+}

@@ -1,0 +1,115 @@
+@layer optikos {
+  :root {
+    --op-navmenu-rail-width: 3.5rem;
+    --op-navmenu-indent: 1rem;
+    --op-navmenu-group-tracking: 0.04em;
+    --op-navmenu-badge-min-width: 1.25rem;
+  }
+  .op-navmenu {
+    display: block;
+    box-sizing: border-box;
+    min-inline-size: 0;
+    color: var(--op-navmenu-fg, var(--op-color-fg));
+    background: var(--op-navmenu-bg, var(--op-color-surface));
+    overflow: auto;
+  }
+  .op-navmenu__tree,
+  .op-navmenu__group {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .op-navmenu__tree {
+    padding: var(--op-space-2);
+  }
+  .op-navmenu__item {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-3);
+    box-sizing: border-box;
+    min-block-size: var(--op-navmenu-item-height, var(--op-control-height));
+    padding: 0 var(--op-space-3);
+    padding-inline-start: calc(var(--op-space-3) + var(--_level, 0) * var(--op-navmenu-indent));
+    border-radius: var(--op-radius);
+    border-inline-start: var(--op-space-1) solid transparent;
+    cursor: pointer;
+    user-select: none;
+  }
+  .op-navmenu__item:hover:not(.is-disabled) {
+    background: var(--op-navmenu-item-hover-bg, var(--op-color-hover));
+  }
+  .op-navmenu__item:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: calc(var(--op-focus-width) * -1);
+  }
+  .op-navmenu__item.is-active {
+    color: var(--op-navmenu-active-fg, var(--op-color-primary));
+    background: var(--op-navmenu-active-bg, var(--op-color-primary-soft));
+    border-inline-start-color: var(--op-navmenu-active-bar, var(--op-color-primary));
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-navmenu__item.is-disabled {
+    color: var(--op-color-disabled-fg);
+    cursor: not-allowed;
+  }
+  .op-navmenu__item.is-group {
+    color: var(--op-navmenu-group-fg, var(--op-color-fg-muted));
+    font-size: var(--op-font-size-sm);
+    font-weight: var(--op-font-weight-bold);
+    letter-spacing: var(--op-navmenu-group-tracking);
+    text-transform: uppercase;
+  }
+  .op-navmenu__icon {
+    display: inline-flex;
+    flex: none;
+    inline-size: var(--op-icon-size);
+  }
+  .op-navmenu__text {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-navmenu__badge {
+    flex: none;
+    min-inline-size: var(--op-navmenu-badge-min-width);
+    padding: 0 var(--op-space-2);
+    color: var(--op-navmenu-badge-fg, var(--op-color-primary-fg));
+    background: var(--op-navmenu-badge-bg, var(--op-color-primary));
+    border-radius: var(--op-radius-pill);
+    font-size: var(--op-font-size-sm);
+    font-weight: var(--op-font-weight-bold);
+    text-align: center;
+  }
+  .op-navmenu__chevron {
+    display: inline-flex;
+    flex: none;
+    transition: transform var(--op-duration) var(--op-easing);
+  }
+  .op-navmenu__item.is-group:not(.is-expanded) .op-navmenu__chevron {
+    transform: rotate(-90deg);
+  }
+  /* rail: icons only; a group is just a thin rule between its neighbours */
+  .op-navmenu.is-rail {
+    inline-size: var(--op-navmenu-rail-width);
+  }
+  .op-navmenu.is-rail .op-navmenu__text,
+  .op-navmenu.is-rail .op-navmenu__chevron,
+  .op-navmenu.is-rail .op-navmenu__item.is-group .op-navmenu__icon {
+    display: none;
+  }
+  .op-navmenu.is-rail .op-navmenu__item {
+    justify-content: center;
+    padding-inline: 0;
+  }
+  .op-navmenu.is-rail .op-navmenu__item.is-group {
+    min-block-size: var(--op-space-3);
+    border-block-start: var(--op-border-width) solid var(--op-color-border);
+    border-radius: 0;
+    pointer-events: none;
+  }
+  .op-navmenu.is-rail .op-navmenu__badge {
+    display: none;
+  }
+}

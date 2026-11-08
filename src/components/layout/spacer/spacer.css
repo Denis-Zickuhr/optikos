@@ -1,0 +1,7 @@
+@layer optikos {
+  .op-spacer--line {
+    align-self: stretch;
+    inline-size: var(--op-border-width);
+    background: var(--op-spacer-line, var(--op-color-border));
+  }
+}

@@ -1,0 +1,12 @@
+@layer optikos {
+  .op-label {
+    color: var(--op-label-fg, var(--op-color-fg));
+  }
+  .op-label--muted {
+    color: var(--op-label-muted-fg, var(--op-color-fg-muted));
+  }
+  .op-label--title {
+    font-size: var(--op-label-title-size, var(--op-font-size-lg));
+    font-weight: var(--op-label-title-weight, var(--op-font-weight-bold));
+  }
+}

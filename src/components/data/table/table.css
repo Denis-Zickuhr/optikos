@@ -1,0 +1,36 @@
+@layer optikos {
+  .op-table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    color: var(--op-color-fg);
+    font-size: var(--op-font-size);
+  }
+  .op-table caption {
+    padding: var(--op-space-2);
+    text-align: start;
+    color: var(--op-color-fg-muted);
+  }
+  .op-table th,
+  .op-table td {
+    padding: var(--op-table-cell-padding-y, var(--op-space-2)) var(--op-table-cell-padding-x, var(--op-space-3));
+    text-align: start;
+    border-block-end: var(--op-border-width) solid var(--op-table-border, var(--op-color-border));
+  }
+  .op-table th {
+    background: var(--op-table-header-bg, var(--op-color-surface-2));
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-table--striped tbody tr:nth-child(even) {
+    background: var(--op-table-stripe-bg, var(--op-color-surface-2));
+  }
+  .op-table .op-table__cell--right {
+    text-align: end;
+  }
+  .op-table .op-table__cell--center {
+    text-align: center;
+  }
+  .op-table__empty td {
+    text-align: center;
+    color: var(--op-color-fg-muted);
+  }
+}

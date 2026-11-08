@@ -1,0 +1,59 @@
+@layer optikos {
+  .op-textfield {
+    --_bg: var(--op-textfield-bg, var(--op-color-surface));
+    --_border: var(--op-textfield-border, var(--op-color-border-strong));
+  }
+  .op-textfield__wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .op-textfield__input {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: var(--op-textfield-height, var(--op-control-height));
+    padding: var(--op-textfield-padding-y, 0) var(--op-textfield-padding-x, var(--op-control-padding-x));
+    font: inherit;
+    color: var(--op-textfield-fg, var(--op-color-fg));
+    background: var(--_bg);
+    border: var(--op-border-width) solid var(--_border);
+    border-radius: var(--op-textfield-radius, var(--op-radius));
+    transition: border-color var(--op-duration) var(--op-easing);
+  }
+  .op-textfield__input::placeholder {
+    color: var(--op-textfield-placeholder, var(--op-color-fg-muted));
+  }
+  .op-textfield__input:focus {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: 0;
+    border-color: var(--op-textfield-border-focus, var(--op-color-focus));
+  }
+  .op-textfield.is-invalid .op-textfield__input {
+    --_border: var(--op-field-invalid-border, var(--op-color-danger));
+  }
+  .op-textfield.is-readonly .op-textfield__input {
+    background: var(--op-color-surface-2);
+  }
+  .op-textfield__input:disabled {
+    color: var(--op-color-disabled-fg);
+    background: var(--op-color-disabled-bg);
+    cursor: not-allowed;
+  }
+  .op-textfield__clear {
+    position: absolute;
+    inset-inline-end: var(--op-space-1);
+    display: none;
+    padding: var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    background: transparent;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+  }
+  .op-textfield.has-value .op-textfield__clear {
+    display: inline-flex;
+  }
+  .op-textfield__clear:hover {
+    color: var(--op-color-fg);
+  }
+}

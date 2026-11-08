@@ -1,0 +1,32 @@
+@layer optikos {
+  .op-fieldset {
+    min-inline-size: 0;
+    margin: 0;
+    padding: var(--op-fieldset-padding, var(--op-space-3));
+    color: var(--op-color-fg);
+    border: var(--op-border-width) solid var(--op-fieldset-border, var(--op-color-border));
+    border-radius: var(--op-fieldset-radius, var(--op-radius));
+  }
+  .op-fieldset__legend {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-1);
+    padding-inline: var(--op-space-1);
+    color: var(--op-fieldset-legend-fg, var(--op-color-fg));
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-fieldset__toggle {
+    display: inline-flex;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .op-fieldset.is-collapsed .op-fieldset__toggle .op-icon {
+    transform: rotate(180deg);
+  }
+  .op-fieldset.is-collapsed {
+    padding-block-end: 0;
+  }
+}

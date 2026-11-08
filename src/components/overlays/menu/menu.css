@@ -1,0 +1,47 @@
+@layer optikos {
+  :root {
+    --op-menu-min-width: 10rem;
+  }
+  .op-menu {
+    box-sizing: border-box;
+    min-inline-size: var(--op-menu-min-width);
+    padding: var(--op-menu-padding, var(--op-space-1));
+    color: var(--op-color-fg);
+    background: var(--op-menu-bg, var(--op-color-surface));
+  }
+  .op-menu__item {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    min-block-size: var(--op-menu-item-height, var(--op-control-height));
+    padding: 0 var(--op-menu-item-padding-x, var(--op-space-3)) 0 var(--op-space-2);
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+    outline: none;
+  }
+  .op-menu__item:hover,
+  .op-menu__item:focus {
+    background: var(--op-menu-item-hover-bg, var(--op-color-hover));
+  }
+  .op-menu__item[aria-disabled='true'] {
+    color: var(--op-color-disabled-fg);
+    cursor: not-allowed;
+  }
+  .op-menu__icon {
+    display: inline-flex;
+    inline-size: var(--op-icon-size);
+  }
+  .op-menu__text {
+    flex: 1;
+    white-space: nowrap;
+  }
+  .op-menu__arrow {
+    display: inline-flex;
+    color: var(--op-color-fg-muted);
+  }
+  .op-menu__sep {
+    margin-block: var(--op-space-1);
+    block-size: var(--op-border-width);
+    background: var(--op-menu-sep, var(--op-color-border));
+  }
+}

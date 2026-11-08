@@ -1,0 +1,16 @@
+@layer optikos {
+  .op-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--op-icon-size);
+    block-size: var(--op-icon-size);
+    line-height: 1;
+  }
+  .op-icon > svg {
+    inline-size: 100%;
+    block-size: 100%;
+    stroke-width: var(--op-icon-stroke);
+  }
+}

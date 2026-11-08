@@ -1,0 +1,12 @@
+# Slider  (type: 'slider')
+Propósito:     Entrada de um número (ou de um intervalo) arrastando uma bolinha numa barra: volume, preço, nota, tamanho. Mais rápido que digitar quando o valor é aproximado.
+Anatomia:      `.op-slider` (Field) > `.op-slider__track` > `__fill` (parte preenchida), `__marks`, e 1 ou 2 `__knob[role=slider]` (a bolinha) com `__bubble` (o valor, acima dela, enquanto arrasta ou tem foco). `.op-slider__scale` opcional (mín. e máx.).
+Config:        (Field) + `min: 0`, `max: 100`, `step: 1`, `value` (número; com `range`, `[mín, máx]`), `range: false`, `marks: false | true | [{ value, label }]` (`true` = uma marca por passo, até 20),
+               `showValue: 'drag'` (`'drag' | 'always' | 'never'`: quando o balão com o valor aparece), `format: (v) => string` (o texto do valor, ex.: `v => v + '%'`), `showScale: false` (mostra os limites embaixo).
+API:           (Field) `getValue/setValue`, `setMin(n)`, `setMax(n)`, `setStep(n)`, `setRange(bool)`, `getPercent()`; o valor sempre fica entre `min` e `max`, em múltiplos de `step`; no modo `range` as bolinhas não se cruzam.
+Eventos:       `change(value)` a cada movimento do usuário (contínuo), `slide-start`, `slide-end(value)` ao soltar; os do Field (`focus`, `blur`, `invalid`...).
+Estados:       `is-dragging`, `is-disabled`, `is-readonly`. Estiramento: enquanto a bolinha se move ela estica `stretch.amount` (12 %) na direção do movimento e relaxa ao soltar (módulo de motion; desligado com `motion.disable()`); durante o arrasto nada faz transição (a bolinha segue o ponteiro).
+Teclado/ARIA:  Padrões "Slider" e "Multi-Thumb Slider" do WAI-ARIA APG. Cada bolinha é `role=slider` com `aria-valuemin/max/now/valuetext` e `aria-orientation=horizontal`. ←/↓ e →/↑ ± um passo; Page Up/Down ± 10 passos; Home/End vão ao limite (no intervalo: ao limite da própria bolinha). Clique/toque na barra move a bolinha mais próxima.
+Tokens:        `--op-slider-track-height`, `--op-slider-knob-size`, `--op-slider-track-bg`, `--op-slider-fill-bg`, `--op-slider-knob-bg`, `--op-slider-knob-border`, `--op-slider-bubble-bg/fg`.
+Casos sandbox: simples, com marcas e rótulos, intervalo de preço, formato (%), balão sempre visível, desabilitado/somente leitura, passo decimal, dentro de um Form.
+Fora do escopo: orientação vertical, escala logarítmica, mais de duas bolinhas.

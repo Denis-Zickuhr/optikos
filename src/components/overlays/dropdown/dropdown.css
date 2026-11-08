@@ -1,0 +1,13 @@
+@layer optikos {
+  .op-dropdown {
+    position: fixed;
+    box-sizing: border-box;
+    max-inline-size: calc(100vw - var(--op-space-4));
+    color: var(--op-dropdown-fg, var(--op-color-fg));
+    background: var(--op-dropdown-bg, var(--op-color-surface));
+    border: var(--op-border-width) solid var(--op-dropdown-border, var(--op-color-border));
+    border-radius: var(--op-dropdown-radius, var(--op-radius));
+    box-shadow: var(--op-dropdown-shadow, var(--op-shadow));
+    overflow: hidden;
+  }
+}

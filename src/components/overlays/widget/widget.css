@@ -1,0 +1,77 @@
+@layer optikos {
+  :root {
+    --op-widget-width: 24rem;
+    --op-widget-height: 26rem;
+    --op-widget-wide: 36rem;
+    --op-widget-offset: var(--op-space-4);
+  }
+  .op-widget {
+    min-block-size: 0;
+    background: var(--op-widget-bg, var(--op-color-surface));
+    border-radius: var(--op-widget-radius, var(--op-radius-lg));
+  }
+  .op-widget.is-floating {
+    --_from: translateX(0);
+    position: fixed;
+    box-shadow: var(--op-widget-shadow, var(--op-shadow-lg));
+    opacity: 0;
+    transform: var(--_from);
+    transition: transform var(--op-duration) var(--op-easing), opacity var(--op-duration) var(--op-easing);
+  }
+  .op-widget.is-floating.is-open {
+    opacity: 1;
+    transform: none;
+  }
+  .op-widget.is-floating[hidden] {
+    display: none;
+  }
+  /* sides: a column on the left/right, a bar (anchored to the end corner) on top/bottom */
+  .op-widget--right.is-floating,
+  .op-widget--left.is-floating {
+    inset-block: var(--op-widget-offset);
+    inline-size: var(--op-widget-size, var(--op-widget-width));
+    max-inline-size: calc(100% - 2 * var(--op-widget-offset));
+  }
+  .op-widget--right.is-floating {
+    inset-inline-end: var(--op-widget-offset);
+    --_from: translateX(calc(100% + var(--op-widget-offset)));
+  }
+  .op-widget--left.is-floating {
+    inset-inline-start: var(--op-widget-offset);
+    --_from: translateX(calc(-100% - var(--op-widget-offset)));
+  }
+  .op-widget--top.is-floating,
+  .op-widget--bottom.is-floating {
+    inset-inline-end: var(--op-widget-offset);
+    inline-size: min(var(--op-widget-wide), calc(100% - 2 * var(--op-widget-offset)));
+    block-size: var(--op-widget-size, var(--op-widget-height));
+    max-block-size: calc(100% - 2 * var(--op-widget-offset));
+  }
+  .op-widget--top.is-floating {
+    inset-block-start: var(--op-widget-offset);
+    --_from: translateY(calc(-100% - var(--op-widget-offset)));
+  }
+  .op-widget--bottom.is-floating {
+    inset-block-end: var(--op-widget-offset);
+    --_from: translateY(calc(100% + var(--op-widget-offset)));
+  }
+  .op-widget [aria-pressed='true'] {
+    color: var(--op-color-primary);
+    background: var(--op-color-primary-soft);
+  }
+  /* dragged: no longer tied to a side; the slide-in becomes a small rise */
+  .op-widget.is-moved.is-floating {
+    --_from: translateY(var(--op-space-3));
+  }
+  .op-widget__handle {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+  }
+  .op-widget.is-dragging .op-widget__handle {
+    cursor: grabbing;
+  }
+  .op-widget.is-dragging {
+    transition: none;
+  }
+}

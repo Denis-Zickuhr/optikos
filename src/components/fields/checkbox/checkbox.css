@@ -1,0 +1,64 @@
+@layer optikos {
+  :root {
+    --op-checkbox-size: 1.125rem;
+  }
+  .op-checkbox__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    min-block-size: var(--op-control-height);
+    cursor: pointer;
+  }
+  .op-checkbox__input {
+    position: absolute;
+    opacity: 0;
+    inline-size: 0;
+    block-size: 0;
+  }
+  .op-checkbox__box {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    box-sizing: border-box;
+    inline-size: var(--op-checkbox-size);
+    block-size: var(--op-checkbox-size);
+    color: var(--op-checkbox-checked-fg, var(--op-color-primary-fg));
+    background: var(--op-checkbox-bg, var(--op-color-surface));
+    border: var(--op-border-width) solid var(--op-checkbox-border, var(--op-color-border-strong));
+    border-radius: var(--op-checkbox-radius, var(--op-radius-sm));
+    transition: background var(--op-duration) var(--op-easing);
+  }
+  .op-checkbox__box .op-icon {
+    font-size: var(--op-checkbox-size);
+    visibility: hidden;
+  }
+  .op-checkbox__dash {
+    position: absolute;
+    inset-inline: 25%;
+    block-size: var(--op-icon-stroke);
+    background: currentColor;
+    visibility: hidden;
+  }
+  .op-checkbox.is-checked .op-checkbox__box,
+  .op-checkbox.is-indeterminate .op-checkbox__box {
+    background: var(--op-checkbox-checked-bg, var(--op-color-primary));
+    border-color: var(--op-checkbox-checked-bg, var(--op-color-primary));
+  }
+  .op-checkbox.is-checked .op-checkbox__box .op-icon,
+  .op-checkbox.is-indeterminate .op-checkbox__dash {
+    visibility: visible;
+  }
+  .op-checkbox__input:focus-visible + .op-checkbox__box {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-checkbox.is-invalid .op-checkbox__box {
+    border-color: var(--op-field-invalid-border, var(--op-color-danger));
+  }
+  .op-checkbox.is-disabled .op-checkbox__label {
+    cursor: not-allowed;
+    color: var(--op-color-disabled-fg);
+  }
+}

@@ -1,0 +1,1784 @@
+{
+ "button": [
+  {
+   "title": "Variants",
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 8,
+    "items": [
+     {
+      "type": "button",
+      "text": "Default"
+     },
+     {
+      "type": "button",
+      "text": "Primary",
+      "variant": "primary"
+     },
+     {
+      "type": "button",
+      "text": "Danger",
+      "variant": "danger"
+     },
+     {
+      "type": "button",
+      "text": "Ghost",
+      "variant": "ghost"
+     },
+     {
+      "type": "button",
+      "icon": "plus",
+      "text": "With icon"
+     }
+    ]
+   }
+  },
+  {
+   "title": "Loading and toggle",
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 8,
+    "items": [
+     {
+      "type": "button",
+      "text": "Saving",
+      "loading": true,
+      "loadingText": "Saving…"
+     },
+     {
+      "type": "button",
+      "text": "Pin",
+      "toggle": true,
+      "icon": "star"
+     },
+     {
+      "type": "button",
+      "text": "Disabled",
+      "disabled": true
+     }
+    ]
+   }
+  }
+ ],
+ "icon": [
+  {
+   "title": "Built-in icons",
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 12,
+    "items": [
+     {
+      "type": "icon",
+      "name": "home",
+      "label": "home"
+     },
+     {
+      "type": "icon",
+      "name": "search",
+      "label": "search"
+     },
+     {
+      "type": "icon",
+      "name": "user",
+      "label": "user"
+     },
+     {
+      "type": "icon",
+      "name": "plus",
+      "label": "plus"
+     },
+     {
+      "type": "icon",
+      "name": "edit",
+      "label": "edit"
+     },
+     {
+      "type": "icon",
+      "name": "star",
+      "label": "star"
+     },
+     {
+      "type": "icon",
+      "name": "menu",
+      "label": "menu"
+     },
+     {
+      "type": "icon",
+      "name": "alert",
+      "label": "alert"
+     }
+    ]
+   }
+  }
+ ],
+ "label": [
+  {
+   "title": "Variants",
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "items": [
+     {
+      "type": "label",
+      "text": "Title",
+      "variant": "title"
+     },
+     {
+      "type": "label",
+      "text": "Default text"
+     },
+     {
+      "type": "label",
+      "text": "Muted text",
+      "variant": "muted"
+     }
+    ]
+   }
+  }
+ ],
+ "spacer": [
+  {
+   "title": "Fill, fixed and line",
+   "config": {
+    "type": "toolbar",
+    "items": [
+     {
+      "type": "button",
+      "text": "Left"
+     },
+     "->",
+     {
+      "type": "button",
+      "text": "Right"
+     },
+     {
+      "type": "spacer",
+      "line": true
+     },
+     {
+      "type": "button",
+      "text": "After line"
+     }
+    ]
+   }
+  }
+ ],
+ "container": [
+  {
+   "title": "hbox with gap",
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 12,
+    "items": [
+     {
+      "type": "panel",
+      "title": "A",
+      "flex": 1,
+      "items": [
+       {
+        "type": "label",
+        "text": "flex 1"
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "B",
+      "flex": 2,
+      "items": [
+       {
+        "type": "label",
+        "text": "flex 2"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "title": "grid layout",
+   "config": {
+    "type": "container",
+    "layout": {
+     "type": "grid",
+     "columns": "repeat(3, 1fr)",
+     "gap": 12
+    },
+    "items": [
+     {
+      "type": "panel",
+      "title": "1",
+      "items": [
+       {
+        "type": "label",
+        "text": "cell"
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "2",
+      "items": [
+       {
+        "type": "label",
+        "text": "cell"
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "3",
+      "items": [
+       {
+        "type": "label",
+        "text": "cell"
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "4",
+      "items": [
+       {
+        "type": "label",
+        "text": "cell"
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "5",
+      "items": [
+       {
+        "type": "label",
+        "text": "cell"
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "6",
+      "items": [
+       {
+        "type": "label",
+        "text": "cell"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "panel": [
+  {
+   "title": "Collapsible with tools",
+   "config": {
+    "type": "panel",
+    "title": "Customer",
+    "icon": "user",
+    "collapsible": true,
+    "closable": false,
+    "width": 360,
+    "items": [
+     {
+      "type": "label",
+      "text": "Click the header arrow to collapse."
+     }
+    ],
+    "buttons": [
+     {
+      "text": "Cancel"
+     },
+     {
+      "text": "Save",
+      "variant": "primary"
+     }
+    ]
+   }
+  }
+ ],
+ "toolbar": [
+  {
+   "title": "Actions",
+   "config": {
+    "type": "toolbar",
+    "items": [
+     {
+      "type": "button",
+      "text": "New",
+      "icon": "plus",
+      "variant": "primary"
+     },
+     {
+      "type": "button",
+      "text": "Edit",
+      "icon": "edit"
+     },
+     "-",
+     {
+      "type": "button",
+      "text": "Delete",
+      "variant": "danger"
+     },
+     "->",
+     {
+      "type": "textfield",
+      "placeholder": "Search…"
+     }
+    ]
+   }
+  }
+ ],
+ "viewport": [
+  {
+   "title": "Full-page shell",
+   "description": "One per document (it is position:fixed over the page), so it is shown as code only. See the erp and admin demos.",
+   "code": "create({\n  type: 'viewport',\n  layout: 'border',\n  items: [\n    { type: 'toolbar', region: 'north', items: ['Optikos', '->', { type: 'button', text: 'Sign out' }] },\n    { type: 'navmenu', region: 'west', items: [{ id: 'home', text: 'Home', icon: 'home' }] },\n    { type: 'panel', region: 'center', title: 'Content' },\n  ],\n});",
+   "demo": "/demos/erp/"
+  }
+ ],
+ "fieldset": [
+  {
+   "title": "Collapsible group",
+   "config": {
+    "type": "fieldset",
+    "title": "Address",
+    "collapsible": true,
+    "items": [
+     {
+      "type": "textfield",
+      "label": "Street"
+     },
+     {
+      "type": "textfield",
+      "label": "City"
+     }
+    ]
+   }
+  }
+ ],
+ "textfield": [
+  {
+   "title": "Label, help and validation",
+   "config": {
+    "type": "textfield",
+    "label": "Email",
+    "inputType": "email",
+    "required": true,
+    "help": "We never share it.",
+    "clearable": true,
+    "placeholder": "you@company.com"
+   }
+  },
+  {
+   "title": "Left label",
+   "config": {
+    "type": "textfield",
+    "label": "Name",
+    "labelPos": "left",
+    "value": "Ada"
+   }
+  }
+ ],
+ "textarea": [
+  {
+   "title": "Multi-line",
+   "config": {
+    "type": "textarea",
+    "label": "Notes",
+    "rows": 4,
+    "maxLength": 200,
+    "help": "Up to 200 characters"
+   }
+  }
+ ],
+ "numberfield": [
+  {
+   "title": "Range and step",
+   "config": {
+    "type": "numberfield",
+    "label": "Quantity",
+    "min": 0,
+    "max": 10,
+    "step": 1,
+    "value": 3,
+    "help": "↑/↓ change the value"
+   }
+  }
+ ],
+ "checkbox": [
+  {
+   "title": "States",
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "items": [
+     {
+      "type": "checkbox",
+      "boxLabel": "I agree to the terms",
+      "required": true
+     },
+     {
+      "type": "checkbox",
+      "boxLabel": "Indeterminate",
+      "indeterminate": true
+     },
+     {
+      "type": "checkbox",
+      "boxLabel": "Disabled",
+      "disabled": true,
+      "value": true
+     }
+    ]
+   }
+  }
+ ],
+ "radiogroup": [
+  {
+   "title": "Vertical and horizontal",
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 12,
+    "items": [
+     {
+      "type": "radiogroup",
+      "label": "Plan",
+      "options": [
+       "Free",
+       "Pro",
+       "Team"
+      ],
+      "value": "Pro"
+     },
+     {
+      "type": "radiogroup",
+      "label": "Size",
+      "direction": "horizontal",
+      "options": [
+       {
+        "value": "s",
+        "label": "S"
+       },
+       {
+        "value": "m",
+        "label": "M"
+       },
+       {
+        "value": "l",
+        "label": "L"
+       }
+      ],
+      "value": "m"
+     }
+    ]
+   }
+  }
+ ],
+ "select": [
+  {
+   "title": "Options",
+   "config": {
+    "type": "select",
+    "label": "Country",
+    "options": [
+     "Brazil",
+     "Canada",
+     "Denmark",
+     "Egypt",
+     "Finland",
+     "Germany"
+    ],
+    "value": "Canada"
+   }
+  },
+  {
+   "title": "Label/value pairs",
+   "config": {
+    "type": "select",
+    "label": "Status",
+    "options": [
+     {
+      "value": "a",
+      "label": "Active"
+     },
+     {
+      "value": "s",
+      "label": "Suspended"
+     },
+     {
+      "value": "c",
+      "label": "Closed",
+      "disabled": true
+     }
+    ]
+   }
+  }
+ ],
+ "combobox": [
+  {
+   "title": "Type to filter",
+   "config": {
+    "type": "combobox",
+    "label": "Country",
+    "options": [
+     "Brazil",
+     "Canada",
+     "Denmark",
+     "Egypt",
+     "Finland",
+     "Germany"
+    ],
+    "placeholder": "Start typing…"
+   }
+  }
+ ],
+ "listbox": [
+  {
+   "title": "Selectable list",
+   "config": {
+    "type": "listbox",
+    "items": [
+     {
+      "value": 1,
+      "label": "Inbox"
+     },
+     {
+      "value": 2,
+      "label": "Drafts"
+     },
+     {
+      "value": 3,
+      "label": "Archive",
+      "disabled": true
+     },
+     {
+      "value": 4,
+      "label": "Trash"
+     }
+    ],
+    "selected": 1,
+    "width": 220
+   }
+  }
+ ],
+ "suggestfield": [
+  {
+   "title": "Local source with id badge",
+   "config": {
+    "type": "suggestfield",
+    "label": "Person",
+    "store": {
+     "$store": [
+      {
+       "id": 1,
+       "name": "Ada Lovelace",
+       "role": "Engineer",
+       "total": 1280.5,
+       "active": true,
+       "since": "2019-03-12"
+      },
+      {
+       "id": 2,
+       "name": "Grace Hopper",
+       "role": "Admiral",
+       "total": 9400,
+       "active": true,
+       "since": "2015-07-01"
+      },
+      {
+       "id": 3,
+       "name": "Linus Torvalds",
+       "role": "Maintainer",
+       "total": 310.25,
+       "active": false,
+       "since": "2021-11-20"
+      },
+      {
+       "id": 4,
+       "name": "Margaret Hamilton",
+       "role": "Director",
+       "total": 5120,
+       "active": true,
+       "since": "2012-01-30"
+      },
+      {
+       "id": 5,
+       "name": "Alan Turing",
+       "role": "Researcher",
+       "total": 780,
+       "active": false,
+       "since": "2018-09-09"
+      }
+     ]
+    },
+    "showValue": true
+   }
+  }
+ ],
+ "lookupfield": [
+  {
+   "title": "Search window (magnifier)",
+   "config": {
+    "type": "lookupfield",
+    "label": "Customer",
+    "lookup": {
+     "store": {
+      "$store": [
+       {
+        "id": 1,
+        "name": "Ada Lovelace",
+        "role": "Engineer",
+        "total": 1280.5,
+        "active": true,
+        "since": "2019-03-12"
+       },
+       {
+        "id": 2,
+        "name": "Grace Hopper",
+        "role": "Admiral",
+        "total": 9400,
+        "active": true,
+        "since": "2015-07-01"
+       },
+       {
+        "id": 3,
+        "name": "Linus Torvalds",
+        "role": "Maintainer",
+        "total": 310.25,
+        "active": false,
+        "since": "2021-11-20"
+       },
+       {
+        "id": 4,
+        "name": "Margaret Hamilton",
+        "role": "Director",
+        "total": 5120,
+        "active": true,
+        "since": "2012-01-30"
+       },
+       {
+        "id": 5,
+        "name": "Alan Turing",
+        "role": "Researcher",
+        "total": 780,
+        "active": false,
+        "since": "2018-09-09"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "field": "id",
+       "header": "#",
+       "width": 60,
+       "sortable": true,
+       "align": "right"
+      },
+      {
+       "field": "name",
+       "header": "Name",
+       "sortable": true,
+       "minWidth": 140
+      },
+      {
+       "field": "role",
+       "header": "Role",
+       "sortable": true
+      }
+     ],
+     "filters": [
+      {
+       "type": "textfield",
+       "name": "name",
+       "label": "Name"
+      },
+      {
+       "type": "textfield",
+       "name": "role",
+       "label": "Role"
+      }
+     ],
+     "valueField": "id",
+     "displayField": "name",
+     "title": "Find a person"
+    },
+    "showValue": true,
+    "width": 320
+   },
+   "description": "Type to get suggestions or click the magnifier to open the window with filters and a grid."
+  }
+ ],
+ "secretfield": [
+  {
+   "title": "Never reads the saved value back",
+   "config": {
+    "type": "secretfield",
+    "label": "API token",
+    "hasValue": true,
+    "help": "Saved. Replace it instead of revealing it."
+   }
+  }
+ ],
+ "slider": [
+  {
+   "title": "Single, range and marks",
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 28,
+    "width": 360,
+    "items": [
+     {
+      "type": "slider",
+      "label": "Volume",
+      "value": 40,
+      "showValue": "always"
+     },
+     {
+      "type": "slider",
+      "label": "Price",
+      "range": true,
+      "min": 0,
+      "max": 500,
+      "step": 10,
+      "value": [
+       100,
+       300
+      ]
+     },
+     {
+      "type": "slider",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "marks": true,
+      "value": 3
+     }
+    ]
+   }
+  }
+ ],
+ "datefield": [
+  {
+   "title": "Date picker",
+   "config": {
+    "type": "datefield",
+    "label": "Since",
+    "value": "2024-05-20"
+   }
+  }
+ ],
+ "daterangefield": [
+  {
+   "title": "Date range",
+   "config": {
+    "type": "daterangefield",
+    "label": "Period",
+    "value": {
+     "start": "2024-05-10",
+     "end": "2024-05-20"
+    }
+   }
+  }
+ ],
+ "calendar": [
+  {
+   "title": "Single date",
+   "config": {
+    "type": "calendar",
+    "value": "2024-05-20"
+   }
+  },
+  {
+   "title": "Range",
+   "config": {
+    "type": "calendar",
+    "range": true,
+    "value": {
+     "start": "2024-05-10",
+     "end": "2024-05-18"
+    }
+   }
+  }
+ ],
+ "form": [
+  {
+   "title": "Validation and values",
+   "config": {
+    "type": "form",
+    "width": 420,
+    "items": [
+     {
+      "type": "textfield",
+      "name": "name",
+      "label": "Name",
+      "required": true
+     },
+     {
+      "type": "textfield",
+      "name": "email",
+      "label": "Email",
+      "inputType": "email"
+     },
+     {
+      "type": "select",
+      "name": "plan",
+      "label": "Plan",
+      "options": [
+       "Free",
+       "Pro"
+      ],
+      "value": "Free"
+     },
+     {
+      "type": "checkbox",
+      "name": "news",
+      "boxLabel": "Subscribe"
+     },
+     {
+      "type": "button",
+      "text": "Validate",
+      "variant": "primary",
+      "htmlType": "submit"
+     }
+    ]
+   }
+  },
+  {
+   "title": "With tabs",
+   "config": {
+    "type": "form",
+    "width": 460,
+    "tabs": [
+     {
+      "title": "Person",
+      "items": [
+       {
+        "type": "textfield",
+        "name": "n",
+        "label": "Name",
+        "required": true
+       }
+      ]
+     },
+     {
+      "title": "Address",
+      "items": [
+       {
+        "type": "textfield",
+        "name": "s",
+        "label": "Street"
+       },
+       {
+        "type": "textfield",
+        "name": "c",
+        "label": "City"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "stepform": [
+  {
+   "title": "Wizard with review",
+   "config": {
+    "type": "stepform",
+    "width": 560,
+    "review": true,
+    "steps": [
+     {
+      "title": "Account",
+      "items": [
+       {
+        "type": "textfield",
+        "name": "user",
+        "label": "User",
+        "required": true
+       },
+       {
+        "type": "textfield",
+        "name": "mail",
+        "label": "Email",
+        "inputType": "email",
+        "required": true
+       }
+      ]
+     },
+     {
+      "title": "Profile",
+      "optional": true,
+      "items": [
+       {
+        "type": "textfield",
+        "name": "bio",
+        "label": "Short bio"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "stepper": [
+  {
+   "title": "Progress through steps",
+   "config": {
+    "type": "stepper",
+    "active": 1,
+    "steps": [
+     {
+      "title": "Cart"
+     },
+     {
+      "title": "Address"
+     },
+     {
+      "title": "Payment",
+      "optional": true
+     },
+     {
+      "title": "Done"
+     }
+    ]
+   }
+  }
+ ],
+ "tabs": [
+  {
+   "title": "Tabs with a closable one",
+   "config": {
+    "type": "tabs",
+    "height": 160,
+    "width": 420,
+    "items": [
+     {
+      "title": "Overview",
+      "icon": "home",
+      "items": [
+       {
+        "type": "label",
+        "text": "Overview content"
+       }
+      ]
+     },
+     {
+      "title": "Details",
+      "closable": true,
+      "items": [
+       {
+        "type": "label",
+        "text": "Closable tab"
+       }
+      ]
+     },
+     {
+      "title": "Disabled",
+      "disabled": true
+     }
+    ]
+   }
+  }
+ ],
+ "breadcrumb": [
+  {
+   "title": "Collapses the middle",
+   "config": {
+    "type": "breadcrumb",
+    "maxItems": 4,
+    "items": [
+     {
+      "text": "Home",
+      "icon": "home",
+      "href": "#"
+     },
+     {
+      "text": "Sales",
+      "href": "#"
+     },
+     {
+      "text": "Orders",
+      "href": "#"
+     },
+     {
+      "text": "2024",
+      "href": "#"
+     },
+     {
+      "text": "Order 1042"
+     }
+    ]
+   }
+  }
+ ],
+ "navmenu": [
+  {
+   "title": "Grouped navigation",
+   "config": {
+    "type": "navmenu",
+    "width": 240,
+    "active": "orders",
+    "items": [
+     {
+      "id": "dash",
+      "text": "Dashboard",
+      "icon": "home"
+     },
+     {
+      "id": "sales",
+      "text": "Sales",
+      "icon": "chart",
+      "expanded": true,
+      "items": [
+       {
+        "id": "orders",
+        "text": "Orders",
+        "badge": "12"
+       },
+       {
+        "id": "invoices",
+        "text": "Invoices"
+       }
+      ]
+     },
+     {
+      "id": "users",
+      "text": "Users",
+      "icon": "user"
+     }
+    ]
+   }
+  }
+ ],
+ "pagination": [
+  {
+   "title": "Manual mode",
+   "config": {
+    "type": "pagination",
+    "total": 135,
+    "pageSize": 10,
+    "page": 4
+   }
+  }
+ ],
+ "table": [
+  {
+   "title": "Simple table",
+   "config": {
+    "type": "table",
+    "data": [
+     {
+      "id": 1,
+      "name": "Ada Lovelace",
+      "role": "Engineer",
+      "total": 1280.5,
+      "active": true,
+      "since": "2019-03-12"
+     },
+     {
+      "id": 2,
+      "name": "Grace Hopper",
+      "role": "Admiral",
+      "total": 9400,
+      "active": true,
+      "since": "2015-07-01"
+     },
+     {
+      "id": 3,
+      "name": "Linus Torvalds",
+      "role": "Maintainer",
+      "total": 310.25,
+      "active": false,
+      "since": "2021-11-20"
+     },
+     {
+      "id": 4,
+      "name": "Margaret Hamilton",
+      "role": "Director",
+      "total": 5120,
+      "active": true,
+      "since": "2012-01-30"
+     },
+     {
+      "id": 5,
+      "name": "Alan Turing",
+      "role": "Researcher",
+      "total": 780,
+      "active": false,
+      "since": "2018-09-09"
+     }
+    ],
+    "columns": [
+     {
+      "field": "id",
+      "header": "#",
+      "width": 60,
+      "sortable": true,
+      "align": "right"
+     },
+     {
+      "field": "name",
+      "header": "Name",
+      "sortable": true,
+      "minWidth": 140
+     },
+     {
+      "field": "role",
+      "header": "Role",
+      "sortable": true
+     },
+     {
+      "field": "total",
+      "header": "Total",
+      "format": "money",
+      "align": "right",
+      "sortable": true
+     },
+     {
+      "field": "since",
+      "header": "Since",
+      "format": "date",
+      "sortable": true
+     }
+    ],
+    "caption": "People",
+    "striped": true
+   }
+  }
+ ],
+ "grid": [
+  {
+   "title": "Sort, select, columns menu",
+   "config": {
+    "type": "grid",
+    "data": [
+     {
+      "id": 1,
+      "name": "Ada Lovelace",
+      "role": "Engineer",
+      "total": 1280.5,
+      "active": true,
+      "since": "2019-03-12"
+     },
+     {
+      "id": 2,
+      "name": "Grace Hopper",
+      "role": "Admiral",
+      "total": 9400,
+      "active": true,
+      "since": "2015-07-01"
+     },
+     {
+      "id": 3,
+      "name": "Linus Torvalds",
+      "role": "Maintainer",
+      "total": 310.25,
+      "active": false,
+      "since": "2021-11-20"
+     },
+     {
+      "id": 4,
+      "name": "Margaret Hamilton",
+      "role": "Director",
+      "total": 5120,
+      "active": true,
+      "since": "2012-01-30"
+     },
+     {
+      "id": 5,
+      "name": "Alan Turing",
+      "role": "Researcher",
+      "total": 780,
+      "active": false,
+      "since": "2018-09-09"
+     }
+    ],
+    "columns": [
+     {
+      "field": "id",
+      "header": "#",
+      "width": 60,
+      "sortable": true,
+      "align": "right"
+     },
+     {
+      "field": "name",
+      "header": "Name",
+      "sortable": true,
+      "minWidth": 140
+     },
+     {
+      "field": "role",
+      "header": "Role",
+      "sortable": true
+     },
+     {
+      "field": "total",
+      "header": "Total",
+      "format": "money",
+      "align": "right",
+      "sortable": true
+     },
+     {
+      "field": "since",
+      "header": "Since",
+      "format": "date",
+      "sortable": true
+     },
+     {
+      "field": "active",
+      "header": "Active",
+      "format": "bool",
+      "align": "center"
+     }
+    ],
+    "selection": "multi",
+    "height": 260,
+    "width": "100%",
+    "striped": true
+   }
+  },
+  {
+   "title": "Paging",
+   "config": {
+    "type": "grid",
+    "data": [
+     {
+      "id": 1,
+      "name": "Ada Lovelace",
+      "role": "Engineer",
+      "total": 1280.5,
+      "active": true,
+      "since": "2019-03-12"
+     },
+     {
+      "id": 2,
+      "name": "Grace Hopper",
+      "role": "Admiral",
+      "total": 9400,
+      "active": true,
+      "since": "2015-07-01"
+     },
+     {
+      "id": 3,
+      "name": "Linus Torvalds",
+      "role": "Maintainer",
+      "total": 310.25,
+      "active": false,
+      "since": "2021-11-20"
+     },
+     {
+      "id": 4,
+      "name": "Margaret Hamilton",
+      "role": "Director",
+      "total": 5120,
+      "active": true,
+      "since": "2012-01-30"
+     },
+     {
+      "id": 5,
+      "name": "Alan Turing",
+      "role": "Researcher",
+      "total": 780,
+      "active": false,
+      "since": "2018-09-09"
+     }
+    ],
+    "columns": [
+     {
+      "field": "id",
+      "header": "#",
+      "width": 60,
+      "sortable": true,
+      "align": "right"
+     },
+     {
+      "field": "name",
+      "header": "Name",
+      "sortable": true,
+      "minWidth": 140
+     },
+     {
+      "field": "role",
+      "header": "Role",
+      "sortable": true
+     },
+     {
+      "field": "total",
+      "header": "Total",
+      "format": "money",
+      "align": "right",
+      "sortable": true
+     }
+    ],
+    "paging": true,
+    "pageSize": 3,
+    "height": 240,
+    "width": "100%"
+   }
+  }
+ ],
+ "dataview": [
+  {
+   "title": "Card grid",
+   "config": {
+    "type": "dataview",
+    "data": [
+     {
+      "id": 1,
+      "name": "Ada Lovelace",
+      "role": "Engineer",
+      "total": 1280.5,
+      "active": true,
+      "since": "2019-03-12"
+     },
+     {
+      "id": 2,
+      "name": "Grace Hopper",
+      "role": "Admiral",
+      "total": 9400,
+      "active": true,
+      "since": "2015-07-01"
+     },
+     {
+      "id": 3,
+      "name": "Linus Torvalds",
+      "role": "Maintainer",
+      "total": 310.25,
+      "active": false,
+      "since": "2021-11-20"
+     },
+     {
+      "id": 4,
+      "name": "Margaret Hamilton",
+      "role": "Director",
+      "total": 5120,
+      "active": true,
+      "since": "2012-01-30"
+     },
+     {
+      "id": 5,
+      "name": "Alan Turing",
+      "role": "Researcher",
+      "total": 780,
+      "active": false,
+      "since": "2018-09-09"
+     }
+    ],
+    "itemWidth": "11rem",
+    "selection": "multi",
+    "renderer": {
+     "$tpl": "{name} — {role}"
+    }
+   }
+  }
+ ],
+ "filterbuilder": [
+  {
+   "title": "AND/OR groups",
+   "config": {
+    "type": "filterbuilder",
+    "addMode": "pick",
+    "live": false,
+    "fields": [
+     {
+      "name": "name",
+      "label": "Name",
+      "type": "text"
+     },
+     {
+      "name": "total",
+      "label": "Total",
+      "type": "number"
+     },
+     {
+      "name": "since",
+      "label": "Since",
+      "type": "date"
+     },
+     {
+      "name": "role",
+      "label": "Role",
+      "type": "select",
+      "options": [
+       "Engineer",
+       "Admiral",
+       "Director"
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "searchgrid": [
+  {
+   "title": "Filters + grid in one block",
+   "config": {
+    "type": "searchgrid",
+    "lookup": {
+     "store": {
+      "$store": [
+       {
+        "id": 1,
+        "name": "Ada Lovelace",
+        "role": "Engineer",
+        "total": 1280.5,
+        "active": true,
+        "since": "2019-03-12"
+       },
+       {
+        "id": 2,
+        "name": "Grace Hopper",
+        "role": "Admiral",
+        "total": 9400,
+        "active": true,
+        "since": "2015-07-01"
+       },
+       {
+        "id": 3,
+        "name": "Linus Torvalds",
+        "role": "Maintainer",
+        "total": 310.25,
+        "active": false,
+        "since": "2021-11-20"
+       },
+       {
+        "id": 4,
+        "name": "Margaret Hamilton",
+        "role": "Director",
+        "total": 5120,
+        "active": true,
+        "since": "2012-01-30"
+       },
+       {
+        "id": 5,
+        "name": "Alan Turing",
+        "role": "Researcher",
+        "total": 780,
+        "active": false,
+        "since": "2018-09-09"
+       }
+      ]
+     },
+     "columns": [
+      {
+       "field": "id",
+       "header": "#",
+       "width": 60,
+       "sortable": true,
+       "align": "right"
+      },
+      {
+       "field": "name",
+       "header": "Name",
+       "sortable": true,
+       "minWidth": 140
+      },
+      {
+       "field": "role",
+       "header": "Role",
+       "sortable": true
+      }
+     ],
+     "filters": [
+      {
+       "type": "textfield",
+       "name": "name",
+       "label": "Name"
+      },
+      {
+       "type": "textfield",
+       "name": "role",
+       "label": "Role"
+      }
+     ],
+     "valueField": "id",
+     "displayField": "name",
+     "title": "Find a person"
+    },
+    "height": 320,
+    "width": "100%"
+   }
+  }
+ ],
+ "viewmanager": [
+  {
+   "title": "Saved views",
+   "description": "Needs a Grid (and optionally a FilterBuilder) to point at, so it is shown as code. Storage is pluggable: local in the demos, an endpoint in production.",
+   "code": "const grid = create({ type: 'grid', store, columns, columnsMenu: true });\nconst filters = create({ type: 'filterbuilder', store, fields });\ncreate({\n  type: 'viewmanager',\n  grid, filters,\n  storage: localViewStorage('customers'),      // or restViewStorage({ url: '/api/views' })\n  renderTo: toolbarEl,\n});",
+   "demo": "/demos/crm/"
+  }
+ ],
+ "dropdown": [
+  {
+   "title": "Anchored popup",
+   "config": {
+    "type": "dropdown",
+    "content": {
+     "type": "panel",
+     "title": "Popup",
+     "width": 220,
+     "items": [
+      {
+       "type": "label",
+       "text": "Any component inside"
+      }
+     ]
+    },
+    "matchWidth": false
+   },
+   "description": "The button below anchors the popup.",
+   "launch": "anchor"
+  }
+ ],
+ "menu": [
+  {
+   "title": "Items, check, submenu",
+   "config": {
+    "type": "menu",
+    "items": [
+     {
+      "text": "New",
+      "icon": "plus"
+     },
+     {
+      "text": "Rename",
+      "icon": "edit"
+     },
+     {
+      "text": "Locked",
+      "disabled": true
+     },
+     "-",
+     {
+      "text": "Show hidden",
+      "checked": false
+     },
+     {
+      "text": "Share",
+      "items": [
+       {
+        "text": "Email"
+       },
+       {
+        "text": "Link"
+       }
+      ]
+     }
+    ]
+   },
+   "launch": "anchor"
+  }
+ ],
+ "tooltip": [
+  {
+   "title": "On hover and focus",
+   "config": {
+    "type": "button",
+    "icon": "star",
+    "ariaLabel": "Favorite",
+    "tooltip": "Add to favorites"
+   }
+  }
+ ],
+ "window": [
+  {
+   "title": "Modal dialog",
+   "config": {
+    "type": "window",
+    "title": "Edit customer",
+    "icon": "user",
+    "closeAction": "destroy",
+    "width": 420,
+    "items": [
+     {
+      "type": "form",
+      "items": [
+       {
+        "type": "textfield",
+        "label": "Name",
+        "required": true
+       }
+      ]
+     }
+    ],
+    "buttons": [
+     {
+      "text": "Cancel"
+     },
+     {
+      "text": "Save",
+      "variant": "primary"
+     }
+    ]
+   },
+   "launch": "show"
+  }
+ ],
+ "messagebox": [
+  {
+   "title": "Confirm with danger",
+   "config": {
+    "text": "Delete 3 customers? This cannot be undone.",
+    "title": "Delete",
+    "icon": "alert",
+    "buttons": [
+     {
+      "id": "cancel",
+      "text": "Cancel"
+     },
+     {
+      "id": "ok",
+      "text": "Delete",
+      "variant": "danger"
+     }
+    ],
+    "cancelId": "cancel"
+   },
+   "launch": "messagebox"
+  }
+ ],
+ "toast": [
+  {
+   "title": "Success toast",
+   "config": {
+    "text": "Your changes were saved.",
+    "title": "Saved",
+    "type": "success"
+   },
+   "launch": "toast"
+  }
+ ],
+ "commandpalette": [
+  {
+   "title": "Ctrl+K palette",
+   "config": {
+    "type": "commandpalette",
+    "commands": [
+     {
+      "id": "new",
+      "title": "New customer",
+      "category": "Create",
+      "icon": "plus",
+      "shortcut": "N"
+     },
+     {
+      "id": "theme",
+      "title": "Change theme…",
+      "category": "Settings",
+      "children": [
+       {
+        "id": "l",
+        "title": "Light"
+       },
+       {
+        "id": "d",
+        "title": "Dark"
+       }
+      ]
+     },
+     {
+      "id": "help",
+      "title": "Open help",
+      "category": "Help",
+      "keywords": [
+       "docs"
+      ]
+     }
+    ]
+   },
+   "description": "Press Ctrl+K (or the button).",
+   "launch": "open"
+  }
+ ],
+ "widget": [
+  {
+   "title": "Floating side widget",
+   "config": {
+    "type": "widget",
+    "title": "Assistant",
+    "icon": "star",
+    "side": "right",
+    "sideSwitcher": true,
+    "draggable": true,
+    "items": [
+     {
+      "type": "label",
+      "text": "Any content: chat, help, notes…"
+     }
+    ]
+   },
+   "launch": "open"
+  }
+ ],
+ "chat": [
+  {
+   "title": "Conversation",
+   "config": {
+    "type": "chat",
+    "me": "me",
+    "height": 320,
+    "width": 380,
+    "users": {
+     "bot": {
+      "name": "Bot"
+     }
+    },
+    "suggestions": [
+     "Hello",
+     "What can you do?"
+    ],
+    "messages": [
+     {
+      "id": "1",
+      "from": "bot",
+      "text": "Hi! Ask me anything.",
+      "time": "2024-05-20T10:00:00"
+     },
+     {
+      "id": "2",
+      "from": "me",
+      "text": "Show **bold** and `code`",
+      "time": "2024-05-20T10:01:00",
+      "status": "read"
+     }
+    ]
+   }
+  }
+ ],
+ "spinner": [
+  {
+   "title": "Spinner and loading mask",
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 16,
+    "items": [
+     {
+      "type": "spinner",
+      "label": "Loading"
+     },
+     {
+      "type": "panel",
+      "title": "Panel in loading",
+      "loading": "Fetching…",
+      "width": 240,
+      "height": 120,
+      "items": [
+       {
+        "type": "label",
+        "text": "Hidden behind the mask"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

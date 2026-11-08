@@ -1,0 +1,125 @@
+@layer optikos {
+  :root {
+    --op-filterbuilder-gap: var(--op-space-2);
+    --op-filterbuilder-group-padding: var(--op-space-3);
+    --op-filterbuilder-value-width: 8rem;
+    --op-filterbuilder-value-max-width: 18rem;
+    --op-filterbuilder-chips-max-height: 6rem;
+    --op-filterbuilder-nested-bg: var(--op-color-surface-2);
+  }
+  .op-filterbuilder {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-filterbuilder-gap);
+    min-inline-size: 0;
+  }
+  .op-filterbuilder__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-filterbuilder-gap);
+  }
+  .op-filterbuilder__group.is-nested {
+    padding: var(--op-filterbuilder-group-padding);
+    background: var(--op-filterbuilder-nested-bg);
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-radius);
+  }
+  .op-filterbuilder__head,
+  .op-filterbuilder__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--op-filterbuilder-gap);
+  }
+  .op-filterbuilder__value {
+    flex: 1 1 var(--op-filterbuilder-value-width);
+    min-inline-size: 0;
+    max-inline-size: var(--op-filterbuilder-value-max-width);
+  }
+  /* a validation message hangs below the field instead of making the row taller (and the controls beside it jump) */
+  .op-filterbuilder__value {
+    position: relative;
+  }
+  .op-filterbuilder__value > .op-field__error {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    z-index: 1;
+    margin: 0;
+    white-space: nowrap;
+    font-size: var(--op-font-size-sm);
+  }
+  .op-filterbuilder__row:has(.op-field__error:not(:empty)) {
+    margin-block-end: var(--op-space-4);
+  }
+  .op-filterbuilder__to {
+    color: var(--op-color-fg-muted);
+  }
+  .op-filterbuilder__none {
+    color: var(--op-color-fg-muted);
+  }
+  .op-filterbuilder__select {
+    min-block-size: var(--op-control-height);
+    padding-inline: var(--op-control-padding-x);
+    font: inherit;
+    color: var(--op-color-fg);
+    background: var(--op-color-surface);
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-radius);
+  }
+  .op-filterbuilder__select:focus-visible,
+  .op-filterbuilder__remove:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: 0;
+  }
+  .op-filterbuilder__remove {
+    display: inline-flex;
+    padding: var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    background: transparent;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+  }
+  .op-filterbuilder__remove:hover {
+    color: var(--op-color-danger);
+    background: var(--op-color-hover);
+  }
+  .op-filterbuilder__foot {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .op-filterbuilder__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--op-space-1);
+    max-block-size: var(--op-filterbuilder-chips-max-height);
+    overflow: auto;
+  }
+  .op-filterbuilder__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--op-space-1) var(--op-space-3);
+    color: var(--op-color-fg);
+    background: var(--op-color-surface);
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-radius-pill);
+    cursor: pointer;
+  }
+  .op-filterbuilder__chip:hover {
+    background: var(--op-color-hover);
+  }
+  .op-filterbuilder__chip:has(:checked) {
+    color: var(--op-filterbuilder-chip-on-fg, var(--op-color-primary));
+    background: var(--op-color-primary-soft);
+    border-color: var(--op-color-primary);
+  }
+  .op-filterbuilder__chip:has(:focus-visible) {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+  }
+  .op-filterbuilder__chipbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+}

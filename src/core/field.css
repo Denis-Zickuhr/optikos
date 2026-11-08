@@ -1,0 +1,62 @@
+@layer optikos {
+  :root {
+    --op-field-label-width: 8rem;
+  }
+
+  .op-field {
+    --_label-fg: var(--op-field-label-fg, var(--op-color-fg));
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-field-gap, var(--op-space-1));
+    font-family: var(--op-font-family);
+    font-size: var(--op-font-size);
+    color: var(--op-color-fg);
+    min-width: 0;
+  }
+  .op-field__label {
+    color: var(--_label-fg);
+    font-size: var(--op-field-label-size, var(--op-font-size));
+    font-weight: var(--op-field-label-weight, var(--op-font-weight-medium));
+  }
+  .op-field.is-required > .op-field__label::after {
+    content: ' *';
+    color: var(--op-color-danger);
+  }
+  .op-field__control {
+    min-width: 0;
+  }
+  .op-field__help {
+    color: var(--op-field-help-fg, var(--op-color-fg-muted));
+    font-size: var(--op-font-size-sm);
+  }
+  .op-field__error {
+    color: var(--op-field-error-fg, var(--op-color-danger));
+    font-size: var(--op-font-size-sm);
+  }
+  .op-field__error:empty {
+    display: none;
+  }
+  /* stableSize: the error line is always reserved, so a field does not grow when it becomes invalid */
+  .op-field.op-stable > .op-field__error:empty {
+    display: block;
+    min-block-size: calc(var(--op-font-size-sm) * var(--op-line-height));
+  }
+  .op-field--label-left {
+    display: grid;
+    grid-template-columns: var(--op-field-label-width) minmax(0, 1fr);
+    align-items: start;
+    column-gap: var(--op-space-3);
+  }
+  .op-field--label-left > .op-field__label {
+    padding-block: var(--op-space-2);
+    grid-column: 1;
+  }
+  .op-field--label-left > .op-field__control,
+  .op-field--label-left > .op-field__help,
+  .op-field--label-left > .op-field__error {
+    grid-column: 2;
+  }
+  .op-field.is-disabled {
+    color: var(--op-color-disabled-fg);
+  }
+}

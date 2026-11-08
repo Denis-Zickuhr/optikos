@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": true,
+    "noImplicitOverride": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "optikos": ["./src/index.ts"],
+      "optikos/core": ["./src/core/index.ts"],
+      "optikos/data": ["./src/data/index.ts"],
+      "optikos/bind": ["./src/bind/index.ts"],
+      "optikos/motion": ["./src/motion/index.ts"],
+      "optikos/ui": ["./src/ui/index.ts"]
+    }
+  },
+  "include": ["src", "sandbox", "demos", "scripts/*.ts", "dev", "site"]
+}

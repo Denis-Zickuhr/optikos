@@ -1,0 +1,91 @@
+@layer optikos {
+  :root {
+    --op-toast-width: 22rem;
+    --op-z-toast: 2;
+  }
+  .op-toast-region {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-toast-gap, var(--op-space-2));
+    padding: var(--op-space-4);
+    max-inline-size: 100%;
+    z-index: var(--op-z-toast);
+    pointer-events: none;
+  }
+  .op-toast-region > * {
+    pointer-events: auto;
+  }
+  .op-toast-region[data-pos^='top'] {
+    inset-block-start: 0;
+  }
+  .op-toast-region[data-pos^='bottom'] {
+    inset-block-end: 0;
+  }
+  .op-toast-region[data-pos$='right'] {
+    inset-inline-end: 0;
+  }
+  .op-toast-region[data-pos$='left'] {
+    inset-inline-start: 0;
+  }
+  .op-toast-region[data-pos='top'],
+  .op-toast-region[data-pos='bottom'] {
+    inset-inline: 0;
+    align-items: center;
+  }
+  .op-toast {
+    --_accent: var(--op-toast-accent-info, var(--op-color-info));
+    display: flex;
+    align-items: flex-start;
+    gap: var(--op-space-2);
+    box-sizing: border-box;
+    inline-size: var(--op-toast-width);
+    max-inline-size: 100%;
+    padding: var(--op-space-3);
+    color: var(--op-toast-fg, var(--op-color-fg));
+    background: var(--op-toast-bg, var(--op-color-surface));
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-inline-start: var(--op-space-1) solid var(--_accent);
+    border-radius: var(--op-toast-radius, var(--op-radius));
+    box-shadow: var(--op-toast-shadow, var(--op-shadow));
+    animation: op-toast-in var(--op-duration) var(--op-easing);
+  }
+  .op-toast--success {
+    --_accent: var(--op-toast-accent-success, var(--op-color-success));
+  }
+  .op-toast--warning {
+    --_accent: var(--op-toast-accent-warning, var(--op-color-warning));
+  }
+  .op-toast--error {
+    --_accent: var(--op-toast-accent-error, var(--op-color-danger));
+  }
+  .op-toast__icon {
+    color: var(--_accent);
+    display: inline-flex;
+  }
+  .op-toast__body {
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .op-toast__title {
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-toast__close {
+    display: inline-flex;
+    padding: var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    background: transparent;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+  }
+  .op-toast__close:hover {
+    background: var(--op-color-hover);
+  }
+  @keyframes op-toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(calc(var(--op-space-2) * -1));
+    }
+  }
+}

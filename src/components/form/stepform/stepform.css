@@ -1,0 +1,46 @@
+@layer optikos {
+  :root {
+    --op-stepform-review-label-width: 9rem;
+  }
+  .op-stepform {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-stepform-gap, var(--op-space-4));
+    min-block-size: 0;
+  }
+  .op-stepform > .op-stepper {
+    flex: none;
+    padding-inline: var(--op-stepform-step-padding, var(--op-space-3));
+  }
+  .op-stepform__body {
+    flex: 1;
+    min-block-size: 0;
+    overflow: auto;
+  }
+  .op-stepform__step {
+    padding: var(--op-stepform-step-padding, var(--op-space-3));
+  }
+  .op-stepform > .op-stepform__footer {
+    flex: none;
+    border-block-end: 0;
+    border-block-start: var(--op-border-width) solid var(--op-color-border);
+  }
+  .op-stepform__review-title {
+    margin: var(--op-space-3) 0 var(--op-space-2);
+    font-size: var(--op-font-size-lg);
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-stepform__review-list {
+    display: grid;
+    grid-template-columns: minmax(var(--op-stepform-review-label-width), max-content) minmax(0, 1fr);
+    gap: var(--op-space-1) var(--op-space-4);
+    margin: 0;
+  }
+  .op-stepform__review-list dt {
+    color: var(--op-color-fg-muted);
+  }
+  .op-stepform__review-list dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+}

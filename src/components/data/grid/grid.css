@@ -1,0 +1,367 @@
+@layer optikos {
+  :root {
+    --op-grid-colmenu-width: 14rem;
+    --op-grid-colmenu-height: 20rem;
+    --op-grid-drop-width: 0.1875rem;
+    --op-grid-resizer-width: 0.5rem;
+    --op-grid-group-tracking: 0.05em;
+    --op-grid-action-size: 2rem;
+    --op-grid-action-gap: var(--op-space-1);
+    --op-grid-action-idle-opacity: 0.45;
+    --op-grid-action-disabled-opacity: 0.3;
+  }
+  .op-grid {
+    --_border: var(--op-grid-border, var(--op-color-border));
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-inline-size: 0;
+    min-block-size: 0;
+    color: var(--op-grid-fg, var(--op-color-fg));
+    background: var(--op-grid-bg, var(--op-color-surface));
+    border: var(--op-border-width) solid var(--_border);
+    border-radius: var(--op-grid-radius, var(--op-radius));
+    overflow: hidden;
+  }
+  .op-grid:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: 0;
+  }
+  .op-grid__header {
+    position: relative;
+    flex: none;
+    overflow: hidden;
+    color: var(--op-grid-header-fg, var(--op-color-fg));
+    background: var(--op-grid-header-bg, var(--op-color-surface-2));
+    border-block-end: var(--op-border-width) solid var(--_border);
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-grid__row {
+    display: grid;
+    grid-template-columns: var(--op-grid-cols);
+    box-sizing: border-box;
+    min-inline-size: var(--op-grid-min-width);
+  }
+  .op-grid__header-row {
+    min-block-size: var(--op-grid-row-height, var(--op-row-height));
+  }
+  .op-grid__viewport {
+    flex: 1;
+    min-block-size: 0;
+    overflow: auto;
+  }
+  .op-grid__body-row {
+    border-block-end: var(--op-border-width) solid var(--_border);
+    cursor: default;
+  }
+  .op-grid__body-row:hover {
+    background: var(--op-grid-row-hover-bg, var(--op-color-hover));
+  }
+  .op-grid--striped .op-grid__body-row.is-odd {
+    background: var(--op-grid-row-stripe-bg, var(--op-color-surface-2));
+  }
+  .op-grid__body-row.is-selected {
+    background: var(--op-grid-row-selected-bg, var(--op-color-selected));
+  }
+  .op-grid__body-row.is-active {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: calc(var(--op-focus-width) * -1);
+  }
+  .op-grid__cell {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+    padding-inline: var(--op-grid-cell-padding-x, var(--op-control-padding-x));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-grid__cell--right {
+    justify-content: flex-end;
+    text-align: end;
+  }
+  .op-grid__cell--center {
+    justify-content: center;
+  }
+  .op-grid__sort {
+    text-transform: inherit;
+    letter-spacing: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-1);
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .op-grid__arrow {
+    display: inline-flex;
+    opacity: 0;
+    transition: transform var(--op-duration) var(--op-easing);
+  }
+  .op-grid__hcell.is-sortable:hover .op-grid__arrow {
+    opacity: 0.4;
+  }
+  .op-grid__hcell.is-sorted-asc .op-grid__arrow,
+  .op-grid__hcell.is-sorted-desc .op-grid__arrow {
+    opacity: 1;
+  }
+  .op-grid__hcell.is-sorted-desc .op-grid__arrow {
+    transform: rotate(180deg);
+  }
+  .op-grid__empty {
+    padding: var(--op-space-5);
+    text-align: center;
+    color: var(--op-color-fg-muted);
+  }
+  .op-grid__pager {
+    flex: none;
+    padding: var(--op-space-2);
+    border-block-start: var(--op-border-width) solid var(--_border);
+  }
+  .op-grid .op-virtual {
+    min-inline-size: var(--op-grid-min-width);
+  }
+  .op-grid__check {
+    margin: 0;
+    accent-color: var(--op-grid-check-accent, var(--op-color-primary));
+    cursor: pointer;
+  }
+  /* the checkbox and action columns are narrow: the frame gives them their own padding instead of the text-cell one */
+  .op-grid__selcell,
+  .op-grid__actcell {
+    padding-inline: var(--op-grid-action-gap);
+  }
+  .op-grid__actcell {
+    justify-content: flex-end;
+    gap: var(--op-grid-action-gap);
+  }
+  .op-grid__actbtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-inline-size: var(--op-grid-action-size);
+    block-size: var(--op-grid-action-size);
+    padding: var(--op-space-1);
+    font: inherit;
+    font-size: var(--op-font-size-sm);
+    color: var(--op-color-fg-muted);
+    background: transparent;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+  }
+  .op-grid__actbtn:hover {
+    color: var(--op-color-fg);
+    background: var(--op-color-hover);
+  }
+  .op-grid__bar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--op-space-2);
+    min-block-size: var(--op-grid-row-height, var(--op-row-height));
+    padding-inline: var(--op-space-2);
+    background: var(--op-grid-bar-bg, var(--op-color-surface));
+    border-block-end: var(--op-border-width) solid var(--_border);
+  }
+  .op-grid__bulk {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--op-space-2);
+  }
+  .op-grid__bulk[hidden] {
+    display: none;
+  }
+  .op-grid__count {
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-grid__bar > .op-button {
+    margin-inline-start: auto;
+  }
+  .op-grid__colmenu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-space-2);
+    min-inline-size: var(--op-grid-colmenu-width);
+    max-block-size: var(--op-grid-colmenu-height);
+    padding: var(--op-space-2);
+  }
+  .op-grid__collist {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .op-grid__colitem {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    padding: var(--op-space-1) var(--op-space-2);
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+  }
+  .op-grid__colitem:hover {
+    background: var(--op-color-hover);
+  }
+  .op-grid__colitem[hidden],
+  .op-grid__colempty[hidden] {
+    display: none;
+  }
+  .op-grid__colempty {
+    padding: var(--op-space-2);
+    color: var(--op-color-fg-muted);
+    text-align: center;
+  }
+  /* visible mode: always there, dimmed until the row is hovered, active or selected */
+  .op-grid--actions-visible .op-grid__actbtn {
+    opacity: var(--op-grid-action-idle-opacity);
+  }
+  .op-grid--actions-visible .op-grid__body-row:hover .op-grid__actbtn,
+  .op-grid--actions-visible .op-grid__body-row.is-active .op-grid__actbtn,
+  .op-grid--actions-visible .op-grid__body-row.is-selected .op-grid__actbtn,
+  .op-grid--actions-visible .op-grid__actbtn:focus-visible {
+    opacity: 1;
+  }
+  .op-grid__actbtn.is-danger:hover {
+    color: var(--op-color-danger);
+  }
+  .op-grid__actbtn:disabled {
+    opacity: var(--op-grid-action-disabled-opacity);
+    cursor: not-allowed;
+  }
+  /* column drag: grab cursor, a ghost label under the pointer and a bar where the column will land */
+  .op-grid--reorderable .op-grid__hcell.is-reorderable {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+  }
+  .op-grid__hcell {
+    position: relative;
+  }
+  /* resize handle: a thin strip on the header's end edge; a hairline shows on hover and while dragging */
+  .op-grid__resizer {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    inline-size: var(--op-grid-resizer-width);
+    cursor: col-resize;
+    touch-action: none;
+    z-index: 1;
+  }
+  .op-grid__resizer::after {
+    content: '';
+    position: absolute;
+    inset-block: 25%;
+    inset-inline-end: 0;
+    inline-size: var(--op-border-width);
+    background: var(--op-color-border-strong);
+  }
+  .op-grid__resizer:hover::after,
+  .op-grid.is-resizing .op-grid__resizer:hover::after {
+    inset-block: 0;
+    inline-size: var(--op-grid-drop-width);
+    background: var(--op-color-primary);
+  }
+  .op-grid.is-resizing {
+    cursor: col-resize;
+    user-select: none;
+  }
+  .op-grid__hcell.is-dragging-col {
+    opacity: 0.4;
+  }
+  .op-grid__ghost {
+    position: fixed;
+    z-index: var(--op-z-layer);
+    padding: var(--op-space-1) var(--op-space-3);
+    color: var(--op-color-fg);
+    background: var(--op-color-surface);
+    border: var(--op-border-width) solid var(--op-color-primary);
+    border-radius: var(--op-radius);
+    box-shadow: var(--op-shadow);
+    pointer-events: none;
+    transform: translate(var(--op-space-2), var(--op-space-2));
+    font-weight: var(--op-font-weight-bold);
+    white-space: nowrap;
+  }
+  .op-grid__drop {
+    position: absolute;
+    inset-block: 0;
+    inline-size: var(--op-grid-drop-width);
+    margin-inline-start: calc(var(--op-grid-drop-width) / -2);
+    background: var(--op-color-primary);
+    pointer-events: none;
+  }
+  /* group band over the header */
+  .op-grid__group-row {
+    min-block-size: 0;
+  }
+  .op-grid__gcell {
+    padding: var(--op-space-1) var(--op-grid-cell-padding-x, var(--op-control-padding-x));
+    overflow: hidden;
+    color: var(--op-grid-group-fg, var(--op-color-fg-muted));
+    background: var(--op-grid-group-bg, var(--op-color-surface-2));
+    border-block-end: var(--op-border-width) solid var(--_border);
+    border-inline-end: var(--op-border-width) solid var(--_border);
+    font-size: var(--op-font-size-sm);
+    letter-spacing: var(--op-grid-group-tracking);
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .op-grid__gcell.is-empty {
+    background: transparent;
+    border-inline-end-color: transparent;
+  }
+  /* column menu: group chips and sections */
+  .op-grid__colchips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--op-space-1);
+  }
+  .op-grid__colchips[hidden],
+  .op-grid__colgroup[hidden] {
+    display: none;
+  }
+  .op-grid__colchip {
+    padding: 0 var(--op-space-3);
+    font: inherit;
+    font-size: var(--op-font-size-sm);
+    color: var(--op-color-fg-muted);
+    background: transparent;
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-radius-pill);
+    cursor: pointer;
+  }
+  .op-grid__colchip.is-on {
+    color: var(--op-color-primary-fg);
+    background: var(--op-color-primary);
+    border-color: var(--op-color-primary);
+  }
+  .op-grid__colgroup {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--op-space-2);
+    padding: var(--op-space-1) var(--op-space-2);
+    margin-block-start: var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    border-block-end: var(--op-border-width) solid var(--op-color-border);
+    font-size: var(--op-font-size-sm);
+    font-weight: var(--op-font-weight-bold);
+    text-transform: uppercase;
+  }
+  .op-grid__colgroup label {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    cursor: pointer;
+  }
+  .op-grid__colgroup ~ .op-grid__colitem {
+    padding-inline-start: var(--op-space-4);
+  }
+}

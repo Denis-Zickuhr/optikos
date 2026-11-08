@@ -1,0 +1,85 @@
+@layer optikos {
+  .op-picker__trigger {
+    position: absolute;
+    inset-inline-end: var(--op-space-1);
+    display: inline-flex;
+    padding: var(--op-space-1);
+    color: var(--op-picker-arrow-fg, var(--op-color-fg-muted));
+    background: transparent;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+    transition: transform var(--op-duration) var(--op-easing);
+  }
+  .op-picker.is-open .op-picker__trigger {
+    transform: rotate(180deg);
+  }
+  .op-picker:has(.op-picker__trigger) .op-textfield__input {
+    padding-inline-end: calc(var(--op-icon-size) + var(--op-space-3));
+  }
+  .op-picker.is-readonly .op-textfield__input,
+  .op-select .op-textfield__input {
+    cursor: pointer;
+    text-overflow: ellipsis;
+  }
+  /* stableSize: room for the spinner is always there, so the text does not shift when a search starts */
+  .op-suggest.op-stable .op-textfield__input {
+    padding-inline-end: calc(var(--op-icon-size) + var(--op-space-3));
+  }
+  .op-picker.is-searching .op-picker__spinner {
+    display: inline-block;
+  }
+  .op-picker__spinner {
+    --op-spinner-size: var(--op-icon-size);
+    position: absolute;
+    inset-inline-end: var(--op-space-2);
+    display: none;
+  }
+  .op-picker__trigger:disabled {
+    cursor: not-allowed;
+  }
+  .op-suggest__icon {
+    position: absolute;
+    inset-inline-start: var(--op-space-2);
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    color: var(--op-picker-arrow-fg, var(--op-color-fg-muted));
+    pointer-events: none;
+  }
+  .op-textfield__wrap.has-icon .op-textfield__input {
+    padding-inline-start: calc(var(--op-icon-size) + var(--op-space-3));
+  }
+  /* the lookup's magnifier button sits where the arrow would; the spinner moves left of it */
+  .op-lookup .op-picker__spinner {
+    inset-inline-end: calc(var(--op-icon-size) + var(--op-space-4));
+  }
+  .op-lookup.op-stable .op-textfield__input {
+    padding-inline-end: calc(var(--op-icon-size) * 2 + var(--op-space-5));
+  }
+  /* showValue: the record's id as a badge at the start of the field */
+  .op-picker__id {
+    position: absolute;
+    inset-inline-start: var(--op-space-2);
+    inset-block: 50% auto;
+    transform: translateY(-50%);
+    padding: 0 var(--op-space-2);
+    color: var(--op-picker-id-fg, var(--op-color-fg-muted));
+    background: var(--op-picker-id-bg, var(--op-color-surface-2));
+    border-radius: var(--op-radius-pill);
+    font-size: var(--op-font-size-sm);
+    pointer-events: none;
+  }
+  .op-picker__id[hidden] {
+    display: none;
+  }
+  .op-textfield__wrap.has-id .op-textfield__input {
+    padding-inline-start: calc(var(--op-picker-id-width) + var(--op-space-4));
+  }
+  .op-textfield__wrap.has-id.has-icon .op-picker__id {
+    inset-inline-start: calc(var(--op-icon-size) + var(--op-space-3));
+  }
+  .op-textfield__wrap.has-id.has-icon .op-textfield__input {
+    padding-inline-start: calc(var(--op-icon-size) + var(--op-picker-id-width) + var(--op-space-5));
+  }
+}

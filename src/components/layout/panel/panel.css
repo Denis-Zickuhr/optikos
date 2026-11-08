@@ -1,0 +1,77 @@
+@layer optikos {
+  .op-panel {
+    --_bg: var(--op-panel-bg, var(--op-color-surface));
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    color: var(--op-panel-fg, var(--op-color-fg));
+    background: var(--_bg);
+    border: var(--op-border-width) solid var(--op-panel-border, var(--op-color-border));
+    border-radius: var(--op-panel-radius, var(--op-radius));
+    box-shadow: var(--op-panel-shadow, none);
+    overflow: hidden;
+  }
+  .op-panel__header {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    padding: var(--op-panel-header-padding, var(--op-space-2) var(--op-space-3));
+    background: var(--op-panel-header-bg, var(--op-color-surface-2));
+    color: var(--op-panel-header-fg, var(--op-color-fg));
+    border-block-end: var(--op-border-width) solid var(--op-panel-border, var(--op-color-border));
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-panel__title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-panel--collapsible .op-panel__title {
+    cursor: pointer;
+  }
+  .op-panel__tools {
+    display: flex;
+    gap: var(--op-space-1);
+  }
+  .op-panel__tool {
+    display: inline-flex;
+    padding: var(--op-space-1);
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+  }
+  .op-panel__tool:hover {
+    background: var(--op-color-hover);
+  }
+  .op-panel__tool:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: 0;
+  }
+  .op-panel.is-collapsed .op-panel__header {
+    border-block-end: 0;
+  }
+  .op-panel.is-collapsed .op-panel__tool:first-child .op-icon {
+    transform: rotate(180deg);
+  }
+  .op-panel__body {
+    flex: 1;
+    min-height: 0;
+    padding: var(--op-panel-body-padding, var(--op-space-3));
+    overflow: auto;
+  }
+  .op-panel__tbar,
+  .op-panel__bbar,
+  .op-panel__footer {
+    border-block-end: var(--op-border-width) solid var(--op-color-border);
+  }
+  .op-panel__bbar,
+  .op-panel__footer {
+    border-block-end: 0;
+    border-block-start: var(--op-border-width) solid var(--op-color-border);
+  }
+}

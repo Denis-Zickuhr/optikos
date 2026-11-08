@@ -1,0 +1,117 @@
+@layer optikos {
+  :root {
+    --op-stepper-marker-size: 1.75rem;
+  }
+  .op-stepper__list {
+    display: flex;
+    gap: var(--op-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .op-stepper__step {
+    display: flex;
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .op-stepper__step:last-child {
+    flex: none;
+  }
+  /* the line to the next step: fills what is left after the text, level with the middle of the marker */
+  .op-stepper__line {
+    flex: 1;
+    align-self: flex-start;
+    min-inline-size: var(--op-space-3);
+    margin-block-start: calc(var(--op-stepper-marker-size) / 2);
+    margin-inline: var(--op-space-1) var(--op-space-2);
+    block-size: var(--op-border-width);
+    background: var(--op-stepper-line, var(--op-color-border-strong));
+  }
+  .op-stepper__step.is-done .op-stepper__line {
+    background: var(--op-stepper-done-bg, var(--op-color-success));
+  }
+  .op-stepper__btn {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--op-space-2);
+    min-inline-size: 0;
+    padding: 0;
+    font: inherit;
+    color: var(--op-color-fg-muted);
+    text-align: start;
+    background: transparent;
+    border: 0;
+    border-radius: var(--op-radius);
+    cursor: pointer;
+  }
+  .op-stepper__btn:disabled {
+    cursor: default;
+  }
+  .op-stepper__btn:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-stepper__marker {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--op-stepper-marker-size);
+    block-size: var(--op-stepper-marker-size);
+    background: var(--op-color-surface);
+    border: var(--op-border-width) solid var(--op-stepper-line, var(--op-color-border-strong));
+    border-radius: 50%;
+    font-size: var(--op-font-size-sm);
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-stepper__text {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    padding-inline-end: var(--op-space-2);
+    background: inherit;
+  }
+  .op-stepper__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-stepper__desc,
+  .op-stepper__opt {
+    font-size: var(--op-font-size-sm);
+    color: var(--op-color-fg-muted);
+  }
+  .op-stepper__step.is-current .op-stepper__btn {
+    color: var(--op-color-fg);
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-stepper__step.is-current .op-stepper__marker {
+    color: var(--op-color-primary-fg);
+    background: var(--op-stepper-current-bg, var(--op-color-primary));
+    border-color: var(--op-stepper-current-bg, var(--op-color-primary));
+  }
+  .op-stepper__step.is-done:not(.is-current) .op-stepper__marker {
+    color: var(--op-color-success);
+    border-color: var(--op-stepper-done-bg, var(--op-color-success));
+  }
+  .op-stepper__step.is-error .op-stepper__marker {
+    color: var(--op-color-danger-fg);
+    background: var(--op-stepper-error-bg, var(--op-color-danger));
+    border-color: var(--op-stepper-error-bg, var(--op-color-danger));
+  }
+  .op-stepper__step.is-error .op-stepper__btn {
+    color: var(--op-color-danger);
+  }
+  /* phones: only the current step keeps its words */
+  @media (max-width: 40rem) {
+    .op-stepper__step:not(.is-current) .op-stepper__text {
+      display: none;
+    }
+    .op-stepper__step:not(.is-current) {
+      flex: none;
+    }
+    .op-stepper__step:not(.is-current) .op-stepper__line {
+      min-inline-size: var(--op-space-2);
+    }
+  }
+}

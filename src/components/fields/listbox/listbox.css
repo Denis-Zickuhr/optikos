@@ -1,0 +1,50 @@
+@layer optikos {
+  :root {
+    --op-listbox-max-height: 15rem;
+  }
+  .op-listbox {
+    position: relative;
+    box-sizing: border-box;
+    max-block-size: var(--op-listbox-max-height);
+    overflow: auto;
+    background: var(--op-listbox-bg, var(--op-color-surface));
+    color: var(--op-color-fg);
+  }
+  .op-listbox__item {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: var(--op-listbox-item-padding-y, 0) var(--op-listbox-item-padding-x, var(--op-control-padding-x));
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .op-listbox__item.is-active {
+    background: var(--op-listbox-item-active-bg, var(--op-color-hover));
+  }
+  .op-listbox__item.is-selected {
+    color: var(--op-listbox-item-selected-fg, var(--op-color-primary));
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-listbox__item.is-disabled {
+    color: var(--op-color-disabled-fg);
+    cursor: not-allowed;
+  }
+  .op-listbox__mark {
+    color: inherit;
+    background: var(--op-color-primary-soft);
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-listbox__hint {
+    margin-inline-start: auto;
+    padding-inline-start: var(--op-space-3);
+    color: var(--op-listbox-hint-fg, var(--op-color-fg-muted));
+    font-size: var(--op-font-size-sm);
+    font-weight: normal;
+  }
+  .op-listbox__empty {
+    padding: var(--op-space-3);
+    color: var(--op-listbox-empty-fg, var(--op-color-fg-muted));
+  }
+}

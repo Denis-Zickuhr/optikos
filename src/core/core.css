@@ -1,0 +1,88 @@
+@layer optikos {
+  :root {
+    --op-spinner-size: 1.5rem;
+    --op-spinner-stroke: 2px;
+  }
+
+  /* every Optikos element gets the themed font; zero specificity, so any component rule overrides it */
+  :where([class^='op-'], [class*=' op-']) {
+    font-family: var(--op-font-family);
+    font-size: var(--op-font-size);
+  }
+  .op-component,
+  .op-container {
+    color: var(--op-color-fg);
+  }
+
+  /* loading mask (Component.setLoading) */
+  .is-loading {
+    position: relative;
+  }
+  .op-mask {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--op-space-2);
+    background: var(--op-mask-bg, color-mix(in srgb, var(--op-color-surface) 70%, transparent));
+    color: var(--op-color-fg);
+  }
+
+  .op-spinner {
+    display: inline-block;
+    box-sizing: border-box;
+    width: var(--op-spinner-size);
+    height: var(--op-spinner-size);
+    border: var(--op-spinner-stroke) solid var(--op-color-border-strong);
+    border-top-color: var(--op-spinner-color, var(--op-color-primary));
+    border-radius: 50%;
+    animation: op-spin 700ms linear infinite;
+  }
+  @keyframes op-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .op-spinner {
+      animation-duration: 2s;
+    }
+  }
+
+  /* virtual lists (core/virtual.ts) */
+  .op-virtual {
+    position: relative;
+    inline-size: 100%;
+  }
+  .op-sr-only {
+    position: absolute;
+    inline-size: 0;
+    block-size: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* floating layer */
+  .op-layer {
+    position: fixed;
+    inset: 0;
+    z-index: var(--op-z-layer);
+    pointer-events: none;
+    font-family: var(--op-font-family);
+    font-size: var(--op-font-size);
+    line-height: var(--op-line-height);
+    color: var(--op-color-fg);
+  }
+  .op-layer > * {
+    pointer-events: auto;
+  }
+
+  :where(.op-component, .op-field, .op-container) :focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+}

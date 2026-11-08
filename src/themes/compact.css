@@ -1,0 +1,17 @@
+/* Compact density: smaller controls, tighter spacing and rows. Combine with others: data-op-theme="dark compact". */
+@layer optikos {
+  [data-op-theme~='compact'] {
+    --op-font-size: 0.8125rem;
+    --op-font-size-sm: 0.6875rem;
+    --op-space-1: 0.125rem;
+    --op-space-2: 0.375rem;
+    --op-space-3: 0.5rem;
+    --op-space-4: 0.75rem;
+    --op-space-5: 1rem;
+    --op-space-6: 1.5rem;
+    --op-control-height: 1.75rem;
+    --op-control-padding-x: 0.5rem;
+    --op-row-height: 1.75rem;
+    --op-radius: 0.25rem;
+  }
+}

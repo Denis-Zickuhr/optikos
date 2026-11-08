@@ -1,0 +1,8 @@
+@layer optikos {
+  .op-form {
+    --op-layout-gap: var(--op-form-gap, var(--op-space-3));
+  }
+  .op-form__tab {
+    padding: var(--op-form-tab-padding, var(--op-space-4));
+  }
+}

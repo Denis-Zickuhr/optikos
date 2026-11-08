@@ -1,0 +1,29 @@
+@layer optikos {
+  :root {
+    --op-motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --op-motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --op-motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --op-motion-press-scale: 0.97;
+    --op-motion-press-duration: 100ms;
+    --op-motion-popover-scale: 0.95;
+    --op-motion-dropdown-duration: 200ms;
+    --op-motion-exit-ratio: 0.8;
+    --op-motion-stagger-step: 30ms;
+    --op-motion-blur: 4px;
+  }
+  /* Rule 4: interactive things shrink a little under the finger. Rule 14: while held, only transform may animate. */
+  .op-button:active:not(:disabled),
+  .op-dataview__item:active,
+  [data-op-press]:active {
+    transform: scale(var(--op-motion-press-scale));
+    transition-property: transform;
+    transition-duration: var(--op-motion-press-duration);
+    transition-timing-function: var(--op-motion-ease-out);
+  }
+  [data-op-press] {
+    transition: transform var(--op-motion-press-duration) var(--op-motion-ease-out);
+  }
+  .op-dataview__item {
+    transition: transform var(--op-motion-press-duration) var(--op-motion-ease-out), box-shadow var(--op-duration) var(--op-easing);
+  }
+}

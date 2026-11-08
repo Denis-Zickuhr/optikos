@@ -1,0 +1,11 @@
+@layer optikos {
+  :root {
+    --op-textarea-min-height: 4rem;
+  }
+  .op-textarea__input {
+    min-block-size: var(--op-textarea-min-height);
+    padding-block: var(--op-space-2);
+    resize: vertical;
+    line-height: var(--op-line-height);
+  }
+}

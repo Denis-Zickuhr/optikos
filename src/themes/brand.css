@@ -1,0 +1,240 @@
+/* Brand: luxury / jewelry, made to be used all day. Champagne and ivory surfaces, onyx text, antique gold, high-contrast
+   serif, hairline rules, letterspaced capitals, gilded buttons, onyx bands for titles.
+   data-op-theme="brand"; add "night" (data-op-theme="brand night") for the dark onyx version. */
+@layer optikos {
+  [data-op-theme~='brand'] {
+    color-scheme: light;
+    --op-brand-gold: #c9a24b;
+    --op-brand-gold-light: #ecd28c;
+    --op-brand-gold-deep: #9a7426;
+
+    --op-brand-onyx: #1c1710;
+    --op-color-bg: #f5efe2;
+    --op-color-surface: #fffdf8;
+    --op-color-surface-2: #f2eadb;
+    --op-color-fg: #231d14;
+    --op-color-fg-muted: #7b6d55;
+    --op-color-border: #e3d7bb;
+    --op-color-border-strong: #bda265;
+    --op-color-hover: #f7efdc;
+    --op-color-selected: #f1e3bd;
+    --op-color-primary: var(--op-brand-gold);
+    --op-color-primary-hover: var(--op-brand-gold-deep);
+    --op-color-primary-fg: #1c1710;
+    --op-color-primary-soft: #f8edcf;
+    --op-color-danger: #b8324d;
+    --op-color-danger-hover: #9c263f;
+    --op-color-danger-fg: #fff8f0;
+    --op-color-danger-soft: #f8dfe4;
+    --op-color-success: #2b8a69;
+    --op-color-success-soft: #dcf0e8;
+    --op-color-warning: #b8791a;
+    --op-color-warning-soft: #f8e8c6;
+    --op-color-info: #3f6db3;
+    --op-color-info-soft: #dde8f6;
+    --op-color-focus: var(--op-brand-gold-deep);
+    --op-color-disabled-fg: #b3a68a;
+    --op-color-disabled-bg: #efe8d6;
+    --op-color-overlay: rgb(28 23 16 / 0.55);
+    --op-color-inverse-bg: #1c1710;
+    --op-color-inverse-fg: #f5efe2;
+
+    --op-font-family: 'Cormorant Garamond', 'Playfair Display', Didot, 'Bodoni MT', 'Hoefler Text', Georgia, serif;
+    --op-font-size: 1rem;
+    --op-font-size-sm: 0.8125rem;
+    --op-font-size-lg: 1.1875rem;
+    --op-font-size-xl: 1.5rem;
+    --op-line-height: 1.55;
+    --op-font-weight: 400;
+    --op-font-weight-medium: 500;
+    --op-font-weight-bold: 600;
+
+    --op-space-1: 0.3125rem;
+    --op-space-2: 0.625rem;
+    --op-space-3: 1rem;
+    --op-space-4: 1.375rem;
+    --op-space-5: 2rem;
+    --op-space-6: 3rem;
+    --op-control-height: 2.875rem;
+    --op-control-padding-x: 1.25rem;
+    --op-row-height: 3.25rem;
+    --op-border-width: 1px;
+    --op-radius-sm: 0;
+    --op-radius: 0.125rem;
+    --op-radius-lg: 0.25rem;
+    --op-radius-pill: 62.5rem;
+    --op-focus-width: 1px;
+    --op-focus-offset: 3px;
+    --op-icon-stroke: 1.25;
+
+    --op-shadow-sm: 0 1px 2px rgb(90 66 20 / 0.12);
+    --op-shadow: 0 8px 24px rgb(90 66 20 / 0.16), 0 0 0 1px rgb(189 162 101 / 0.35);
+    --op-shadow-lg: 0 24px 56px rgb(60 42 10 / 0.3), 0 0 0 1px rgb(189 162 101 / 0.55);
+    --op-duration: 260ms;
+    --op-easing: cubic-bezier(0.3, 0.7, 0.2, 1);
+
+    --op-panel-border: var(--op-color-border);
+    --op-panel-header-bg: var(--op-brand-onyx);
+    --op-panel-header-fg: var(--op-brand-gold-light);
+    --op-grid-header-bg: var(--op-color-surface-2);
+    --op-grid-header-fg: var(--op-brand-gold-deep);
+    --op-grid-border: var(--op-color-border);
+    --op-field-label-weight: 500;
+    --op-tabs-tab-active-border: var(--op-brand-gold);
+    --op-tabs-tab-active-fg: var(--op-brand-onyx);
+    --op-listbox-item-selected-fg: var(--op-brand-gold-deep);
+    --op-grid-check-accent: var(--op-brand-gold-deep);
+    --op-filterbuilder-chip-on-fg: var(--op-brand-gold-deep);
+    --op-chat-bg: #efe6d2;
+    --op-chat-bubble-me-bg: #f1e3bd;
+    --op-chat-bubble-me-fg: var(--op-color-fg);
+    --op-chat-bubble-them-bg: #fffdf8;
+    --op-chat-reply-bg: rgb(184 137 58 / 0.14);
+  }
+
+  /* gilded buttons: a hairline of gold, capitals with air between the letters; primary is solid gold leaf */
+  [data-op-theme~='brand'] .op-button {
+    font-size: var(--op-font-size-sm);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    --_border: var(--op-brand-gold-deep);
+    background: transparent;
+  }
+  [data-op-theme~='brand'] .op-button:hover:not(:disabled) {
+    color: var(--op-brand-gold-deep);
+    border-color: var(--op-brand-gold);
+    background: var(--op-color-primary-soft);
+  }
+  [data-op-theme~='brand'] .op-button--primary {
+    color: var(--op-color-primary-fg);
+    background: linear-gradient(135deg, var(--op-brand-gold-light) 0%, var(--op-brand-gold) 48%, var(--op-brand-gold-deep) 100%);
+    border-color: var(--op-brand-gold-light);
+    box-shadow: 0 4px 12px rgb(154 116 38 / 0.28), inset 0 1px 0 rgb(255 255 255 / 0.45);
+  }
+  [data-op-theme~='brand'] .op-button--primary:hover:not(:disabled) {
+    color: var(--op-color-primary-fg);
+    background: linear-gradient(135deg, #f6e3a6 0%, var(--op-brand-gold-light) 50%, var(--op-brand-gold) 100%);
+    box-shadow: 0 6px 20px rgb(154 116 38 / 0.38), inset 0 1px 0 rgb(255 255 255 / 0.55);
+  }
+  [data-op-theme~='brand'] .op-button--ghost {
+    border-color: transparent;
+    letter-spacing: 0.14em;
+  }
+  [data-op-theme~='brand'] .op-button--danger {
+    color: var(--op-color-danger);
+    border-color: var(--op-color-danger);
+  }
+  [data-op-theme~='brand'] .op-button--danger:hover:not(:disabled) {
+    color: var(--op-color-danger-fg);
+    background: var(--op-color-danger);
+  }
+
+  /* titles: gold capitals with a small diamond, on a hairline */
+  [data-op-theme~='brand'] .op-panel__header {
+    padding-block: var(--op-space-3);
+    font-size: var(--op-font-size-sm);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    border-block-end: 2px solid var(--op-brand-gold);
+  }
+  [data-op-theme~='brand'] .op-panel__title::before {
+    content: '◆';
+    margin-inline-end: var(--op-space-2);
+    color: var(--op-brand-gold);
+    font-size: 0.6em;
+    vertical-align: 0.15em;
+  }
+  [data-op-theme~='brand'] .op-field__label {
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* fields: clean ivory with a gold hairline; focus lights the whole edge */
+  [data-op-theme~='brand'] .op-textfield__input {
+    background: var(--op-color-surface);
+    border-color: var(--op-color-border-strong);
+    letter-spacing: 0.02em;
+  }
+  [data-op-theme~='brand'] .op-textfield__input:focus {
+    outline: none;
+    border-color: var(--op-brand-gold-deep);
+    box-shadow: 0 0 0 1px var(--op-brand-gold-deep), 0 0 18px rgb(201 162 75 / 0.3);
+  }
+
+  /* data: capitals in the header, hairline rows, a gold bar marks the selected row */
+  [data-op-theme~='brand'] .op-grid__header {
+    border-block-end: 2px solid var(--op-brand-gold);
+    font-size: var(--op-font-size-sm);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  [data-op-theme~='brand'] .op-grid__body-row.is-selected {
+    box-shadow: inset 3px 0 0 var(--op-brand-gold);
+  }
+  [data-op-theme~='brand'] :is(.op-tabs__tab, .op-pagination button) {
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: var(--op-font-size-sm);
+  }
+  [data-op-theme~='brand'] .op-window,
+  [data-op-theme~='brand'].op-window {
+    border: 1px solid var(--op-brand-gold-deep);
+    box-shadow: var(--op-shadow-lg), inset 0 0 0 4px var(--op-color-surface), inset 0 0 0 5px var(--op-brand-gold);
+  }
+  [data-op-theme~='brand'] ::selection {
+    color: var(--op-color-primary-fg);
+    background: var(--op-brand-gold);
+  }
+
+  /* "brand night": the same jewelry, on onyx */
+  [data-op-theme~='brand'][data-op-theme~='night'] {
+    color-scheme: dark;
+    --op-color-bg: #0d0b09;
+    --op-color-surface: #16120e;
+    --op-color-surface-2: #1d1812;
+    --op-color-fg: #f3ead7;
+    --op-color-fg-muted: #a99b80;
+    --op-color-border: #3a2f1d;
+    --op-color-border-strong: #8a7036;
+    --op-color-hover: #231c12;
+    --op-color-selected: #2c2313;
+    --op-color-primary-hover: var(--op-brand-gold-light);
+    --op-color-primary-soft: #2a2110;
+    --op-color-danger: #d1506b;
+    --op-color-danger-hover: #e0708a;
+    --op-color-danger-fg: #1a0a0f;
+    --op-color-danger-soft: #331119;
+    --op-color-success: #3fae88;
+    --op-color-success-soft: #0f2a21;
+    --op-color-warning: #e0a23a;
+    --op-color-warning-soft: #33250c;
+    --op-color-info: #6b95d6;
+    --op-color-info-soft: #14213a;
+    --op-color-focus: var(--op-brand-gold-light);
+    --op-color-disabled-fg: #6f6552;
+    --op-color-disabled-bg: #1a1610;
+    --op-color-overlay: rgb(6 4 2 / 0.78);
+    --op-color-inverse-bg: #f3ead7;
+    --op-color-inverse-fg: #15100a;
+    --op-panel-header-bg: transparent;
+    --op-panel-header-fg: var(--op-brand-gold-light);
+    --op-grid-header-bg: transparent;
+    --op-grid-header-fg: var(--op-brand-gold);
+    --op-tabs-tab-active-fg: var(--op-brand-gold-light);
+    --op-listbox-item-selected-fg: var(--op-brand-gold-light);
+    --op-chat-bg: #0d0b09;
+    --op-chat-bubble-me-bg: #2c2313;
+    --op-chat-bubble-them-bg: var(--op-color-surface-2);
+    --op-chat-reply-bg: rgb(201 162 75 / 0.12);
+    --op-shadow: 0 10px 28px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(201 162 75 / 0.22);
+    --op-shadow-lg: 0 26px 60px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(201 162 75 / 0.4);
+  }
+  [data-op-theme~='brand'][data-op-theme~='night'] .op-panel__header {
+    background: transparent;
+  }
+  [data-op-theme~='brand'][data-op-theme~='night'] .op-textfield__input {
+    background: var(--op-color-bg);
+  }
+}
