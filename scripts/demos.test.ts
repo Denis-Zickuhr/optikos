@@ -86,3 +86,25 @@ describe('chat demo ("Prosa")', () => {
     expect(document.querySelector('.prosa-row.is-active')!.textContent).toContain('Bruno');
   });
 });
+
+describe('crm demo', () => {
+  it('lists customers and "New customer" opens the editor form built with ui.*', async () => {
+    await import('../demos/crm/main');
+    await tick();
+    expect(document.querySelectorAll('.op-grid__body-row').length).toBeGreaterThan(0);
+    [...document.querySelectorAll('button')].find((b) => b.textContent!.trim().startsWith('New customer'))!.click();
+    await tick();
+    const win = document.querySelector('.op-window')!;
+    const labels = [...win.querySelectorAll('.op-field__label')].map((l) => l.textContent);
+    expect(labels).toEqual(expect.arrayContaining(['Name', 'Email', 'City', 'Country', 'Account manager', 'Status', 'Notes']));
+  });
+});
+
+describe('admin demo', () => {
+  it('boots with its tabs and the settings form', async () => {
+    await import('../demos/admin/main');
+    await tick();
+    expect(document.querySelector('[role=tablist]')).not.toBeNull();
+    expect(document.body.textContent).toContain('Settings');
+  });
+});
