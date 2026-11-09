@@ -28,7 +28,7 @@ body{margin:0;background:var(--op-color-bg);color:var(--op-color-fg);font:var(--
 .site__code textarea,.site__code pre{margin:0;box-sizing:border-box;inline-size:100%;min-block-size:7rem;max-block-size:20rem;overflow:auto;padding:.5rem;border:1px solid var(--op-color-border);border-radius:var(--op-radius-sm);background:var(--op-color-bg);color:var(--op-color-fg);font:.8rem/1.45 var(--op-font-mono);resize:vertical}
 .site__bar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}.site__err{color:var(--op-color-danger);font-size:var(--op-font-size-sm)}
 .site__fields{display:grid;grid-template-columns:9rem minmax(0,1fr);gap:.4rem 1rem}.site__fields dt{font-weight:600;color:var(--op-color-fg-muted)}.site__fields dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
-.site code{font-family:var(--op-font-mono);font-size:.88em;background:var(--op-color-surface-2);padding:.05em .3em;border-radius:var(--op-radius-sm)}
+.site code:not([class]){font-family:var(--op-font-mono);font-size:.88em;background:var(--op-color-surface-2);padding:.05em .3em;border-radius:var(--op-radius-sm)}
 .site pre code{background:none;padding:0}
 .site__main table{border-collapse:collapse;inline-size:100%;margin-block:.5rem}.site__main th,.site__main td{text-align:start;padding:.3rem .6rem;border:1px solid var(--op-color-border);vertical-align:top}
 .site__tokens td:first-child{font-family:var(--op-font-mono);font-size:.85em}.site__sw{display:inline-block;inline-size:1em;block-size:1em;border-radius:3px;border:1px solid var(--op-color-border);vertical-align:-.15em;margin-inline-end:.4em}

@@ -1,5 +1,5 @@
 // CRM demo: form with SuggestField/LookupField, Grid with checkbox selection, bulk actions, column menu and a dynamic FilterBuilder. Public API only.
-import { create, Store, Grid, Window, Form, MessageBox, toast, validators, registerLookup, localViewStorage, type FilterBuilder, type Model } from 'optikos';
+import { create, ui, Direction, Store, Grid, Window, MessageBox, toast, validators, registerLookup, localViewStorage, type FilterBuilder, type Model } from 'optikos';
 
 const cities = ['São Paulo', 'Rio de Janeiro', 'Lisboa', 'Porto', 'Curitiba', 'Recife', 'Madrid', 'Barcelona', 'Berlin', 'Munich'];
 const names = ['Ada', 'Grace', 'Linus', 'Alan', 'Margaret', 'Dennis', 'Barbara', 'Ken', 'Radia', 'Tim'];
@@ -32,22 +32,19 @@ registerLookup('staff', {
 const searchCity = (text: string) => new Promise<{ value: string; label: string }[]>((res) => setTimeout(() => res(cities.filter((c) => c.toLowerCase().includes(text.toLowerCase())).map((c) => ({ value: c, label: c }))), 250));
 
 function editor(rec?: Model) {
-  const form = create<Form>({
-    type: 'form',
-    items: [
-      { type: 'textfield', name: 'name', label: 'Name', required: true, minLength: 3 },
-      { type: 'textfield', name: 'email', label: 'Email', inputType: 'email', required: true, validators: [validators.email()] },
-      { type: 'container', layout: { type: 'grid', columns: 2, gap: 12 }, items: [
-        { type: 'suggestfield', name: 'city', label: 'City', query: searchCity, forceSelection: false },
-        { type: 'select', name: 'country', label: 'Country', options: [{ value: 'br', label: 'Brazil' }, { value: 'pt', label: 'Portugal' }, { value: 'es', label: 'Spain' }, { value: 'de', label: 'Germany' }], required: true },
-        { type: 'datefield', name: 'since', label: 'Customer since' },
-        { type: 'lookupfield', name: 'manager', label: 'Account manager', lookup: 'staff', showValue: true },
-        { type: 'radiogroup', name: 'status', label: 'Status', options: ['active', 'lead', 'inactive'], direction: 'horizontal', value: 'lead' },
-      ] },
-      { type: 'textarea', name: 'notes', label: 'Notes', rows: 3 },
-      { type: 'checkbox', name: 'active', boxLabel: 'Active customer', value: true },
-    ],
-  });
+  const form = ui.form([
+    ui.text('name', 'Name', { required: true, minLength: 3 }),
+    ui.email('email', 'Email', { required: true, validators: [validators.email()] }),
+    ui.grid(2,
+      ui.suggest('city', 'City', searchCity, { forceSelection: false }),
+      ui.select('country', 'Country', [{ value: 'br', label: 'Brazil' }, { value: 'pt', label: 'Portugal' }, { value: 'es', label: 'Spain' }, { value: 'de', label: 'Germany' }], { required: true }),
+      ui.date('since', 'Customer since'),
+      ui.lookup('manager', 'Account manager', 'staff', { showValue: true }),
+      ui.radio('status', 'Status', ['active', 'lead', 'inactive'], { direction: Direction.Horizontal, value: 'lead' }),
+    ),
+    ui.area('notes', 'Notes', { rows: 3 }),
+    ui.check('active', 'Active customer', { value: true }),
+  ]);
   const win = create<Window>({
     type: 'window', title: rec ? `Edit ${rec.get('name')}` : 'New customer', icon: rec ? 'edit' : 'plus', width: 520, items: [form],
     buttons: [{ text: 'Cancel', handler: () => win.close() }, { text: 'Save', variant: 'primary', handler: () => form.submit() }],

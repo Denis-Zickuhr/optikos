@@ -21,6 +21,8 @@ describe('ui shortcuts and enums', () => {
 
   it('works inside containers and forms (instances are valid items)', () => {
     const form = ui.form([ui.text('name', 'Name', { required: true }), ui.row(ui.button('A'), ui.primary('B')), ui.grid(2, ui.number('n', 'N'), ui.date('d', 'D'))]);
+    // a numeric column count stays numeric, so the grid layout can collapse it to one column on narrow containers
+    expect((form.items[2] as Container).config.layout).toEqual({ type: 'grid', columns: 2 });
     expect(form).toBeInstanceOf(Form);
     form.mount(document.body);
     expect(form.getFields().map((f) => f.name)).toEqual(['name', 'n', 'd']);

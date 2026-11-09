@@ -10,7 +10,7 @@ beforeEach(() => {
 
 describe('shop demo', () => {
   it('lists products, filters, adds to the cart and shows the totals', async () => {
-    await import('./shop/main');
+    await import('../demos/shop/main');
     await tick();
     const cards = () => document.querySelectorAll('.sh-card').length;
     expect(cards()).toBe(12);
@@ -27,7 +27,7 @@ describe('shop demo', () => {
   });
 
   it('opens the cart widget with its lines and runs the checkout to an order', async () => {
-    await import('./shop/main');
+    await import('../demos/shop/main');
     await tick();
     const button = (start: string, root: ParentNode = document) => [...root.querySelectorAll('button')].find((b) => b.textContent!.startsWith(start))!;
     document.querySelector<HTMLElement>('.sh-card [data-op-action=add]')!.click();
@@ -67,7 +67,7 @@ describe('shop demo', () => {
 
 describe('events landing demo', () => {
   it('boots with every section', async () => {
-    await import('./events/main');
+    await import('../demos/events/main');
     await tick();
     for (const id of ['schedule', 'models', 'partners', 'gallery', 'venue', 'faq', 'invite']) expect(document.getElementById(id), id).toBeTruthy();
     expect(document.querySelectorAll('.ev-card').length).toBeGreaterThan(8);
@@ -76,7 +76,7 @@ describe('events landing demo', () => {
 
 describe('chat demo ("Prosa")', () => {
   it('boots with its conversation list and switches conversations', async () => {
-    await import('./chat/main');
+    await import('../demos/chat/main');
     await tick();
     const rows = () => [...document.querySelectorAll<HTMLButtonElement>('.prosa-row')];
     expect(rows().length).toBe(3);

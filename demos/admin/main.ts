@@ -1,5 +1,5 @@
 // Admin dashboard demo: Viewport with border layout, sidebar, Tabs, Toasts, dark theme. Public API only.
-import { create, Component, type Container, Store, Tabs, Menu, toast, setTheme, register, registerLookup, type ComponentConfig, type Button, type Model } from 'optikos';
+import { create, ui, Component, type Container, Store, Tabs, Menu, toast, setTheme, register, registerLookup, type ComponentConfig, type Button, type Model } from 'optikos';
 
 /** A custom stat card: shows how an app builds its own component with the same tools the library uses. */
 interface StatConfig extends ComponentConfig { label?: string; value?: string; delta?: string }
@@ -58,12 +58,12 @@ const tabs: Tabs = create<Tabs>({
     { title: 'Orders', icon: 'menu', layout: 'fit', items: [{ type: 'grid', store: orders, paging: true, checkboxSelection: true, columnMenu: true, bulkActions: [{ text: 'Mark shipped', icon: 'check', handler: (recs: Model[]) => toast({ type: 'success', text: `${recs.length} order(s) marked as shipped` }) }], columns: [
       { field: 'id', header: 'Order', width: 100, sortable: true }, { field: 'customer', sortable: true }, { field: 'total', format: 'money', align: 'right', sortable: true }, { field: 'status', sortable: true }, { field: 'date', format: 'date', sortable: true },
     ] }] },
-    { title: 'Settings', icon: 'settings', style: 'padding:16px', items: [{ type: 'form', width: 420, items: [
-      { type: 'fieldset', title: 'Profile', items: [{ type: 'textfield', name: 'name', label: 'Display name', value: 'Ada Lovelace' }, { type: 'textfield', name: 'email', label: 'Email', value: 'ada@example.com' }, { type: 'suggestfield', name: 'city', label: 'City', query: searchCity, forceSelection: false }, { type: 'lookupfield', name: 'manager', label: 'Manager', lookup: 'managers' }] },
-      { type: 'fieldset', title: 'Reporting', items: [{ type: 'daterangefield', name: 'period', label: 'Default report period', value: { start: '2026-11-01', end: '2026-11-30' } }] },
-      { type: 'fieldset', title: 'Notifications', items: [{ type: 'checkbox', name: 'mail', boxLabel: 'Email me about new orders', value: true }, { type: 'checkbox', name: 'push', boxLabel: 'Push notifications' }] },
-      { type: 'button', text: 'Save settings', variant: 'primary', handler: () => toast({ type: 'success', text: 'Settings saved' }) },
-    ] }] },
+    { title: 'Settings', icon: 'settings', style: 'padding:16px', items: [ui.form([
+      { type: 'fieldset', title: 'Profile', items: [ui.text('name', 'Display name', { value: 'Ada Lovelace' }), ui.email('email', 'Email', { value: 'ada@example.com' }), ui.suggest('city', 'City', searchCity, { forceSelection: false }), ui.lookup('manager', 'Manager', 'managers')] },
+      { type: 'fieldset', title: 'Reporting', items: [ui.dateRange('period', 'Default report period', { value: { start: '2026-11-01', end: '2026-11-30' } })] },
+      { type: 'fieldset', title: 'Notifications', items: [ui.check('mail', 'Email me about new orders', { value: true }), ui.check('push', 'Push notifications')] },
+      ui.primary('Save settings', () => toast({ type: 'success', text: 'Settings saved' })),
+    ], { width: 420 })] },
   ],
 });
 

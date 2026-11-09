@@ -19,11 +19,13 @@ import { Panel } from '../components/layout/panel/panel';
 import { Toolbar } from '../components/layout/toolbar/toolbar';
 import { Container } from '../core/container';
 import { Form } from '../components/form/form/form';
-import type { Component, ComponentConfig } from '../core/component';
+import type { Component } from '../core/component';
+import type { AnyConfig } from '../core/registry';
 import type { Variant } from './enums';
 
 type Cfg = Record<string, any>;
-type Item = Component | ComponentConfig | string;
+// anything a container takes: an instance, a declarative config ({ type: 'fieldset', ... }) or a toolbar string ('->', '-')
+type Item = Component | AnyConfig | string;
 type Options = (string | number | { value: unknown; label: string; disabled?: boolean })[];
 
 const field = <T>(Cls: new (c: any) => T, name: string, label: string | undefined, c: Cfg = {}): T => new Cls({ name, label, ...c });
@@ -56,8 +58,8 @@ export const ui = {
   // ---- structure ----
   row: (...items: Item[]) => new Container({ layout: 'hbox', items } as Cfg),
   col: (...items: Item[]) => new Container({ layout: 'vbox', items } as Cfg),
-  /** `columns`: a number (equal columns) or a CSS `grid-template-columns`. */
-  grid: (columns: number | string, ...items: Item[]) => new Container({ layout: { type: 'grid', columns: typeof columns === 'number' ? `repeat(${columns}, 1fr)` : columns }, items } as Cfg),
+  /** `columns`: a number (equal columns, one column on narrow containers) or a CSS `grid-template-columns`. */
+  grid: (columns: number | string, ...items: Item[]) => new Container({ layout: { type: 'grid', columns }, items } as Cfg),
   panel: (title: string, items: Item[], c?: Cfg) => new Panel({ title, items, ...c } as Cfg),
   toolbar: (...items: Item[]) => new Toolbar({ items } as Cfg),
   form: (items: Item[], c?: Cfg) => new Form({ items, ...c } as Cfg),

@@ -15,5 +15,5 @@ export const alias = {
 
 export default defineConfig({
   resolve: { alias },
-  test: { environment: 'happy-dom', setupFiles: ['./src/test-setup.ts'], include: ['demos/**/*.test.ts', 'src/**/*.test.ts', 'site/**/*.test.ts', 'scripts/**/*.test.mjs'], exclude: [...configDefaults.exclude, '**/*.browser.test.ts'] },
+  test: { environment: 'happy-dom', setupFiles: ['./src/test-setup.ts'], include: ['src/**/*.test.ts', 'site/**/*.test.ts', 'scripts/**/*.test.ts', 'scripts/**/*.test.mjs'], exclude: [...configDefaults.exclude, '**/*.browser.test.ts'] },
 });

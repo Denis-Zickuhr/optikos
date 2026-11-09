@@ -28,6 +28,11 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ### Fixed
 
+- `ui.grid(2, ...)` keeps the column count numeric, so the grid collapses to one column on narrow containers like
+  `layout: { type: 'grid', columns: 2 }` does.
+- `ui.*` containers accept declarative configs among their items (`ui.form([{ type: 'fieldset', ... }, ui.text(...)])`)
+  without a type error.
+
 - Store: sorting text is 13× faster (100k records: 5.4 s → 0.41 s). The comparison reuses one `Intl.Collator` instead of
   building one per `localeCompare` call; the order is unchanged.
 
