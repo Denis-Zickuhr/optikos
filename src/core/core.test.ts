@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Emitter, Component, type ComponentConfig, Container, Field, register, create, h, validators, virtualize, setLocale, t, roving, trapFocus } from './index';
+import { Emitter, Component, type ComponentConfig, Container, Field, register, create, h, validators, virtualize, setLocale, t, addMessages, locales, roving, trapFocus } from './index';
 
 class Box extends Component<ComponentConfig & { text?: string }> {
   protected override baseCls = 'op-box';
@@ -229,6 +229,23 @@ describe('i18n', () => {
     expect(t('minLength', { n: 2 })).toBe('Informe ao menos 2 caracteres');
     setLocale('en');
     expect(t('minLength', { n: 2 })).toBe('Enter at least 2 characters');
+  });
+});
+
+describe('addMessages', () => {
+  it('adds keys to a locale (creating it), keeps what the app already set, and t() falls back to English', () => {
+    addMessages('en', { xGreet: 'Hello {name}' });
+    addMessages('pt-BR', { xGreet: 'Olá {name}' });
+    setLocale('pt-BR');
+    expect(t('xGreet', { name: 'Ana' })).toBe('Olá Ana');
+    addMessages('pt-BR', { xGreet: 'ignored' });
+    expect(t('xGreet', { name: 'Ana' })).toBe('Olá Ana');
+    addMessages('de', { xGreet: 'Hallo {name}' });
+    expect(locales.de._lang).toBe('de');
+    setLocale('de');
+    expect(t('xGreet', { name: 'Ana' })).toBe('Hallo Ana');
+    expect(t('required')).toBe('This field is required');
+    setLocale('en');
   });
 });
 

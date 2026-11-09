@@ -1,10 +1,27 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import { toLayer, lockModal } from '../../../core/layer';
 import { trapFocus } from '../../../core/focus';
 import { iconEl } from '../../base/icon/icon';
+
+addMessages('en', {
+  cpPlaceholder: 'Type a command or search…',
+  cpLabel: 'Command palette',
+  cpFilters: 'Categories',
+  cpAll: 'All',
+  cpEmpty: 'No matching commands',
+  cpHint: '↑↓ navigate · Enter run · Esc close',
+});
+addMessages('pt-BR', {
+  cpPlaceholder: 'Digite um comando ou pesquise…',
+  cpLabel: 'Paleta de comandos',
+  cpFilters: 'Categorias',
+  cpAll: 'Todas',
+  cpEmpty: 'Nenhum comando encontrado',
+  cpHint: '↑↓ navegar · Enter executar · Esc fechar',
+});
 
 export interface Command {
   id: string;

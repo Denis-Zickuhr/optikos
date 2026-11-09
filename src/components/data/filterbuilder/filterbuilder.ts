@@ -1,7 +1,7 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import type { FilterGroup, FilterNode, FilterOp } from '../../../data/proxy';
 import type { Store } from '../../../data/store';
 import { iconEl } from '../../base/icon/icon';
@@ -10,6 +10,71 @@ import { Button } from '../../base/button/button';
 import { TextField } from '../../fields/textfield/textfield';
 import { NumberField } from '../../fields/numberfield/numberfield';
 import { DateField } from '../../fields/datefield/datefield';
+
+addMessages('en', {
+  fbEq: 'equals',
+  fbNe: 'does not equal',
+  fbContains: 'contains',
+  fbNotContains: 'does not contain',
+  fbStarts: 'starts with',
+  fbEnds: 'ends with',
+  fbGt: 'greater than',
+  fbGe: 'greater than or equal',
+  fbLt: 'less than',
+  fbLe: 'less than or equal',
+  fbBetween: 'is between',
+  fbNotBetween: 'is not between',
+  fbIn: 'is any of',
+  fbNin: 'is none of',
+  fbEmpty: 'is empty',
+  fbNotEmpty: 'is not empty',
+  fbAnd: 'Match all (AND)',
+  fbOr: 'Match any (OR)',
+  fbAddFilter: 'Add filter',
+  fbAddGroup: 'Add group',
+  fbRemove: 'Remove',
+  fbClear: 'Clear all',
+  fbApply: 'Apply',
+  fbField: 'Field',
+  fbOperator: 'Operator',
+  fbValue: 'Value',
+  fbTo: 'and',
+  fbList: 'a, b, c',
+  fbNone: 'No filters',
+  fbLabel: 'Filters',
+});
+addMessages('pt-BR', {
+  fbEq: 'igual a',
+  fbNe: 'diferente de',
+  fbContains: 'contém',
+  fbNotContains: 'não contém',
+  fbStarts: 'começa com',
+  fbEnds: 'termina com',
+  fbGt: 'maior que',
+  fbGe: 'maior ou igual a',
+  fbLt: 'menor que',
+  fbLe: 'menor ou igual a',
+  fbBetween: 'entre',
+  fbNotBetween: 'fora do intervalo',
+  fbIn: 'é um de',
+  fbNin: 'não é nenhum de',
+  fbEmpty: 'está vazio',
+  fbNotEmpty: 'não está vazio',
+  fbAnd: 'Todas (E)',
+  fbOr: 'Qualquer uma (OU)',
+  fbAddFilter: 'Adicionar filtro',
+  fbAddGroup: 'Adicionar grupo',
+  fbRemove: 'Remover',
+  fbClear: 'Limpar tudo',
+  fbApply: 'Aplicar',
+  fbField: 'Campo',
+  fbOperator: 'Operador',
+  fbValue: 'Valor',
+  fbTo: 'e',
+  fbList: 'a, b, c',
+  fbNone: 'Sem filtros',
+  fbLabel: 'Filtros',
+});
 
 export interface FilterField {
   name: string;

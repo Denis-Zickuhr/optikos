@@ -2,9 +2,16 @@ import { Container, type ContainerConfig } from '../../../core/container';
 import { Component } from '../../../core/component';
 import { register, type AnyConfig } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import { roving } from '../../../core/focus';
 import { iconEl } from '../../base/icon/icon';
+
+addMessages('en', {
+  tabErrors: 'errors',
+});
+addMessages('pt-BR', {
+  tabErrors: 'erros',
+});
 
 export interface TabsConfig extends ContainerConfig {
   /** Initially active tab (index or id). */

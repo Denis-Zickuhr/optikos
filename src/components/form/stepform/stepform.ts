@@ -4,12 +4,25 @@ import { Component } from '../../../core/component';
 import { Field } from '../../../core/field';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import type { LayoutSpec } from '../../../layout/layout';
 import { Stepper } from '../../navigation/stepper/stepper';
 import { Button } from '../../base/button/button';
 import { Toolbar } from '../../layout/toolbar/toolbar';
 import '../../layout/container/container';
+
+addMessages('en', {
+  stepBack: 'Back',
+  stepNext: 'Next',
+  stepFinish: 'Finish',
+  stepReview: 'Review',
+});
+addMessages('pt-BR', {
+  stepBack: 'Voltar',
+  stepNext: 'Próximo',
+  stepFinish: 'Concluir',
+  stepReview: 'Revisão',
+});
 
 export interface FormStep {
   title: string;

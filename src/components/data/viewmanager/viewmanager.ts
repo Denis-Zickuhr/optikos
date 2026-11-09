@@ -1,13 +1,34 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import type { FilterGroup, Sorter } from '../../../data/proxy';
 import { Button } from '../../base/button/button';
 import { Menu, type MenuEntry } from '../../overlays/menu/menu';
 import { MessageBox } from '../../overlays/messagebox/messagebox';
 import type { Grid, ColumnState } from '../grid/grid';
 import type { FilterBuilder } from '../filterbuilder/filterbuilder';
+
+addMessages('en', {
+  views: 'Views',
+  viewsName: 'Name for this view',
+  viewsSave: 'Save view',
+  viewsSaveAs: 'Save as new view…',
+  viewsDefault: 'Open with this view',
+  viewsDelete: 'Delete view',
+  viewsConfirmDelete: 'Delete the view "{n}"?',
+  viewsReset: 'Reset to initial',
+});
+addMessages('pt-BR', {
+  views: 'Visões',
+  viewsName: 'Nome desta visão',
+  viewsSave: 'Salvar visão',
+  viewsSaveAs: 'Salvar como nova visão…',
+  viewsDefault: 'Abrir com esta visão',
+  viewsDelete: 'Excluir visão',
+  viewsConfirmDelete: 'Excluir a visão "{n}"?',
+  viewsReset: 'Voltar ao inicial',
+});
 
 /** Everything a view remembers: plain JSON, so it can travel to any backend. */
 export interface ViewState {

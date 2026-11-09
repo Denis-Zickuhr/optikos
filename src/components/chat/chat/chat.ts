@@ -1,9 +1,32 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t, getLocale } from '../../../core/i18n';
+import { t, getLocale, addMessages } from '../../../core/i18n';
 import { Button } from '../../base/button/button';
 import { iconEl } from '../../base/icon/icon';
+
+addMessages('en', {
+  chatPlaceholder: 'Type a message',
+  chatSend: 'Send',
+  chatTyping: '{n} is typing…',
+  chatToday: 'Today',
+  chatYesterday: 'Yesterday',
+  chatEmpty: 'No messages yet',
+  chatLog: 'Conversation',
+  chatSuggestions: 'Suggestions',
+  chatReply: 'Reply',
+});
+addMessages('pt-BR', {
+  chatPlaceholder: 'Digite uma mensagem',
+  chatSend: 'Enviar',
+  chatTyping: '{n} está digitando…',
+  chatToday: 'Hoje',
+  chatYesterday: 'Ontem',
+  chatEmpty: 'Nenhuma mensagem ainda',
+  chatLog: 'Conversa',
+  chatSuggestions: 'Sugestões',
+  chatReply: 'Responder',
+});
 
 export interface ChatMessage {
   id?: string | number;

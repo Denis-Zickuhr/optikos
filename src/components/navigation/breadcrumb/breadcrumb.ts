@@ -1,9 +1,18 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import { iconEl } from '../../base/icon/icon';
 import { Menu } from '../../overlays/menu/menu';
+
+addMessages('en', {
+  breadcrumb: 'Breadcrumb',
+  breadcrumbMore: 'Show more',
+});
+addMessages('pt-BR', {
+  breadcrumb: 'Trilha de navegação',
+  breadcrumbMore: 'Mostrar mais',
+});
 
 export interface BreadcrumbItem {
   text: string;

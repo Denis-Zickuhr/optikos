@@ -3,6 +3,18 @@
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, minor versions may contain breaking changes.
 
+## [Unreleased]
+
+### Added
+
+- `addMessages(lang, messages)` (from `optikos` and `optikos/core`): adds translation keys to a locale without overwriting
+  keys the app already set.
+
+### Changed
+
+- Each component now ships its own `en`/`pt-BR` messages, so the core is 2.2 kB (gzip) smaller and every standalone component about 0.5 kB smaller.
+  Custom locales passed to `setLocale({...})` keep working; missing keys still fall back to English.
+
 ## [0.1.0] - 2026-11-08
 
 First public release.

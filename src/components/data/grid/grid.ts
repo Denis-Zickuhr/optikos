@@ -1,7 +1,7 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import { virtualize, measure } from '../../../core/virtual';
 import { Store } from '../../../data/store';
 import type { Model } from '../../../data/model';
@@ -12,6 +12,37 @@ import { Button } from '../../base/button/button';
 import { TextField } from '../../fields/textfield/textfield';
 import { Dropdown } from '../../overlays/dropdown/dropdown';
 import { Menu } from '../../overlays/menu/menu';
+
+addMessages('en', {
+  gridSelected: '{n} selected',
+  gridSelectAll: 'Select all {n}',
+  gridClearSel: 'Clear selection',
+  gridSelectRow: 'Select row',
+  gridSelectPage: 'Select all rows',
+  gridRowActions: 'Row actions',
+  gridColumns: 'Columns',
+  gridResize: 'Resize column',
+  gridGroupAll: 'All',
+  gridOtherCols: 'Other',
+  gridGroups: 'Column groups',
+  gridColumnSearch: 'Search columns',
+  gridNoColumns: 'No matching columns',
+});
+addMessages('pt-BR', {
+  gridSelected: '{n} selecionado(s)',
+  gridSelectAll: 'Selecionar todos os {n}',
+  gridClearSel: 'Limpar seleção',
+  gridSelectRow: 'Selecionar linha',
+  gridSelectPage: 'Selecionar todas as linhas',
+  gridRowActions: 'Ações da linha',
+  gridColumns: 'Colunas',
+  gridResize: 'Redimensionar coluna',
+  gridGroupAll: 'Todas',
+  gridOtherCols: 'Outras',
+  gridGroups: 'Grupos de colunas',
+  gridColumnSearch: 'Buscar colunas',
+  gridNoColumns: 'Nenhuma coluna encontrada',
+});
 
 export interface GridConfig extends ComponentConfig {
   store?: Store<any>;

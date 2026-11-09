@@ -1,8 +1,21 @@
 import { Panel, type PanelConfig, type PanelTool } from '../../layout/panel/panel';
 import { register } from '../../../core/registry';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import { toLayer } from '../../../core/layer';
 import { focusables } from '../../../core/focus';
+
+addMessages('en', {
+  wDockLeft: 'Dock to the left',
+  wDockRight: 'Dock to the right',
+  wDockTop: 'Dock to the top',
+  wDockBottom: 'Dock to the bottom',
+});
+addMessages('pt-BR', {
+  wDockLeft: 'Fixar à esquerda',
+  wDockRight: 'Fixar à direita',
+  wDockTop: 'Fixar em cima',
+  wDockBottom: 'Fixar embaixo',
+});
 
 export type WidgetSide = 'right' | 'left' | 'top' | 'bottom';
 

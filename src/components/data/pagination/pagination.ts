@@ -1,9 +1,28 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h, clamp } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import { iconEl } from '../../base/icon/icon';
 import type { Store } from '../../../data/store';
+
+addMessages('en', {
+  pageFirst: 'First page',
+  pagePrev: 'Previous page',
+  pageNext: 'Next page',
+  pageLast: 'Last page',
+  pageLabel: 'Pagination',
+  pageGoto: 'Page {n}',
+  pageInfo: '{from}–{to} of {total}',
+});
+addMessages('pt-BR', {
+  pageFirst: 'Primeira página',
+  pagePrev: 'Página anterior',
+  pageNext: 'Próxima página',
+  pageLast: 'Última página',
+  pageLabel: 'Paginação',
+  pageGoto: 'Página {n}',
+  pageInfo: '{from}–{to} de {total}',
+});
 
 export interface PaginationConfig extends ComponentConfig {
   /** Reads and drives the store's page. Without it, use `total`/`pageSize`/`page`. */

@@ -1,9 +1,28 @@
 import { TextField, type TextFieldConfig } from '../textfield/textfield';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import { iconEl } from '../../base/icon/icon';
 import { MessageBox } from '../../overlays/messagebox/messagebox';
+
+addMessages('en', {
+  secretShow: 'Show value',
+  secretHide: 'Hide value',
+  secretStored: 'A value is saved. It cannot be shown again.',
+  secretReplace: 'Replace',
+  secretKeep: 'Keep current',
+  secretWarnTitle: 'Replace the saved value?',
+  secretWarn: 'The saved value cannot be displayed and will be discarded as soon as you replace it. Type the new value next; it takes effect when you save.',
+});
+addMessages('pt-BR', {
+  secretShow: 'Mostrar valor',
+  secretHide: 'Ocultar valor',
+  secretStored: 'Há um valor salvo. Ele não pode ser exibido novamente.',
+  secretReplace: 'Substituir',
+  secretKeep: 'Manter o atual',
+  secretWarnTitle: 'Substituir o valor salvo?',
+  secretWarn: 'O valor salvo não pode ser exibido e será descartado assim que você o substituir. Digite o novo valor em seguida; ele só vale quando você salvar.',
+});
 
 export interface SecretFieldConfig extends TextFieldConfig<string | null> {
   /** A secret is already saved. It can never be shown; it can only be replaced. `form.load({ key: true })` sets it too. */

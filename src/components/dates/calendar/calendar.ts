@@ -1,9 +1,26 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t, getLocale } from '../../../core/i18n';
+import { t, getLocale, addMessages } from '../../../core/i18n';
 import { toISO, fromISO, today, addDays, addMonths, firstDay } from '../../../core/date';
 import { iconEl } from '../../base/icon/icon';
+
+addMessages('en', {
+  dateMin: 'Date must be on or after {n}',
+  dateMax: 'Date must be on or before {n}',
+  calPrev: 'Previous',
+  calNext: 'Next',
+  calOpen: 'Open calendar',
+  calMonth: 'Choose month',
+});
+addMessages('pt-BR', {
+  dateMin: 'A data deve ser {n} ou posterior',
+  dateMax: 'A data deve ser {n} ou anterior',
+  calPrev: 'Anterior',
+  calNext: 'Próximo',
+  calOpen: 'Abrir calendário',
+  calMonth: 'Escolher mês',
+});
 
 /** Both ends are `YYYY-MM-DD`; `end` is null while the user has only picked the first day. */
 export interface DateRange {

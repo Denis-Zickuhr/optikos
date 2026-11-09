@@ -1,12 +1,21 @@
 import { SuggestField, type SuggestConfig } from '../suggestfield/suggestfield';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import type { Model } from '../../../data/model';
 import type { Store } from '../../../data/store';
 import { iconEl } from '../../base/icon/icon';
 import { Window } from '../../overlays/window/window';
 import { SearchGrid, resolveLookup, lookupStore, type LookupDef } from '../../data/searchgrid/searchgrid';
+
+addMessages('en', {
+  lookupOpen: 'Open search',
+  lookupSelect: 'Select',
+});
+addMessages('pt-BR', {
+  lookupOpen: 'Abrir pesquisa',
+  lookupSelect: 'Selecionar',
+});
 
 export interface LookupFieldConfig<V = unknown> extends SuggestConfig<V> {
   /** A definition or the name given to `registerLookup`. */

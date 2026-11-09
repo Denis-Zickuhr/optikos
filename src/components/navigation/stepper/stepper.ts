@@ -1,8 +1,21 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
-import { t } from '../../../core/i18n';
+import { t, addMessages } from '../../../core/i18n';
 import { iconEl } from '../../base/icon/icon';
+
+addMessages('en', {
+  stepOptional: 'optional',
+  stepDone: 'completed',
+  stepError: 'has errors',
+  stepSteps: 'Steps',
+});
+addMessages('pt-BR', {
+  stepOptional: 'opcional',
+  stepDone: 'concluída',
+  stepError: 'com erros',
+  stepSteps: 'Etapas',
+});
 
 export interface Step {
   id?: string;
