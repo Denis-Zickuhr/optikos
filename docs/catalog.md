@@ -79,7 +79,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (all P0, in the core).
 | ViewManager (saved views of columns/filters/sorting) | `viewmanager` | P1 ✔ |
 | LookupField (a field + a search window with a grid) | `lookupfield` | P1 ✔ |
 | DataView (a grid of cards from a Store) | `dataview` | P1 ✔ |
-| Tree | `tree` | P1 |
+| Tree | `tree` | P1 ✔ |
 | TreeGrid, PropertyGrid, pivot | — | P2 |
 
 Non-visual data: Store, Model, Proxy (memory, function, REST) — P0, in `optikos/data`.

@@ -1,4 +1,4 @@
-import { create, cellEditing, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
+import { create, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
 import { page } from '../../dev/kit';
 
 const p = page('data');
@@ -205,4 +205,18 @@ p.section('Grid · inline editing (cellEditing plugin)', 'double click a cell (o
     ],
   } as never);
   watch(g, ['before-edit', 'edit', 'edit-cancel']);
+});
+
+p.section('Tree', 'a file tree: multi selection (Ctrl/⌘+click), tri-state checkboxes, "remote" children loaded after 400 ms ("broken" fails), a filter. Keyboard: arrows, → / ←, Enter, Space.', (host, { watch, log }) => {
+  const folder = (id: string, text: string, children?: object[]) => ({ id, text, icon: 'folder', children });
+  const t = create<Tree>({
+    type: 'tree', ariaLabel: 'Files', selection: 'multi', checkboxes: true, style: 'inline-size: 20rem',
+    items: [folder('src', 'src', [folder('core', 'core', [{ id: 'c1', text: 'component.ts', icon: 'file' }])]), folder('remote', 'remote (lazy)'), folder('broken', 'broken (fails)')],
+    load: (n: { id: string }) => new Promise((ok, fail) => setTimeout(() => (n.id === 'broken' ? fail(new Error('server down')) : ok([1, 2, 3].map((i) => ({ id: `${n.id}-${i}`, text: `file ${i}.ts`, icon: 'file', leaf: true })))), 400)),
+  } as never);
+  const filter = create({ type: 'textfield', placeholder: 'Filter…', clearable: true, style: 'inline-size: 20rem', listeners: { change: (v: string) => t.filter(v ?? '') } } as never);
+  filter.mount(host);
+  t.mount(host);
+  watch(t, ['select', 'check', 'activate', 'expand', 'load', 'error']);
+  log('ready');
 });

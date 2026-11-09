@@ -1857,5 +1857,128 @@
     ]
    }
   }
+ ],
+ "tree": [
+  {
+   "title": {
+    "en": "Files with checkboxes",
+    "pt-BR": "Arquivos com caixas de marcar"
+   },
+   "config": {
+    "type": "tree",
+    "ariaLabel": "Project files",
+    "checkboxes": true,
+    "style": "max-inline-size: 22rem",
+    "items": [
+     {
+      "id": "src",
+      "text": "src",
+      "icon": "folder",
+      "expanded": true,
+      "children": [
+       {
+        "id": "core",
+        "text": "core",
+        "icon": "folder",
+        "children": [
+         {
+          "id": "c1",
+          "text": "component.ts",
+          "icon": "file"
+         },
+         {
+          "id": "c2",
+          "text": "field.ts",
+          "icon": "file"
+         }
+        ]
+       },
+       {
+        "id": "ui",
+        "text": "ui.ts",
+        "icon": "file"
+       }
+      ]
+     },
+     {
+      "id": "docs",
+      "text": "docs",
+      "icon": "folder",
+      "children": [
+       {
+        "id": "d1",
+        "text": "theming.md",
+        "icon": "file"
+       },
+       {
+        "id": "d2",
+        "text": "motion.md",
+        "icon": "file",
+        "checked": true
+       }
+      ]
+     },
+     {
+      "id": "pkg",
+      "text": "package.json",
+      "icon": "file"
+     }
+    ]
+   }
+  },
+  {
+   "title": {
+    "en": "Multiple selection",
+    "pt-BR": "Seleção múltipla"
+   },
+   "description": {
+    "en": "Ctrl/⌘ + click adds to the selection; arrows, → and ← navigate.",
+    "pt-BR": "Ctrl/⌘ + clique soma à seleção; setas, → e ← navegam."
+   },
+   "config": {
+    "type": "tree",
+    "ariaLabel": "Teams",
+    "selection": "multi",
+    "style": "max-inline-size: 22rem",
+    "items": [
+     {
+      "id": "eng",
+      "text": "Engineering",
+      "icon": "users",
+      "expanded": true,
+      "children": [
+       {
+        "id": "fe",
+        "text": "Front-end"
+       },
+       {
+        "id": "be",
+        "text": "Back-end"
+       },
+       {
+        "id": "qa",
+        "text": "Quality",
+        "disabled": true
+       }
+      ]
+     },
+     {
+      "id": "sales",
+      "text": "Sales",
+      "icon": "users",
+      "children": [
+       {
+        "id": "emea",
+        "text": "EMEA"
+       },
+       {
+        "id": "latam",
+        "text": "LATAM"
+       }
+      ]
+     }
+    ]
+   }
+  }
  ]
 }

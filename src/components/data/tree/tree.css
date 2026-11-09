@@ -1,0 +1,94 @@
+@layer optikos {
+  :root {
+    --op-tree-indent: 1.25rem;
+    --op-tree-check-size: 1rem;
+    --op-tree-check-icon-size: 0.8em;
+  }
+  .op-tree {
+    display: block;
+    min-inline-size: 0;
+    overflow: auto;
+    color: var(--op-tree-fg, var(--op-color-fg));
+    background: var(--op-tree-bg, transparent);
+  }
+  .op-tree__root,
+  .op-tree__group {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .op-tree__item {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    box-sizing: border-box;
+    min-block-size: var(--op-tree-item-height, var(--op-row-height));
+    padding-inline: var(--op-space-1) var(--op-space-3);
+    padding-inline-start: calc(var(--op-space-1) + var(--_level, 0) * var(--op-tree-indent));
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+    user-select: none;
+  }
+  .op-tree__item:hover:not(.is-disabled) {
+    background: var(--op-tree-hover-bg, var(--op-color-hover));
+  }
+  .op-tree__item:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: calc(var(--op-focus-width) * -1);
+  }
+  .op-tree__item.is-selected {
+    color: var(--op-tree-selected-fg, var(--op-color-fg));
+    background: var(--op-tree-selected-bg, var(--op-color-selected));
+  }
+  .op-tree__item.is-disabled {
+    color: var(--op-color-disabled-fg);
+    cursor: default;
+  }
+  .op-tree__toggle {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    inline-size: var(--op-tree-indent);
+    color: var(--op-color-fg-muted);
+  }
+  .op-tree__toggle .op-icon {
+    transition: transform var(--op-duration) var(--op-easing);
+  }
+  .op-tree__item.is-expanded > .op-tree__toggle .op-icon {
+    transform: rotate(90deg);
+  }
+  .op-tree__spinner {
+    --op-spinner-size: var(--op-tree-check-size);
+  }
+  .op-tree__check {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    box-sizing: border-box;
+    inline-size: var(--op-tree-check-size);
+    block-size: var(--op-tree-check-size);
+    border: var(--op-border-width) solid var(--op-color-border-strong);
+    border-radius: var(--op-radius-sm);
+    background: var(--op-color-surface);
+    --op-icon-size: var(--op-tree-check-icon-size);
+  }
+  .op-tree__check.is-checked,
+  .op-tree__check.is-mixed {
+    color: var(--op-color-primary-fg);
+    background: var(--op-color-primary);
+    border-color: var(--op-color-primary);
+  }
+  .op-tree__icon {
+    display: inline-flex;
+    color: var(--op-tree-icon-fg, var(--op-color-fg-muted));
+  }
+  .op-tree__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-tree__empty {
+    padding: var(--op-space-3);
+    color: var(--op-color-fg-muted);
+  }
+}

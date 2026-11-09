@@ -15,6 +15,7 @@ export * from './components/data/grid/grid';
 export * from './components/data/pagination/pagination';
 export * from './components/data/searchgrid/searchgrid';
 export * from './components/data/table/table';
+export * from './components/data/tree/tree';
 export * from './components/data/viewmanager/viewmanager';
 export * from './components/dates/calendar/calendar';
 export * from './components/feedback/spinner/spinner';

@@ -79,7 +79,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
 | ViewManager (visões salvas de colunas/filtros/ordenação) | `viewmanager` | P1 ✔ |
 | LookupField (campo + janela de pesquisa com grid) | `lookupfield` | P1 ✔ |
 | DataView (grade de cartões de um Store) | `dataview` | P1 ✔ |
-| Tree | `tree` | P1 |
+| Tree | `tree` | P1 ✔ |
 | TreeGrid, PropertyGrid, pivot | — | P2 |
 
 Dados (não visuais): Store, Model, Proxy (memória, função, REST) — P0 no core.

@@ -26,6 +26,9 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
   Tab to the next editable cell; editors come from `Column.editor`. New Grid helpers for plugins: `cellAt`, `getCell`,
   `getColumns`, `getActive`.
 
+- `Tree` component: expand/collapse, single or multiple selection, tri-state cascading checkboxes, children loaded on
+  demand, filter, and the WAI-ARIA tree keyboard.
+
 ### Changed
 
 - Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner
