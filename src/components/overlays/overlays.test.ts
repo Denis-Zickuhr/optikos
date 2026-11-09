@@ -345,6 +345,7 @@ describe('Tabs', () => {
     expect(panels).toHaveLength(1);
     expect(panels[0].getAttribute('aria-labelledby')).toBe(tabs(t)[0].id);
     expect(tabs(t)[0].getAttribute('aria-controls')).toBe(panels[0].id);
+    expect(panels[0].getAttribute('tabindex')).toBe('0');
     expect(t.el.textContent).not.toContain('second');
     t.setActive(1);
     expect(t.el.textContent).toContain('second');

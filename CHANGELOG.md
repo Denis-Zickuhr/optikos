@@ -56,6 +56,9 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ### Fixed
 
+- Tabs: each panel has `tabindex="0"` (WAI-ARIA tabs pattern), so a panel with nothing focusable inside, or one that
+  scrolls, can be reached with the keyboard.
+
 - `ariaLabel` on a field without a visible label now names its input (it used to land on the wrapper).
 - Grid: the row-actions column header has a (visually hidden) name.
 

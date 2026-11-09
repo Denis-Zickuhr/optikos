@@ -88,6 +88,7 @@ export class Tabs extends Container<TabsConfig> {
     }
     super.attach(p, index);
     p.el.setAttribute('role', 'tabpanel');
+    p.el.tabIndex = 0; // APG: the panel is reachable by Tab even when its content has nothing focusable (or scrolls)
     const tab = this.tabs.get(p);
     if (tab) {
       p.el.setAttribute('aria-labelledby', tab.id);
