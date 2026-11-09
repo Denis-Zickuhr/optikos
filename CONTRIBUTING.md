@@ -14,6 +14,8 @@ npm run dev     # sandboxes and demos at http://localhost:5173/dev/
 ## Before opening a pull request
 
 - `npm run check` passes (generated index, typecheck, tests and build with size budgets).
+- `npm run test:browser` passes when you touch focus, keyboard, layout or anything measured (real Chromium through
+  Playwright; install it once with `npx playwright install chromium`, or `--with-deps` on a bare Linux).
 - No new runtime dependency. Dev tools go in `devDependencies`.
 - Styles use tokens only and live in `@layer optikos`.
 - Keyboard and ARIA work, and the component has a sandbox case.
