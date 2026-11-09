@@ -183,14 +183,14 @@ Current evergreen browsers. The JavaScript targets ES2022, and the CSS uses casc
 
 ## Documentation and demos
 
-- [Docs site](https://denis-zickuhr.github.io/optikos/): every component with live, editable examples, its spec sheet,
-  the guides and the design tokens.
-- [Docs sources (Portuguese)](https://github.com/Denis-Zickuhr/optikos/tree/main/docs): one spec sheet per component in
+- [Docs site](https://denis-zickuhr.github.io/optikos/), in English and Portuguese: every component with live, editable
+  examples, its spec sheet, the guides and the design tokens.
+- [Docs sources](https://github.com/Denis-Zickuhr/optikos/tree/main/docs) (Portuguese translation in `docs/pt-BR`): one spec sheet per component in
   [`docs/components`](https://github.com/Denis-Zickuhr/optikos/tree/main/docs/components), plus guides on
   [theming](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/theming.md),
   [motion](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/motion.md),
   [`ui` shortcuts](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/ui.md) and
-  [architecture](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/architecture.md).
+  [architecture decisions](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/architecture.md) (in Portuguese).
 - [Demos](https://github.com/Denis-Zickuhr/optikos/tree/main/demos): CRM, admin dashboard, ERP, chat, photo gallery,
   shop, event landing page, workbench, motion lab and customization. Run them with `npm run dev`.
 

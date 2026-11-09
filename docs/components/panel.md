@@ -1,12 +1,12 @@
 # Panel  (type: 'panel')
-Propósito:     Container com cabeçalho (título, ferramentas), corpo com layout e rodapé; opcionalmente recolhível.
-Anatomia:      `.op-panel` > `.op-panel__header` (`__title`, `__tools`), `.op-panel__body` (itens), `.op-panel__footer` (buttons).
-               `tbar`/`bbar` são Toolbars dentro do panel (acima/abaixo do corpo).
+Purpose:       A container with a header (title, tools), a body with a layout and a footer; optionally collapsible.
+Anatomy:       `.op-panel` > `.op-panel__header` (`__title`, `__tools`), `.op-panel__body` (items), `.op-panel__footer` (buttons).
+               `tbar`/`bbar` are Toolbars inside the panel (above/below the body).
 Config:        (Container) + `title`, `icon`, `collapsible: false`, `collapsed: false`, `closable: false`, `tbar`, `bbar`, `buttons`, `tools: [{icon, handler, label}]`, `bodyCls`, `closeAction: 'destroy'|'hide'` (destroy).
 API:           `setTitle`, `setIcon`, `collapse()`, `expand()`, `toggle()`, `close()`, `getBody()`, + Container (`add`, `remove`, `items`).
-Eventos:       `before-collapse`/`before-expand`/`before-close` (canceláveis), `collapse`, `expand`, `close`.
-Estados:       `is-collapsed`, `is-loading` (via `loading`).
-Teclado/ARIA:  `role="region"` + `aria-labelledby` (título). Header recolhível tem botão com `aria-expanded`/`aria-controls`. Fechar = botão com label localizado.
+Events:        `before-collapse`/`before-expand`/`before-close` (cancelable), `collapse`, `expand`, `close`.
+States:        `is-collapsed`, `is-loading` (through `loading`).
+Keyboard/ARIA: `role="region"` + `aria-labelledby` (the title). A collapsible header has a button with `aria-expanded`/`aria-controls`. Close = a button with a localized label.
 Tokens:        `--op-panel-bg/fg/border/radius/shadow/header-bg/header-fg/header-padding/body-padding`.
-Casos sandbox: simples, recolhível, com tbar/bbar/buttons, layouts hbox/vbox/grid dentro, closable, loading.
-Fora do escopo: arrastar/redimensionar panel (só Window arrasta); abas (Tabs).
+Sandbox cases: plain, collapsible, with tbar/bbar/buttons, hbox/vbox/grid layouts inside, closable, loading.
+Out of scope:  dragging/resizing a panel (only Window drags); tabs (Tabs).

@@ -7,7 +7,7 @@ describe('docs examples', () => {
   for (const c of components()) {
     for (const ex of c.examples as Example[]) {
       if (!ex.config) continue;
-      it(`${c.name}: ${ex.title}`, () => {
+      it(`${c.name}: ${typeof ex.title === 'string' ? ex.title : ex.title.en}`, () => {
         const stage = document.body.appendChild(document.createElement('div'));
         const stop = run(ex, ex.config!, stage);
         expect(stage.children.length).toBeGreaterThan(0);

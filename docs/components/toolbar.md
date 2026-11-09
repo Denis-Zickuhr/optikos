@@ -1,9 +1,9 @@
 # Toolbar  (type: 'toolbar')
-Propósito:     Barra horizontal (ou vertical) de botões, campos e separadores.
-Anatomia:      `<div class="op-toolbar" role="toolbar">` > itens. Atalhos em `items`: `'->'` = Spacer que empurra o resto, `'-'` = separador, `' '` = espaço fixo.
-Config:        (Container, layout hbox) + `vertical: false`, `ariaLabel`.
+Purpose:       A horizontal (or vertical) bar of buttons, fields and separators.
+Anatomy:       `<div class="op-toolbar" role="toolbar">` > items. Shortcuts in `items`: `'->'` = a Spacer that pushes the rest, `'-'` = a separator, `' '` = a fixed space.
+Config:        (Container, hbox layout) + `vertical: false`, `ariaLabel`.
 API:           (Container).
-Teclado/ARIA:  `role=toolbar`; tabindex móvel: Tab entra no primeiro/último usado, ←→ (↑↓ se vertical) movem, Home/End.
+Keyboard/ARIA: `role=toolbar`; roving tabindex: Tab enters on the first/last used item, ←→ (↑↓ when vertical) move, Home/End.
 Tokens:        `--op-toolbar-bg/border/padding/gap`.
-Casos sandbox: botões + `->` + campo de busca, separadores, vertical, desabilitar itens.
-Fora do escopo: overflow com menu "…" (P1).
+Sandbox cases: buttons + `->` + a search field, separators, vertical, disabling items.
+Out of scope:  overflow into a "…" menu (P1).

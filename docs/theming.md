@@ -1,33 +1,33 @@
-# Tematização
+# Theming
 
-Tudo que é visual vem de uma custom property. Três camadas, todas em `@layer optikos`:
+Everything visual comes from a custom property. Three layers, all in `@layer optikos`:
 
-| Camada | Exemplo | Quem muda |
+| Layer | Example | Who changes it |
 |---|---|---|
-| Primitivos | `--op-blue-600` | quase ninguém (paleta bruta) |
-| Semânticos | `--op-color-primary`, `--op-radius`, `--op-space-3`, `--op-font-size` | temas |
-| De componente | `--op-button-bg`, `--op-grid-row-height` | temas e instâncias |
+| Primitives | `--op-blue-600` | almost nobody (the raw palette) |
+| Semantic | `--op-color-primary`, `--op-radius`, `--op-space-3`, `--op-font-size` | themes |
+| Component | `--op-button-bg`, `--op-grid-row-height` | themes and instances |
 
-Cada componente usa o token próprio e cai no semântico: `background: var(--op-button-bg, var(--op-color-surface))`.
+Each component uses its own token and falls back to the semantic one: `background: var(--op-button-bg, var(--op-color-surface))`.
 
-## 1. Global, por escopo e por componente
+## 1. Global, scoped and per component
 
 ```html
 <link rel="stylesheet" href="optikos/optikos.css" />
-<link rel="stylesheet" href="optikos/themes/dark.css" />     <!-- opcional -->
-<html data-op-theme="dark compact">                          <!-- lista: combina temas -->
-<section data-op-theme="light">…</section>                   <!-- escopo: só esta árvore -->
+<link rel="stylesheet" href="optikos/themes/dark.css" />     <!-- optional -->
+<html data-op-theme="dark compact">                          <!-- a list: themes combine -->
+<section data-op-theme="light">…</section>                   <!-- scope: only this subtree -->
 ```
 
 ```ts
-create({ type: 'button', theme: { radius: '0', primaryBg: '#16a34a' } }); // --op-button-radius, --op-button-primary-bg (só esta instância)
+create({ type: 'button', theme: { radius: '0', primaryBg: '#16a34a' } }); // --op-button-radius, --op-button-primary-bg (this instance only)
 ```
 
-Temas incluídos: `light` (padrão, em `optikos.css`), `dark.css`, `compact.css` (densidade: controles e espaços menores). Combine: `data-op-theme="dark compact"`.
+Included themes: `light` (the default, in `optikos.css`), `dark.css`, `compact.css` (density: smaller controls and spacing). Combine them: `data-op-theme="dark compact"`.
 
-Janelas, menus, dropdowns e toasts ficam em `body > .op-layer`; eles copiam o `data-op-theme` do elemento que os abriu, então um escopo escuro continua escuro nos seus popups.
+Windows, menus, dropdowns and toasts live in `body > .op-layer`; they copy the `data-op-theme` of the element that opened them, so a dark scope stays dark in its popups.
 
-## 2. Tema em CSS (zero JS)
+## 2. A theme in CSS (no JS)
 
 ```css
 @layer optikos {
@@ -35,9 +35,9 @@ Janelas, menus, dropdowns e toasts ficam em `body > .op-layer`; eles copiam o `d
 }
 ```
 
-Veja `demos/customization/ocean.css`. CSS **fora** de `@layer` vence o da biblioteca sem `!important`.
+See `demos/customization/ocean.css`. CSS **outside** `@layer` wins over the library's without `!important`.
 
-## 3. Tema proprietário (TS)
+## 3. A theme in TypeScript
 
 ```ts
 import { defineTheme, setTheme } from 'optikos';
@@ -47,36 +47,37 @@ const brand = defineTheme({
   button: { radius: '62.5rem', fontWeight: 700 },          // --op-button-radius, --op-button-font-weight
 }, 'brand');
 
-brand.apply();         // injeta o CSS e ativa em <html> (mantém outros temas: "dark brand")
-brand.inject();        // só injeta (para oferecer num seletor); depois setTheme('brand')
-setTheme('dark brand'); // troca os temas de qualquer elemento: setTheme(names, el)
+brand.apply();          // injects the CSS and turns it on in <html> (keeps the other themes: "dark brand")
+brand.inject();         // only injects it (to offer it in a picker); then setTheme('brand')
+setTheme('dark brand'); // sets the themes of any element: setTheme(names, el)
 ```
 
-Chaves camelCase viram kebab-case. Números saem sem unidade (`radius: 0`); escreva unidades como string (`'4px'`).
-Para gerar o `.css` no build: `npm run theme -- meu-tema.ts meu-tema.css` (o arquivo faz `export default defineTheme(...)`), ou o comando kai **Theme to CSS**.
+camelCase keys become kebab-case. Numbers have no unit (`radius: 0`); write units as strings (`'4px'`).
+To produce the `.css` at build time: `npm run theme -- my-theme.ts my-theme.css` (the file does `export default defineTheme(...)`), or the kai command **Theme to CSS**.
 
-## Densidade
+## Density
 
-`--op-control-height`, `--op-control-padding-x`, `--op-row-height` e a escala `--op-space-*` definem a densidade; o tema `compact` só os redefine.
+`--op-control-height`, `--op-control-padding-x`, `--op-row-height` and the `--op-space-*` scale define the density; the `compact` theme only redefines them.
 
-## Regras para quem escreve componentes
+## Rules for component authors
 
-- CSS só com tokens. Valores literais vão num bloco `:root { --op-x-size: 1.5rem }` no topo do arquivo; o teste `themes/css.test.ts` reprova cor/tamanho solto.
-- Tudo dentro de `@layer optikos`.
-- Declare tokens que dependem do tema no ponto de uso (`var(--op-x, var(--op-color-…))`), nunca num `:root` com `var()` (não reavalia dentro de `data-op-theme`).
+- CSS uses tokens only. Literal values go in a `:root { --op-x-size: 1.5rem }` block at the top of the file; the `themes/css.test.ts` test fails on a stray color/size.
+- Everything inside `@layer optikos`.
+- Declare theme-dependent tokens where they are used (`var(--op-x, var(--op-color-…))`), never in a `:root` with `var()` (it would not re-evaluate inside `data-op-theme`).
+- Text must keep a 4.5:1 contrast in every theme: the browser test `site/a11y.browser.test.ts` runs axe on every example in every theme.
 
-## Temas prontos (visual completo)
+## Ready-made themes (complete looks)
 
-Além de `light` (padrão), `dark` e `compact` (densidade), há seis temas que trocam **cores, forma, densidade e tipografia** (não só a paleta), para o mesmo app parecer outro produto. Cada um é um arquivo em `optikos/themes/<nome>.css`; ative com `data-op-theme="<nome>"` (e combine com `compact`, se quiser).
+Besides `light` (default), `dark` and `compact` (density), six themes change **colors, shape, density and typography** (not just the palette), so the same app looks like another product. Each one is a file in `optikos/themes/<name>.css`; turn it on with `data-op-theme="<name>"` (and combine with `compact` if you want).
 
-| Tema | Como é |
+| Theme | What it looks like |
 |---|---|
-| `corporate` | sóbrio e organizado, para back-office: azul aço sobre cinza frio, raios pequenos, filetes finos, plano, sidebar azul-marinho (`--op-navmenu-*`), controles de 2,375rem, linhas de 2,75rem, fonte de 15px; feito para sessões longas em grids e formulários |
-| `brutal` | bordas pretas de 3px, raio 0, sombras duras deslocadas, amarelo forte, rótulos em caixa-alta; os botões "levantam" no hover e "afundam" ao clicar |
-| `soft` | claro e arejado: raios grandes, botões em pílula, violeta pastel, sombras difusas, campos sem borda (fundo suave), linhas altas |
-| `terminal` | verde fósforo sobre preto, fonte monoespaçada, raio 0, denso, foco com brilho, títulos com `>` |
-| `brand` | luxo/joalheria, **claro e de uso diário**: champagne e marfim, texto ônix, ouro antigo, serifa de alto contraste, filetes finos, capitulares espaçadas, faixas de título em ônix com texto dourado, botão principal em folha de ouro. `data-op-theme="brand night"` dá a versão escura (ônix) |
-| `editorial` | papel quente, fonte serifada, filetes de tinta em vez de caixas, campos só com linha embaixo, botões em versalete, vinho como cor de destaque |
+| `corporate` | sober and orderly, for back-office work: steel blue on cool gray, small radii, hairline borders, flat, a navy sidebar (`--op-navmenu-*`), 2.375rem controls, 2.75rem rows, 15px text; made for long sessions in grids and forms |
+| `brutal` | 3px black borders, no radius, hard offset shadows, loud yellow (as a fill, never as text), uppercase labels; buttons "lift" on hover and "sink" on click |
+| `soft` | light and airy: large radii, pill buttons, pastel violet, diffuse shadows, borderless fields (a soft fill), tall rows |
+| `terminal` | phosphor green on black, monospace, no radius, dense, a glowing focus, titles with `>` |
+| `brand` | luxury/jewelry, **light and for daily use**: champagne and ivory, onyx text, antique gold, high-contrast serif, hairlines, spaced capitals, onyx title bands with gold text, a gold-leaf primary button. `data-op-theme="brand night"` gives the dark (onyx) version |
+| `editorial` | warm paper, serif type, ink rules instead of boxes, underline-only fields, small-caps buttons, oxblood accent |
 
-Eles mostram até onde um tema vai com tokens e regras escopadas (`[data-op-theme~='x'] .op-button { … }`). Para temas assim use os tokens de componente (`--op-panel-header-bg`, `--op-grid-header-bg`, `--op-button-radius`...) antes de escrever regra; regra só para o que token não alcança (caixa-alta, sombra deslocada, campo sublinhado). Em popups (menu, janela, dropdown) o atributo `data-op-theme` está no próprio elemento flutuante, então prefira tokens a seletores descendentes.
-No dev, a barra das sandboxes e o frame dos demos têm um seletor com todos eles (`?theme=brutal` também funciona).
+They show how far a theme goes with tokens and scoped rules (`[data-op-theme~='x'] .op-button { … }`). For themes like these, use component tokens (`--op-panel-header-bg`, `--op-grid-header-bg`, `--op-button-radius`...) before writing a rule; write a rule only for what a token cannot reach (uppercase, offset shadow, underlined field). In popups (menu, window, dropdown) the `data-op-theme` attribute sits on the floating element itself, so prefer tokens to descendant selectors.
+In development, the sandbox bar and the demo frame have a picker with all of them (`?theme=brutal` works too).

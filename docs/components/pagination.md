@@ -1,10 +1,10 @@
 # Pagination  (type: 'pagination')
-Propósito:     Navegação entre páginas de um conjunto de dados.
-Anatomia:      `<nav class="op-pagination">` > botões (`first/prev`, números com reticências, `next/last`) + `.op-pagination__info` ("1–20 de 135").
-Config:        `store` (lê/escreve página) OU `total`, `pageSize`, `page` (modo manual), `siblings: 1`, `showInfo: true`.
+Purpose:       Moves between the pages of a data set.
+Anatomy:       `<nav class="op-pagination">` > buttons (`first/prev`, numbers with ellipses, `next/last`) + `.op-pagination__info` ("1–20 of 135").
+Config:        `store` (reads/writes the page) OR `total`, `pageSize`, `page` (manual mode), `siblings: 1`, `showInfo: true`.
 API:           `setPage`, `setTotal`, `setPageSize`, `getPage`, `setStore`.
-Eventos:       `page-change(page)` (cancelável via `before-page-change`).
-Teclado/ARIA:  `nav` com label localizado; página atual `aria-current="page"`; botões nativos; desabilitados nos extremos.
-Tokens:        `--op-pagination-gap`, usa os do Button.
-Casos sandbox: 5 páginas, 200 páginas (reticências), ligada a Store local, modo manual, pt-BR.
-Fora do escopo: seletor de tamanho de página (P1), "ir para a página".
+Events:        `page-change(page)` (cancelable through `before-page-change`).
+Keyboard/ARIA: `nav` with a localized label; the current page has `aria-current="page"`; native buttons; disabled at the ends.
+Tokens:        `--op-pagination-gap`, uses those of Button.
+Sandbox cases: 5 pages, 200 pages (ellipses), bound to a local Store, manual mode, pt-BR.
+Out of scope:  a page size picker (P1), "go to page".

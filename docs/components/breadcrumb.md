@@ -1,15 +1,15 @@
 # Breadcrumb  (type: 'breadcrumb')
-Propósito:     Mostrar onde a pessoa está numa hierarquia e permitir voltar a qualquer nível.
-Anatomia:      `<nav class="op-breadcrumb" aria-label>` > `<ol class="op-breadcrumb__list">` > `<li>` com `a.op-breadcrumb__item` (item com `href`),
-               `button.op-breadcrumb__item` (item com `handler`), ou `span.op-breadcrumb__current[aria-current=page]` (o último).
-               Quando colapsa: `button.op-breadcrumb__more` ("…", `aria-haspopup=menu`) no lugar dos itens do meio. Separador por CSS (`li + li::before`).
-Config:        `items: { text, icon?, href?, handler?(item) }[]`, `maxItems: 4` (mínimo 3; acima disso o meio colapsa: primeiro + "…" + últimos `maxItems - 2`),
-               `separator: '›'` (texto; vira `--op-breadcrumb-separator`), `ariaLabel` (padrão localizado "Breadcrumb"/"Trilha de navegação").
+Purpose:       Shows where the user is in a hierarchy and lets them go back to any level.
+Anatomy:       `<nav class="op-breadcrumb" aria-label>` > `<ol class="op-breadcrumb__list">` > `<li>` with `a.op-breadcrumb__item` (item with `href`),
+               `button.op-breadcrumb__item` (item with `handler`), or `span.op-breadcrumb__current[aria-current=page]` (the last one).
+               When collapsed: `button.op-breadcrumb__more` ("…", `aria-haspopup=menu`) replaces the middle items. The separator is CSS (`li + li::before`).
+Config:        `items: { text, icon?, href?, handler?(item) }[]`, `maxItems: 4` (minimum 3; above it the middle collapses: first + "…" + the last `maxItems - 2`),
+               `separator: '›'` (text; becomes `--op-breadcrumb-separator`), `ariaLabel` (localized default "Breadcrumb").
 API:           `setItems`, `setSeparator`, `setMaxItems`.
-Eventos:       `before-navigate(item, index)` (cancelável; em `<a>` cancela a navegação nativa), `navigate(item, index)`. O último item nunca navega.
-Estados:       foco visível; o item atual não é interativo.
-Teclado/ARIA:  Padrão "Breadcrumb" do WAI-ARIA APG. Tab percorre os itens (links/botões nativos), Enter ativa; o "…" abre um Menu (↑↓, Enter, Esc, ver Menu) com os itens escondidos, na ordem.
-               `aria-current="page"` no último; separadores são decorativos (pseudo-elemento, fora da árvore de acessibilidade).
+Events:        `before-navigate(item, index)` (cancelable; on an `<a>` it cancels the native navigation), `navigate(item, index)`. The last item never navigates.
+States:        visible focus; the current item is not interactive.
+Keyboard/ARIA: WAI-ARIA APG "Breadcrumb" pattern. Tab goes through the items (native links/buttons), Enter activates; "…" opens a Menu (↑↓, Enter, Esc, see Menu) with the hidden items, in order.
+               `aria-current="page"` on the last one; separators are decorative (a pseudo-element, outside the accessibility tree).
 Tokens:        `--op-breadcrumb-fg`, `--op-breadcrumb-hover-fg`, `--op-breadcrumb-current-fg`, `--op-breadcrumb-gap`, `--op-breadcrumb-separator`.
-Casos sandbox: curta, longa com colapso (`maxItems`), com ícones, separador custom, `before-navigate` cancelando, claro/escuro/compacto.
-Fora do escopo: trilha gerada automaticamente de um router (Router é P2), dropdown de irmãos em cada nível.
+Sandbox cases: short, long with collapse (`maxItems`), with icons, custom separator, `before-navigate` canceling, light/dark/compact.
+Out of scope:  a trail generated from a router (Router is P2), a dropdown of siblings at each level.

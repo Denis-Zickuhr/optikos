@@ -5,7 +5,13 @@ import { root, componentEntries } from './lib.mjs';
 
 const p = (...a) => join(root, ...a);
 const read = (f) => readFileSync(p(f), 'utf8');
-const KEYS = ['Propósito', 'Anatomia', 'Config', 'API', 'Eventos', 'Estados', 'Teclado/ARIA', 'Tokens', 'Casos sandbox', 'Fora do escopo'];
+// Docs are in English (docs/...) with a Portuguese translation (docs/pt-BR/...). The sheet keys differ per language;
+// CANON maps the Portuguese standard keys to the English ones so both can be compared.
+export const LANGS = ['en', 'pt-BR'];
+const CANON = { 'Propósito': 'Purpose', Anatomia: 'Anatomy', Config: 'Config', API: 'API', Eventos: 'Events', Estados: 'States', 'Teclado/ARIA': 'Keyboard/ARIA', Tokens: 'Tokens', 'Casos sandbox': 'Sandbox cases', 'Fora do escopo': 'Out of scope' };
+const KEYS = [...Object.keys(CANON), ...Object.values(CANON)];
+export const canonKey = (k) => CANON[k] ?? k;
+const sheetPath = (lang, name) => (lang === 'en' ? `docs/components/${name}.md` : `docs/${lang}/components/${name}.md`);
 
 /** Splits a spec sheet ("Key:   text" with indented continuation lines) into { key: text }. */
 export function parseFicha(md) {
@@ -21,13 +27,22 @@ export function parseFicha(md) {
   return fields;
 }
 
-const GUIDES = { ui: 'Escrita enxuta (ui e enums)', architecture: 'Decisões de arquitetura', theming: 'Tematização', motion: 'Motion', catalog: 'Catálogo' };
+// Guides with their file per language. The architecture log is a contributor document, kept in Portuguese only.
+const GUIDES = [
+  { name: 'theming', title: { en: 'Theming', 'pt-BR': 'Tematização' } },
+  { name: 'ui', title: { en: 'Short writing (ui and enums)', 'pt-BR': 'Escrita enxuta (ui e enums)' } },
+  { name: 'motion', title: { en: 'Motion', 'pt-BR': 'Motion' } },
+  { name: 'catalog', title: { en: 'Catalog', 'pt-BR': 'Catálogo' } },
+  { name: 'performance', title: { en: 'Performance' }, files: { en: 'docs/performance.md' } },
+  { name: 'architecture', title: { 'pt-BR': 'Decisões de arquitetura' }, files: { 'pt-BR': 'docs/architecture.md' } },
+];
 
 export function examples() {
   return existsSync(p('site/examples.json')) ? JSON.parse(read('site/examples.json')) : {};
 }
 
-/** Every spec sheet with its category (from src/components/<category>/<name>) and its live examples. */
+/** Every spec sheet with its category (from src/components/<category>/<name>), its text per language and its live examples.
+ *  `title`, `summary` and `fields` are the English ones; `docs[lang]` holds each language. */
 export function components() {
   const cats = Object.fromEntries(Object.entries(componentEntries()).map(([n, f]) => [n, f.split('/').slice(-3)[0]]));
   const ex = examples();
@@ -36,15 +51,31 @@ export function components() {
     .sort()
     .map((f) => {
       const name = basename(f, '.md');
-      const md = read(`docs/components/${f}`);
-      const head = /^#\s+(.+?)\s+\(type:\s*'([\w]+)'\)/.exec(md);
-      const fields = parseFicha(md);
-      return { name, title: head?.[1] ?? name, type: head?.[2] ?? null, category: cats[name] ?? 'core', summary: fields['Propósito'] ?? '', fields, examples: ex[name] ?? [] };
+      const docs = {};
+      let type = null;
+      for (const lang of LANGS) {
+        if (!existsSync(p(sheetPath(lang, name)))) continue;
+        const md = read(sheetPath(lang, name));
+        const head = /^#\s+(.+?)\s+\(type:\s*'([\w]+)'\)/.exec(md) ?? /^#\s+(.+?)\s+\(/.exec(md);
+        type ??= head?.[2] ?? null;
+        const fields = parseFicha(md);
+        docs[lang] = { title: head?.[1] ?? name, summary: fields.Purpose ?? fields['Propósito'] ?? '', fields };
+      }
+      return { name, title: docs.en.title, type, category: cats[name] ?? 'core', summary: docs.en.summary, fields: docs.en.fields, docs, examples: ex[name] ?? [] };
     });
 }
 
+/** Every guide: `title`/`markdown` in English when it exists (else the only language), and `i18n[lang]` for each one. */
 export function guides() {
-  return Object.entries(GUIDES).map(([name, title]) => ({ name, title, markdown: read(`docs/${name}.md`) }));
+  return GUIDES.map((g) => {
+    const i18n = {};
+    for (const lang of LANGS) {
+      const file = g.files ? g.files[lang] : lang === 'en' ? `docs/${g.name}.md` : `docs/${lang}/${g.name}.md`;
+      if (file && g.title[lang] && existsSync(p(file))) i18n[lang] = { title: g.title[lang], markdown: read(file) };
+    }
+    const main = i18n.en ?? Object.values(i18n)[0];
+    return { name: g.name, title: main.title, markdown: main.markdown, i18n };
+  });
 }
 
 /** Design tokens: every `--op-*` declared in the base theme with its default value, plus the shipped theme names. */

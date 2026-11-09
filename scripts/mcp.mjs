@@ -3,7 +3,7 @@
 // Run: `npm run mcp`. Register: see docs/site.md (`.mcp.json` at the repo root already does it for Claude Code).
 import { createInterface } from 'node:readline';
 import { readFileSync } from 'node:fs';
-import { components, guides, tokens, themes } from './docs-data.mjs';
+import { components, guides, tokens, themes, LANGS } from './docs-data.mjs';
 
 const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
@@ -11,17 +11,23 @@ const text = (s) => ({ content: [{ type: 'text', text: s }] });
 const json = (o) => text(JSON.stringify(o, null, 2));
 const find = (name) => components().find((c) => c.name === String(name).toLowerCase() || c.type === String(name).toLowerCase());
 const fail = (m) => ({ ...text(m), isError: true });
+// docs exist in English and Portuguese; `lang` picks one (default English), falling back to the other
+const LANG = { type: 'string', enum: LANGS, description: "'en' (default) or 'pt-BR'" };
+const sheet = (c, lang = 'en') => c.docs[lang] ?? c.docs.en;
+const guideText = (g, lang = 'en') => g.i18n[lang] ?? g.i18n.en ?? Object.values(g.i18n)[0];
 
 const TOOLS = [
-  { name: 'list_components', description: 'Every Optikos component: name, type, category and one-line purpose.', input: {}, run: () => json(components().map(({ name, type, category, summary }) => ({ name, type, category, summary }))) },
+  { name: 'list_components', description: 'Every Optikos component: name, type, category and one-line purpose.', input: { lang: LANG }, run: ({ lang } = {}) => json(components().map((c) => ({ name: c.name, type: c.type, category: c.category, summary: sheet(c, lang).summary }))) },
   {
     name: 'get_component',
     description: 'The full spec sheet of one component (purpose, anatomy, config, API, events, states, keyboard/ARIA, tokens).',
-    input: { name: { type: 'string', description: "component name or type, e.g. 'grid'" } },
+    input: { name: { type: 'string', description: "component name or type, e.g. 'grid'" }, lang: LANG },
     required: ['name'],
-    run: ({ name }) => {
+    run: ({ name, lang }) => {
       const c = find(name);
-      return c ? text(`# ${c.title} (type: '${c.type}')\n\n` + Object.entries(c.fields).map(([k, v]) => `**${k}:** ${v}`).join('\n\n')) : fail(`Unknown component "${name}". Use list_components.`);
+      if (!c) return fail(`Unknown component "${name}". Use list_components.`);
+      const s = sheet(c, lang);
+      return text(`# ${s.title} (type: '${c.type}')\n\n` + Object.entries(s.fields).map(([k, v]) => `**${k}:** ${v}`).join('\n\n'));
     },
   },
   {
@@ -37,24 +43,24 @@ const TOOLS = [
   {
     name: 'search_docs',
     description: 'Case-insensitive search over spec sheets and guides. Returns matching lines with where they came from.',
-    input: { query: { type: 'string' } },
+    input: { query: { type: 'string' }, lang: LANG },
     required: ['query'],
-    run: ({ query }) => {
+    run: ({ query, lang }) => {
       const q = String(query).toLowerCase();
       const hits = [];
-      for (const c of components()) for (const [k, v] of Object.entries(c.fields)) for (const l of v.split('\n')) if (l.toLowerCase().includes(q)) hits.push(`${c.name} · ${k}: ${l.slice(0, 240)}`);
-      for (const g of guides()) for (const l of g.markdown.split('\n')) if (l.toLowerCase().includes(q)) hits.push(`guide ${g.name}: ${l.trim().slice(0, 240)}`);
+      for (const c of components()) for (const [k, v] of Object.entries(sheet(c, lang).fields)) for (const l of v.split('\n')) if (l.toLowerCase().includes(q)) hits.push(`${c.name} · ${k}: ${l.slice(0, 240)}`);
+      for (const g of guides()) for (const l of guideText(g, lang).markdown.split('\n')) if (l.toLowerCase().includes(q)) hits.push(`guide ${g.name}: ${l.trim().slice(0, 240)}`);
       return text(hits.slice(0, 40).join('\n') || 'No matches.');
     },
   },
   {
     name: 'get_guide',
-    description: 'A guide in full: architecture (decisions), theming, motion or catalog.',
-    input: { name: { type: 'string', enum: guides().map((g) => g.name) } },
+    description: 'A guide in full: theming, ui, motion, catalog, performance, or architecture (the decision log, in Portuguese).',
+    input: { name: { type: 'string', enum: guides().map((g) => g.name) }, lang: LANG },
     required: ['name'],
-    run: ({ name }) => {
+    run: ({ name, lang }) => {
       const g = guides().find((x) => x.name === name);
-      return g ? text(g.markdown) : fail(`Unknown guide "${name}".`);
+      return g ? text(guideText(g, lang).markdown) : fail(`Unknown guide "${name}".`);
     },
   },
   {

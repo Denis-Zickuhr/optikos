@@ -1,10 +1,10 @@
-# Catálogo de componentes
+# Component catalog
 
-Prioridade: **P0** = necessário para os demos; **P1** = completa a lib; **P2** = depois.
+Priority: **P0** = needed by the demos; **P1** = completes the library; **P2** = later. ✔ = done.
 
 ## Base
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
 | Button | `button` | P0 |
 | Icon | `icon` | P0 |
@@ -15,9 +15,9 @@ Prioridade: **P0** = necessário para os demos; **P1** = completa a lib; **P2** 
 | Chip | `chip` | P1 |
 | Avatar | `avatar` | P2 |
 
-## Layout / Containers
+## Layout / containers
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
 | Container | `container` | P0 |
 | Panel | `panel` | P0 |
@@ -25,15 +25,15 @@ Prioridade: **P0** = necessário para os demos; **P1** = completa a lib; **P2** 
 | FieldSet | `fieldset` | P0 |
 | Toolbar | `toolbar` | P0 |
 | Spacer | `spacer` | P0 |
-| Card (layout `card`) | — | P0 (layout) |
+| Card (`card` layout) | — | P0 (layout) |
 | Splitter | `splitter` | P1 |
 | Accordion | `accordion` | P1 |
 
-Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
+Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (all P0, in the core).
 
-## Campos
+## Fields
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
 | TextField | `textfield` | P0 |
 | TextArea | `textarea` | P0 |
@@ -48,121 +48,121 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
 | TimeField, DateTimeField | `timefield`, `datetimefield` | P1 |
 | DateRangeField | `daterangefield` | P1 ✔ |
 | CheckboxGroup | `checkboxgroup` | P1 |
-| Slider (barra com bolinha, simples ou intervalo) | `slider` | P1 ✔ |
+| Slider (a track with a knob, single or range) | `slider` | P1 ✔ |
 | Toggle | `toggle` | P1 |
 | TagField | `tagfield` | P1 |
 | MaskField, CurrencyField | `maskfield`, `currencyfield` | P1 |
 | FileField | `filefield` | P1 |
-| ColorField, Slider, Rating, HtmlEditor | — | P2 |
+| ColorField, Rating, HtmlEditor | — | P2 |
 
-## Formulário
+## Forms
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
 | Form | `form` | P0 |
-| Validadores | (funções) | P0 |
+| Validators | (functions) | P0 |
 | FieldContainer | `fieldcontainer` | P1 |
-| Binding de dados | `form.load / getValues` | P0 (decisão na ficha) |
-| Form em abas (`Form` com `tabs`) | `form` + `tabs` | P1 ✔ |
-| StepForm (formulário em etapas) | `stepform` | P1 ✔ |
+| Data binding | `form.load / getValues` | P0 (decision in the spec sheet) |
+| Tabbed form (`Form` with `tabs`) | `form` + `tabs` | P1 ✔ |
+| StepForm (multi-step form) | `stepform` | P1 ✔ |
 
-## Dados
+## Data
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
-| Grid | `grid` | P0 (ordenar, selecionar, paginar, virtualizar) |
+| Grid | `grid` | P0 (sort, select, page, virtualize) |
 | Table | `table` | P0 |
 | Pagination | `pagination` | P0 |
-| Grid P1 | ✔ gestão de colunas (menu com busca), ✔ coluna de seleção (checkbox) e ações em lote; falta: edição inline, colunas fixas/redimensionáveis, agrupamento | P1 |
+| Grid P1 | ✔ column management (menu with search), ✔ selection column (checkbox) and bulk actions, ✔ reordering and resizing columns; missing: inline editing, frozen columns, grouping | P1 |
 | FilterBuilder | `filterbuilder` | P1 ✔ |
 | SearchGrid | `searchgrid` | P1 ✔ |
-| ViewManager (visões salvas de colunas/filtros/ordenação) | `viewmanager` | P1 ✔ |
-| LookupField (campo + janela de pesquisa com grid) | `lookupfield` | P1 ✔ |
-| DataView (grade de cartões de um Store) | `dataview` | P1 ✔ |
+| ViewManager (saved views of columns/filters/sorting) | `viewmanager` | P1 ✔ |
+| LookupField (a field + a search window with a grid) | `lookupfield` | P1 ✔ |
+| DataView (a grid of cards from a Store) | `dataview` | P1 ✔ |
 | Tree | `tree` | P1 |
 | TreeGrid, PropertyGrid, pivot | — | P2 |
 
-Dados (não visuais): Store, Model, Proxy (memória, função, REST) — P0 no core.
+Non-visual data: Store, Model, Proxy (memory, function, REST) — P0, in `optikos/data`.
 
 ## Overlays
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
 | Dropdown (base) | `dropdown` | P0 |
 | Window (modal) | `window` | P0 |
-| MessageBox (alert, confirm, prompt) | função `MessageBox` | P0 |
-| Tooltip | `tooltip` / config `tooltip` | P0 |
+| MessageBox (alert, confirm, prompt) | `MessageBox` function | P0 |
+| Tooltip | `tooltip` / `tooltip` config | P0 |
 | Menu | `menu` | P0 |
-| Toast | função `toast()` | P0 |
+| Toast | `toast()` function | P0 |
 | CommandPalette (Ctrl/⌘+K) | `commandpalette` | P1 ✔ |
-| Widget (painel flutuante preso a uma borda) | `widget` | P1 ✔ |
+| Widget (a floating panel pinned to an edge) | `widget` | P1 ✔ |
 | ContextMenu, Popover, Drawer (modal) | — | P1 |
 
-## Navegação
+## Navigation
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
 | Tabs | `tabs` | P0 |
-| Breadcrumb | `breadcrumb` | P0 (promovido: o frame das sandboxes usa) |
+| Breadcrumb | `breadcrumb` | P0 |
 | Sidebar/NavMenu | `navmenu` | P1 ✔ |
-| Stepper (indicador de etapas; base do StepForm) | `stepper` | P1 ✔ |
-| Router simples | — | P2 |
+| Stepper (step indicator; the base of StepForm) | `stepper` | P1 ✔ |
+| Simple router | — | P2 |
 
 ## Feedback
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
-| LoadMask (+ Spinner) | `loadmask` / `cmp.mask()` | P0 |
+| LoadMask (+ Spinner) | `loading` config / `spinner` | P0 |
 | ProgressBar | `progress` | P1 |
 | Alert / Banner | `alert` | P1 |
 | Skeleton, EmptyState | — | P2 |
 
 ## Chat
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
-| Chat (conversa + composer + streaming) | `chat` | P1 ✔ |
+| Chat (conversation + composer + streaming) | `chat` | P1 ✔ |
 
-## Datas
+## Dates
 
-| Componente | `type` | Prio |
+| Component | `type` | Priority |
 |---|---|---|
-| Calendar (DatePicker) | `calendar` | P0 |
-| Calendar `range: true` (intervalo) | `calendar` | P1 ✔ |
+| Calendar (date picker) | `calendar` | P0 |
+| Calendar `range: true` | `calendar` | P1 ✔ |
 | Scheduler | — | P2 |
 
-## Gráficos (P2)
+## Charts (P2)
 
-Decisão: **fora do core**. Se vier, será um bundle separado (`optikos-charts`), porque o custo em kB
-de um motor de gráficos quebra o pilar "Leve".
+Decision: **outside the core**. If it comes, it will be a separate bundle, because the size of a chart engine would
+break the "Light" pillar.
 
 ## Motion
 
-| Peça | O que é |
+| Piece | What it is |
 |---|---|
-| `optikos/motion` | engine de animação e micro-interações (20 regras de motion design), configurável e com interruptor global ✔ (`docs/motion.md`) |
+| `optikos/motion` | animation and micro-interaction engine (20 motion design rules), configurable, with a global switch ✔ (`docs/motion.md`) |
 
 ## UI helpers
 
-| Peça | O que é |
+| Piece | What it is |
 |---|---|
-| `optikos/ui` | atalhos `ui.text(...)`, `ui.select(...)`, `ui.row(...)` e enums (`Variant`, `Op`...) ✔ (`docs/ui.md`) |
+| `optikos/ui` | `ui.text(...)`, `ui.select(...)`, `ui.row(...)` shortcuts and enums (`Variant`, `Op`...) ✔ (`docs/ui.md`) |
 
-## Peças compartilhadas (viram core)
+## Shared pieces (they live in the core)
 
-| Peça | Usada por | Onde |
+| Piece | Used by | Where |
 |---|---|---|
 | `Emitter` | Component, Store, Dropdown | `core/emitter.ts` |
-| Fábrica DOM `h()` | todos | `core/dom.ts` |
-| Camada flutuante (`layer`) | Dropdown, Window, Tooltip, Toast, Menu, LoadMask | `core/layer.ts` |
-| Posicionamento de flutuantes | Dropdown, Tooltip, Menu (submenus) | `core/position.ts` |
+| DOM factory `h()` | everything | `core/dom.ts` |
+| Floating layer (`layer`) | Dropdown, Window, Tooltip, Toast, Menu, LoadMask | `core/layer.ts` |
+| Positioning of floating elements | Dropdown, Tooltip, Menu (submenus) | `core/position.ts` |
 | Focus trap | Window, MessageBox, Drawer (P1) | `core/focus.ts` |
-| Roving tabindex / navegação por setas | Tabs, Toolbar, Menu, RadioGroup | `core/focus.ts` |
-| `ListBox` (lista com `aria-activedescendant`) | Select, ComboBox, SuggestField (e List, P1) | `components/fields/listbox` |
-| Virtualização | Grid, ListBox (listas longas), Tree (P1) | `core/virtual.ts` |
-| Validadores | Field, Form | `core/validators.ts` |
-| i18n por objeto de locale | validadores, Pagination, MessageBox, Calendar | `core/i18n.ts` |
-| Ícones embutidos | Button, Select, Window, Toast, Tree... | `components/base/icon` |
+| Roving tabindex / arrow navigation | Tabs, Toolbar, Menu, RadioGroup | `core/focus.ts` |
+| `ListBox` (a list with `aria-activedescendant`) | Select, ComboBox, SuggestField (and List, P1) | `components/fields/listbox` |
+| Virtualization | Grid, ListBox (long lists), Tree (P1) | `core/virtual.ts` |
+| Validators | Field, Form | `core/validators.ts` |
+| i18n with locale objects (`addMessages` per component) | validators, every component with text | `core/i18n.ts` |
+| Built-in icons | Button, Select, Window, Toast, Tree... | `components/base/icon` |
 
-Regra: uma peça só entra em `core/` se pelo menos três componentes reais a usam (princípio 3).
-`ListBox` e `Dropdown` ficam como componentes (não utilitários) porque o usuário também pode usá-los.
+Rule: a piece only goes into `core/` when at least three real components use it (principle 3).
+`ListBox` and `Dropdown` stay components (not utilities) because users can use them too.

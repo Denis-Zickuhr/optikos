@@ -1,8 +1,9 @@
 # Contributing
 
 Thanks for your interest in Optikos. Read [PHILOSOPHY.md](PHILOSOPHY.md) and the project rules in
-[AGENTS.md](AGENTS.md) first. Planning docs and component spec sheets are written in Portuguese;
-code, APIs and identifiers are in English.
+[AGENTS.md](AGENTS.md) first. Code, APIs, spec sheets and guides are in English, with a Portuguese translation in
+`docs/pt-BR/` kept in the same commit; planning notes (`docs/internal/`) and the decision log (`docs/architecture.md`)
+are in Portuguese.
 
 ## Setup
 
@@ -26,8 +27,8 @@ npm run dev     # sandboxes and demos at http://localhost:5173/dev/
 npm run new:component -- <category> <name>
 ```
 
-This creates the spec sheet (`docs/components/<name>.md`), the `.ts`, `.css` and test files and a sandbox section.
-Fill in the spec sheet before writing the code. The full checklist is in [AGENTS.md](AGENTS.md).
+This creates the spec sheet (`docs/components/<name>.md` and `docs/pt-BR/components/<name>.md`), the `.ts`, `.css` and
+test files and a sandbox section. Fill in the spec sheet before writing the code, and add an example to `site/examples.json`. The full checklist is in [AGENTS.md](AGENTS.md).
 
 ## Releasing
 

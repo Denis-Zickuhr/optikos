@@ -1,14 +1,14 @@
 # SuggestField  (type: 'suggestfield')
-Propósito:     Campo de busca com sugestões vindas de uma consulta assíncrona (cidade, cliente, CEP...).
-Anatomia:      igual ao ComboBox, sem botão-seta; lupa à esquerda (`.op-suggest__icon`); indicador de carregando (`.op-picker__spinner`).
-Config:        (ComboBox) + `query: (text, {signal}) => Promise<Item[]> | Item[]` ou `store` com proxy remoto (usa `store.load({query})`),
-               `minChars: 1`, `delay: 250` (debounce em ms), `forceSelection: true`, `emptyText`, `highlight: true`, `showValue: false` (mostra o valor/id do registro como selo no início do campo, escondido enquanto se digita, e como dica no fim de cada linha da lista), `icon: 'search'` (lupa à esquerda; `false` esconde).
-               `setSelection(item)` — para preencher sem consultar (o texto vem de `item.label`); `setValue(v)` só acha itens já carregados.
+Purpose:       A search field with suggestions from an async query (city, customer, postal code...).
+Anatomy:       like ComboBox, without the arrow button; a magnifier on the left (`.op-suggest__icon`); a loading indicator (`.op-picker__spinner`).
+Config:        (ComboBox) + `query: (text, {signal}) => Promise<Item[]> | Item[]` or a `store` with a remote proxy (uses `store.load({query})`),
+               `minChars: 1`, `delay: 250` (debounce in ms), `forceSelection: true`, `emptyText`, `highlight: true`, `showValue: false` (shows the record's value/id as a badge at the start of the field, hidden while typing, and as a hint at the end of each list row), `icon: 'search'` (magnifier on the left; `false` hides it).
+               `setSelection(item)` — to fill it without a query (the text comes from `item.label`); `setValue(v)` only finds items already loaded.
 API:           (ComboBox) + `setQuery`, `search(text)`, `clearSuggestions()`.
-Eventos:       `before-query(text)` (cancelável), `query(text)`, `load(items)`, `select(item)`, `error(err)`.
-Estados:       (stableSize) o espaço do spinner é sempre reservado no input;
-               `is-loading`, `is-open` (só se houver resultados ou `emptyText`).
-Teclado/ARIA:  igual ao ComboBox; região `aria-live=polite` anuncia "N resultados". Respostas antigas são descartadas (AbortController) quando o texto muda.
-Tokens:        os do ComboBox; `--op-picker-id-bg/fg` (selo do `showValue`), `--op-listbox-hint-fg`.
-Casos sandbox: busca local com delay simulado, busca que falha, resultado vazio, forceSelection false (texto livre), valor pré-carregado.
-Fora do escopo: cache de consultas, múltiplas seleções, agrupamento de resultados.
+Events:        `before-query(text)` (cancelable), `query(text)`, `load(items)`, `select(item)`, `error(err)`.
+States:        (stableSize) the spinner space is always reserved in the input;
+               `is-loading`, `is-open` (only when there are results or `emptyText`).
+Keyboard/ARIA: as in ComboBox; an `aria-live=polite` region announces "N results". Stale answers are dropped (AbortController) when the text changes.
+Tokens:        those of ComboBox; `--op-picker-id-bg/fg` (the `showValue` badge), `--op-listbox-hint-fg`.
+Sandbox cases: local search with a simulated delay, a failing search, an empty result, forceSelection false (free text), a preloaded value.
+Out of scope:  query caching, multiple selection, grouped results.

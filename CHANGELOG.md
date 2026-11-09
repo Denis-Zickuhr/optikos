@@ -14,6 +14,9 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
   column renderers; `Column.field` autocompletes the record's keys. `new Grid({ store })` infers it. Untyped grids keep
   working as before (the default is `any`).
 
+- Documentation in English with a Portuguese translation (`docs/pt-BR/`); the docs site has a language picker
+  (English/Português) that also switches the components' own messages, and the MCP server takes a `lang` argument.
+
 ### Changed
 
 - Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner

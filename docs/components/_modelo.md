@@ -1,22 +1,23 @@
-# Modelo de ficha de componente
+# Spec sheet template
 
-Copie este arquivo para `<nome>.md`. Toda seção é obrigatória (escreva "—" se não se aplica).
-A ficha vem **antes** do código; se a implementação divergir, atualize a ficha no mesmo commit.
+Copy this file to `<name>.md` (and its translation to `docs/pt-BR/components/<name>.md`). Every section is required
+(write "—" when it does not apply). The sheet comes **before** the code; if the implementation changes, update the
+sheet (both languages) in the same commit.
 
 ```md
-# <Nome>  (type: '<type>')
-Propósito:     uma frase
-Anatomia:      partes do DOM e classes (op-x, op-x__part)
+# <Name>  (type: '<type>')
+Purpose:       one sentence
+Anatomy:       DOM parts and classes (op-x, op-x__part)
 Config:        props + defaults
-API:           métodos públicos (todo config mutável tem setter)
-Eventos:       nome, payload, se é cancelável (before-*)
-Estados:       disabled, focus, invalid, loading...
-Teclado/ARIA:  teclas e roles
-Tokens:        --op-<x>-* próprios
-Casos sandbox: lista do que demonstrar
-Fora do escopo: o que não vamos fazer
+API:           public methods (every mutable config has a setter)
+Events:        name, payload, whether it can be canceled (before-*)
+States:        disabled, focus, invalid, loading...
+Keyboard/ARIA: keys and roles
+Tokens:        own --op-<x>-* tokens
+Sandbox cases: what to show
+Out of scope:  what we will not do
 ```
 
-Convenções que valem para toda ficha (não repetir): config comum de `Component` (`id`, `cls`, `style`,
-`hidden`, `width`, `height`, `flex`, `tooltip`, `theme`, `loading`, `stableSize`, `listeners`, `renderTo`), métodos comuns
-(`show/hide`, `setDisabled`, `focus`, `destroy`, `on/off/once/emit`) e o evento `destroy`.
+Conventions that apply to every sheet (do not repeat them): the common `Component` config (`id`, `cls`, `style`,
+`hidden`, `width`, `height`, `flex`, `tooltip`, `theme`, `loading`, `stableSize`, `listeners`, `renderTo`), the common
+methods (`show/hide`, `setDisabled`, `focus`, `destroy`, `on/off/once/emit`) and the `destroy` event.

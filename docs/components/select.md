@@ -1,10 +1,10 @@
 # Select  (type: 'select')
-Propósito:     Escolher uma opção de uma lista fechada, sem digitar texto livre.
-Anatomia:      Igual ao ComboBox, mas o `input[role=combobox]` é `readonly` e exibe o rótulo; clique em qualquer parte abre.
-Config:        (ComboBox sem filtro) `options`/`store`, `valueField`, `displayField`, `placeholder`, `clearable: false`.
-API/Eventos:   Como o ComboBox. Digitar letras salta para a opção que começa com elas (typeahead, buffer de 600 ms).
-Estados:       `is-open`, `has-value`, invalid/readonly/disabled (Field).
-Teclado/ARIA:  `role=combobox` + `aria-haspopup=listbox`; ↑↓ abrem/movem, Enter/Space escolhem, Esc fecha, letras fazem typeahead.
-Tokens:        os do ComboBox.
-Casos sandbox: strings, {value,label}, desabilitada, opção desabilitada, clearable, pré-selecionada, typeahead.
-Fora do escopo: múltipla seleção (TagField), `<select>` nativo mobile.
+Purpose:       Picks one option from a closed list, without typing free text.
+Anatomy:       Like ComboBox, but the `input[role=combobox]` is `readonly` and shows the label; a click anywhere opens it.
+Config:        (ComboBox without filtering) `options`/`store`, `valueField`, `displayField`, `placeholder`, `clearable: false`.
+API/Events:    As in ComboBox. Typing letters jumps to the option that starts with them (typeahead, 600 ms buffer).
+States:        `is-open`, `has-value`, invalid/readonly/disabled (Field).
+Keyboard/ARIA: `role=combobox` + `aria-haspopup=listbox`; ↑↓ open/move, Enter/Space pick, Esc closes, letters do typeahead.
+Tokens:        those of ComboBox.
+Sandbox cases: strings, {value,label}, disabled, a disabled option, clearable, preselected, typeahead.
+Out of scope:  multiple selection (TagField), the native mobile `<select>`.

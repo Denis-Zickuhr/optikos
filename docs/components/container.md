@@ -1,12 +1,12 @@
 # Container  (type: 'container')
-Propósito:     Componente que tem filhos (`items`) e um layout; nó do Composite.
-Anatomia:      `<div class="op-container">`; filhos dentro de `getBody()` (= el). Layout aplicado por classe + custom properties.
-Config:        `items: (ComponentConfig|Component|string)[]`, `layout: 'fit'|'hbox'|'vbox'|'border'|'grid'|'card'|{type, ...}|Layout`, `defaults` (config mesclada em cada item),
+Purpose:       A component with children (`items`) and a layout; the node of the composite tree.
+Anatomy:       `<div class="op-container">`; children inside `getBody()` (= el). The layout is applied with a class and custom properties.
+Config:        `items: (ComponentConfig|Component|string)[]`, `layout: 'fit'|'hbox'|'vbox'|'border'|'grid'|'card'|{type, ...}|Layout`, `defaults` (config merged into every item),
                `defaultType` ('container'), `gap` (token), `activeItem` (card).
-API:           `add(item)`, `insert(i, item)`, `remove(itemOrId, destroy=true)`, `removeAll()`, `getItems()`, `get(id)`, `query(fn)`, `setLayout`, `setDisabled` (desce aos filhos).
-Eventos:       `add(child)`, `remove(child)`.
-Teclado/ARIA:  sem semântica própria.
-Layouts:       fit (1 filho preenche), hbox/vbox (flex; itens com `flex`, `width`/`height`; config `align`, `justify`, `gap`, `wrap`),
-               border (`region`: north|south|west|east|center; **responsivo**: abaixo de `narrowBelow` px (768) west/east viram *drawers* sobre o centro, fechados até `openRegion('west')`; `open: 'west'` abre um já no início; `layout.openRegion/closeRegion/toggleRegion/isRegionOpen`; o scrim e a tecla Esc fecham), grid (`columns`, `gap`; item `colspan`; colunas numéricas viram 1 coluna abaixo de `narrowBelow` px, 480; `0` desliga), hbox (`stackBelow: px` empilha em coluna abaixo dessa largura), card (um filho visível; `setActive(i|id)`; `activeItem`).
-Casos sandbox: cada layout, aninhados, add/remove dinâmico, defaults, layout customizado registrado pelo usuário.
-Fora do escopo: drag and drop entre containers, layouts absolutos.
+API:           `add(item)`, `insert(i, item)`, `remove(itemOrId, destroy=true)`, `removeAll()`, `getItems()`, `get(id)`, `query(fn)`, `setLayout`, `setDisabled` (cascades to the children).
+Events:        `add(child)`, `remove(child)`.
+Keyboard/ARIA: no semantics of its own.
+Layouts:       fit (one child fills it), hbox/vbox (flex; items take `flex`, `width`/`height`; config `align`, `justify`, `gap`, `wrap`),
+               border (`region`: north|south|west|east|center; **responsive**: below `narrowBelow` px (768) west/east become *drawers* over the center, closed until `openRegion('west')`; `open: 'west'` starts one open; `layout.openRegion/closeRegion/toggleRegion/isRegionOpen`; the scrim and Esc close it), grid (`columns`, `gap`; item `colspan`; numeric columns become one column below `narrowBelow` px, 480; `0` turns it off), hbox (`stackBelow: px` stacks into a column below that width), card (one visible child; `setActive(i|id)`; `activeItem`).
+Sandbox cases: every layout, nested, dynamic add/remove, defaults, a custom layout registered by the user.
+Out of scope:  drag and drop between containers, absolute layouts.

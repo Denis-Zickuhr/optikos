@@ -1,10 +1,10 @@
 # Icon  (type: 'icon')
-Propósito:     Mostrar um ícone SVG embutido ou registrado pelo usuário.
-Anatomia:      `<span class="op-icon">` com `<svg viewBox="0 0 24 24">` dentro; tamanho em `em`.
-Config:        `name` (id registrado), `label` (se existir vira `role=img`+`aria-label`; senão `aria-hidden`).
-API:           `setName`, `setLabel`; global: `registerIcons({ nome: '<path d=…/>' | '<svg…>' })`, `getIcon(name)`.
-Eventos:       —
-Teclado/ARIA:  decorativo por padrão.
-Tokens:        `--op-icon-size` (padrão `1.25em`), `--op-icon-stroke` (largura do traço). Cor = `currentColor`.
-Casos sandbox: todos os ícones embutidos, ícone registrado, tamanhos, cores, com label.
-Fora do escopo: fontes de ícone, sprites externos. SVG registrado é confiável (vem do código do app, não de input do usuário).
+Purpose:       Shows a built-in SVG icon or one registered by the user.
+Anatomy:       `<span class="op-icon">` with an `<svg viewBox="0 0 24 24">` inside; sized in `em`.
+Config:        `name` (registered id), `label` (when set it becomes `role=img`+`aria-label`; otherwise `aria-hidden`).
+API:           `setName`, `setLabel`; global: `registerIcons({ name: '<path d=…/>' | '<svg…>' })`, `getIcon(name)`.
+Events:        —
+Keyboard/ARIA: decorative by default.
+Tokens:        `--op-icon-size` (default `1.25em`), `--op-icon-stroke` (stroke width). Color = `currentColor`.
+Sandbox cases: every built-in icon, a registered icon, sizes, colors, with a label.
+Out of scope:  icon fonts, external sprites. A registered SVG is trusted (it comes from the app's code, not from user input). The built-in paths come from Lucide (ISC) and Feather (MIT): see THIRD_PARTY_NOTICES.md.

@@ -1,14 +1,14 @@
 # ComboBox  (type: 'combobox')
-Propósito:     Campo com lista de opções conhecidas; o usuário digita para filtrar localmente e escolhe.
-Anatomia:      Field > `.op-picker` > `input[role=combobox]` + botão-seta; lista = ListBox dentro de um Dropdown (`matchWidth`).
-Config:        (Field/TextField) + `options: (string|{value,label,disabled?})[]` ou `store`, `valueField: 'value'`, `displayField: 'label'`,
-               `forceSelection: true` (texto fora da lista é descartado no blur), `filter: 'contains'|'startsWith'|fn` (contains), `emptyText` (sem resultados),
+Purpose:       A field with a list of known options; the user types to filter it locally and picks one.
+Anatomy:       Field > `.op-picker` > `input[role=combobox]` + arrow button; the list is a ListBox inside a Dropdown (`matchWidth`).
+Config:        (Field/TextField) + `options: (string|{value,label,disabled?})[]` or `store`, `valueField: 'value'`, `displayField: 'label'`,
+               `forceSelection: true` (text that is not in the list is dropped on blur), `filter: 'contains'|'startsWith'|fn` (contains), `emptyText` (no results),
                `openOnFocus: false`, `maxHeight`.
 API:           (Field) + `setOptions`, `setStore`, `getSelection()` (item), `setSelection(item)`, `expand()`, `collapse()`, `setEmptyText`.
-Eventos:       `select(item)`, `expand`, `collapse`, `change(value)`.
-Estados:       `is-open`; item ativo (`aria-activedescendant`); `has-value`.
-Teclado/ARIA:  `role=combobox`, `aria-expanded`, `aria-controls`, `aria-autocomplete=list`, `aria-activedescendant`. Setas movem item ativo (↓ abre), Enter escolhe,
-               Esc fecha (2º Esc limpa se `clearable`), Home/End no popup, Tab escolhe o ativo se `forceSelection`.
-Tokens:        `--op-picker-arrow-fg`, `--op-listbox-*` (ver ListBox).
-Casos sandbox: lista curta, 5.000 itens (virtualizada), objetos {value,label}, forceSelection false, disabled/readonly, store.
-Fora do escopo: seleção múltipla (TagField, P1), agrupamento visual de opções, templates HTML por item.
+Events:        `select(item)`, `expand`, `collapse`, `change(value)`.
+States:        `is-open`; active item (`aria-activedescendant`); `has-value`.
+Keyboard/ARIA: `role=combobox`, `aria-expanded`, `aria-controls`, `aria-autocomplete=list`, `aria-activedescendant`. Typing filters and highlights the first match; arrows move the active item (↓ opens), Enter picks,
+               Esc closes (a 2nd Esc clears when `clearable`), Home/End in the popup, Tab picks the active item when `forceSelection`.
+Tokens:        `--op-picker-arrow-fg`, `--op-listbox-*` (see ListBox).
+Sandbox cases: short list, 5,000 items (virtualized), {value,label} objects, forceSelection false, disabled/readonly, store.
+Out of scope:  multiple selection (TagField, P1), visual grouping of options, HTML templates per item.

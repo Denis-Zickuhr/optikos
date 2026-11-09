@@ -1,18 +1,18 @@
 # CommandPalette  (type: 'commandpalette')
-Propósito:     Janela de comandos aberta por atalho (Ctrl/⌘+K): o usuário digita e roda qualquer ação que o app registrou (navegar, trocar tema, criar registro...). Rápido para quem já conhece o app.
-Anatomia:      `body > .op-layer` > `.op-palette-backdrop` > `.op-palette[role=dialog]` > `__search` (input `role=combobox`) + `__filters` (chip "Todas" + um por categoria) +
-               `__list[role=listbox]` com `__group` (título da categoria) e `__item[role=option]` (ícone, título com `<mark>`, descrição, atalho `<kbd>`) + `__empty`; rodapé com dicas de teclado.
-Config:        `commands: Command[]`, `hotkey: 'mod+k'` (`mod` = Ctrl no Windows/Linux, ⌘ no Mac; `false` desliga), `placeholder`, `emptyText`, `maxResults: 50`,
-               `categories: string[]` (ordem dos grupos; o resto vem depois), `filters: true` (chips de categoria).
-Command:       `{ id, title, category?, icon?, description?, keywords?: string[], shortcut?: string (só exibe), disabled?, hidden?: () => boolean, handler(ctx) }`.
-               `children: Command[] | () => Command[] | Promise<Command[]>` abre um segundo nível ("Trocar tema… → claro/escuro/..."); Backspace com o campo vazio volta. O `handler` roda **depois** que a paleta fechou (assim pode abrir uma janela modal).
-API:           `open()`, `close()`, `toggle()`, `isOpen()`, `setCommands(list)`, `register(cmd | cmds)` (devolve a função que desregistra), `run(id)`, `getCommands()`.
-Eventos:       `before-open` (cancelável), `open`, `close`, `run(command)`, `error(err)` (handler que falha não derruba a paleta).
-Busca:         Sem digitar: todos os comandos, agrupados por categoria. Digitando: ranking por texto (início do título > início de palavra > substring > letras em ordem, só com 3+ letras para não achar tudo), também em `keywords`,
-               `category` e `description`; os melhores primeiro, sem grupos. Os chips de categoria filtram (um por vez; "Todas" limpa).
-Estados:       `is-open`; item `is-active` (destacado), `is-disabled`.
-Teclado/ARIA:  Ctrl/⌘+K abre/fecha de qualquer lugar (inclusive com o foco num campo); ↑↓ movem (circular), Home/End, Enter roda, Esc fecha (ou volta um nível), Tab/Shift+Tab percorrem os chips,
-               Backspace no campo vazio volta de um submenu. Modal com foco preso; `aria-activedescendant` aponta o item ativo; `aria-live` anuncia "N resultados". Foco volta a quem abriu.
+Purpose:       A command window opened with a shortcut (Ctrl/⌘+K): the user types and runs any action the app registered (navigate, switch theme, create a record...). Fast for people who know the app.
+Anatomy:       `body > .op-layer` > `.op-palette-backdrop` > `.op-palette[role=dialog]` > `__search` (input `role=combobox`) + `__filters` ("All" chip + one per category) +
+               `__list[role=listbox]` with `__group` (category title) and `__item[role=option]` (icon, title with `<mark>`, description, `<kbd>` shortcut) + `__empty`; a footer with keyboard hints.
+Config:        `commands: Command[]`, `hotkey: 'mod+k'` (`mod` = Ctrl on Windows/Linux, ⌘ on Mac; `false` turns it off), `placeholder`, `emptyText`, `maxResults: 50`,
+               `categories: string[]` (group order; the rest come after), `filters: true` (category chips).
+Command:       `{ id, title, category?, icon?, description?, keywords?: string[], shortcut?: string (display only), disabled?, hidden?: () => boolean, handler(ctx) }`.
+               `children: Command[] | () => Command[] | Promise<Command[]>` opens a second level ("Switch theme… → light/dark/..."); Backspace in the empty field goes back. The `handler` runs **after** the palette has closed (so it can open a modal window).
+API:           `open()`, `close()`, `toggle()`, `isOpen()`, `setCommands(list)`, `register(cmd | cmds)` (returns the function that unregisters), `run(id)`, `getCommands()`.
+Events:        `before-open` (cancelable), `open`, `close`, `run(command)`, `error(err)` (a failing handler does not break the palette).
+Search:        Without typing: every command, grouped by category. While typing: ranked by text (start of the title > start of a word > substring > letters in order, only with 3+ letters so it does not match everything), also in `keywords`,
+               `category` and `description`; best first, without groups. Category chips filter (one at a time; "All" clears).
+States:        `is-open`; item `is-active` (highlighted), `is-disabled`.
+Keyboard/ARIA: Ctrl/⌘+K opens/closes from anywhere (even with the focus in a field); ↑↓ move (wrapping), Home/End, Enter runs, Esc closes (or goes back a level), Tab/Shift+Tab go through the chips,
+               Backspace in the empty field leaves a submenu. Modal with trapped focus; `aria-activedescendant` points at the active item; `aria-live` announces "N results". Focus returns to the opener.
 Tokens:        `--op-palette-width`, `--op-palette-top`, `--op-palette-max-height`, `--op-palette-bg`, `--op-palette-item-active-bg`, `--op-palette-group-fg`, `--op-palette-radius`.
-Casos sandbox: 30 comandos em 4 categorias, submenu ("Trocar tema…"), comando desabilitado e oculto, atalho exibido, handler assíncrono que falha, hotkey desligado + botão que abre.
-Fora do escopo: histórico/"recentes", comandos com argumentos digitados (`:goto 12`), busca em dados remotos (use um `SuggestField`/`LookupField`).
+Sandbox cases: 30 commands in 4 categories, a submenu ("Switch theme…"), disabled and hidden commands, displayed shortcut, an async handler that fails, hotkey off + a button that opens it.
+Out of scope:  history/"recent", commands with typed arguments (`:goto 12`), searching remote data (use a `SuggestField`/`LookupField`).

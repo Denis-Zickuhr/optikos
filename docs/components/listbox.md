@@ -1,11 +1,11 @@
 # ListBox  (type: 'listbox')
-Propósito:     Lista de opções navegável e virtualizada; usada por Select, ComboBox e SuggestField (e pelo List, P1).
-Anatomia:      `.op-listbox[role=listbox]` > `.op-listbox__spacer` + `.op-listbox__rows` > `.op-listbox__item[role=option]`; `.op-listbox__empty`.
-Config:        `items: {value,label,disabled?}[]`, `selected` (value), `emptyText`, `maxHeight`, `renderer(item) => string|Node`, `highlight` (texto a destacar), `rowHeight`.
+Purpose:       A navigable, virtualized list of options; used by Select, ComboBox and SuggestField (and by List, P1).
+Anatomy:       `.op-listbox[role=listbox]` > `.op-listbox__spacer` + `.op-listbox__rows` > `.op-listbox__item[role=option]`; `.op-listbox__empty`.
+Config:        `items: {value,label,disabled?}[]`, `selected` (value), `emptyText`, `maxHeight`, `renderer(item) => string|Node`, `highlight` (text to highlight), `rowHeight`, `ariaLabel` (needed when used on its own).
 API:           `setItems`, `setSelected`, `setActive(i)`, `moveActive(delta)`, `getActive()`, `getActiveId()`, `scrollTo(i)`, `setEmptyText`, `setHighlight`.
-Eventos:       `select(item, index)` (clique/Enter via `selectActive()`), `active-change(item)`.
-Estados:       `is-active` (item sob o cursor de teclado), `is-selected`, `is-disabled`.
-Teclado/ARIA:  Não toma foco: o dono (campo) mantém o foco e aponta `aria-activedescendant` para `getActiveId()`. Itens têm `id` estável (`<uid>-opt-<i>`).
+Events:        `select(item, index)` (click/Enter through `selectActive()`), `active-change(item)`.
+States:        `is-active` (the item under the keyboard cursor), `is-selected`, `is-disabled`.
+Keyboard/ARIA: It does not take focus: the owner (a field) keeps the focus and points `aria-activedescendant` at `getActiveId()`. Items have a stable `id` (`<uid>-opt-<i>`).
 Tokens:        `--op-listbox-bg/item-padding-x/item-padding-y/item-hover-bg/item-active-bg/item-selected-fg/empty-fg`.
-Casos sandbox: 5 itens, 10.000 itens, itens desabilitados, vazio, destaque do texto buscado.
-Fora do escopo: itens com altura variável, grupos com cabeçalho, seleção múltipla.
+Sandbox cases: 5 items, 10,000 items, disabled items, empty, highlighting the searched text.
+Out of scope:  items with variable height, groups with headers, multiple selection.

@@ -1,12 +1,12 @@
 # TextField  (type: 'textfield')
-Propósito:     Campo de texto de uma linha; também base de TextArea, NumberField, PickerField e DateField.
-Anatomia:      herda a anatomia de Field; controle = `<input class="op-textfield__input">`.
+Purpose:       A single-line text field; also the base of TextArea, NumberField, PickerField and DateField.
+Anatomy:       inherits the Field anatomy; the control is an `<input class="op-textfield__input">`.
 Config:        (Field) + `inputType: 'text'|'email'|'tel'|'url'|'search'|'password'` (text), `placeholder`, `maxLength`, `minLength`,
                `pattern`, `autocomplete`, `selectOnFocus: false`, `clearable: false`.
 API:           (Field) + `setPlaceholder`, `setMaxLength`, `setInputType`, `select()`, `getInput()`.
-Eventos:       (Field) + `enter(text)` ao pressionar Enter. `change` dispara a cada edição (o valor é sempre o texto atual) e em `setValue`. Para buscas e filtros use `debounce: 300` e ouça `settled` (o Enter também dispara `settled` na hora).
-Estados:       (Field) + `has-value` (para label flutuante/clearable em CSS).
-Teclado/ARIA:  `<input>` nativo ligado ao `<label for>`; `aria-invalid`, `aria-describedby` (erro e ajuda), `aria-required`. Esc limpa se `clearable`.
+Events:        (Field) + `enter(text)` when Enter is pressed. `change` fires on every edit (the value is always the current text) and on `setValue`. For searches and filters use `debounce: 300` and listen to `settled` (Enter also fires `settled` right away).
+States:        (Field) + `has-value` (for a floating label/clearable in CSS).
+Keyboard/ARIA: a native `<input>` tied to its `<label for>`; `aria-invalid`, `aria-describedby` (error and help), `aria-required`. Esc clears when `clearable`.
 Tokens:        `--op-textfield-bg/fg/border/border-focus/radius/padding-x/padding-y/placeholder`.
-Casos sandbox: label top/left, placeholder, required, readonly, disabled, inválido, maxLength, clearable, password, enter.
-Fora do escopo: máscara (MaskField, P1), prefixo/sufixo e ícones internos (P1).
+Sandbox cases: label top/left, placeholder, required, readonly, disabled, invalid, maxLength, clearable, password, enter.
+Out of scope:  masks (MaskField, P1), prefix/suffix and inner icons (P1).

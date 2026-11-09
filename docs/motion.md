@@ -1,68 +1,68 @@
-# Motion (animação e micro-interações)
+# Motion (animation and micro-interactions)
 
-Um conjunto de utilitários, tokens e comportamentos de animação, **tudo configurável** e com um **interruptor global**. Os padrões vêm de 20 regras de motion design; com tudo ligado e sem mexer em nada, os números padrão são os das regras.
+A set of animation utilities, tokens and behaviors, **all configurable**, with a **global switch**. The defaults come from 20 motion design rules; with everything on and nothing changed, the default numbers are the rules' numbers.
 
 ```ts
 import { motion } from 'optikos';
-motion.disable();                       // desliga tudo (as animações viram instantâneas)
+motion.disable();                       // turns everything off (animations become instant)
 motion.enable();
-motion.set({ duration: { dropdown: 180 }, press: { scale: 0.95 } });   // muda só o que quiser
-motion.reset();                         // volta aos padrões
-motion.set({ ease: { out: 'cubic-bezier(.3,1.6,.3,1)' } });           // recusado: tem "bounce" (regra 13)
+motion.set({ duration: { dropdown: 180 }, press: { scale: 0.95 } });   // change only what you need
+motion.reset();                         // back to the defaults
+motion.set({ ease: { out: 'cubic-bezier(.3,1.6,.3,1)' } });           // refused: it "bounces" (rule 13)
 ```
 
-`motion.isOn()` é `enabled` **e** (se `respectReducedMotion`, padrão `true`) o usuário não pediu `prefers-reduced-motion`. Desligado, os componentes não animam e os tokens CSS ficam neutros (`--op-motion-press-scale: 1`...).
-Sem `Element.animate` (testes, navegadores antigos) tudo é instantâneo: nenhuma lógica depende da animação terminar.
+`motion.isOn()` is `enabled` **and** (when `respectReducedMotion`, default `true`) the user did not ask for `prefers-reduced-motion`. When off, components do not animate and the CSS tokens are neutral (`--op-motion-press-scale: 1`...).
+Without `Element.animate` (tests, old browsers) everything is instant: no logic waits for an animation to end.
 
-## Configuração (padrões)
+## Configuration (defaults)
 
-| Chave | Padrão | Regra |
+| Key | Default | Rule |
 |---|---|---|
-| `enabled` / `respectReducedMotion` | `true` / `true` | interruptor global |
+| `enabled` / `respectReducedMotion` | `true` / `true` | global switch |
 | `ease.out` / `ease.in` / `ease.inOut` | `cubic-bezier(0,0,.2,1)` / `cubic-bezier(.4,0,1,1)` / `cubic-bezier(.4,0,.2,1)` | 1, 9 |
-| `duration.dropdown` + `dropdownRange` | `200` ms, faixa `[150, 250]` (o valor é **limitado** a ela) | 2 |
-| `stagger.step` / `stagger.max` | `30` ms / `12` itens (depois não escalona) | 3, 6 |
+| `duration.dropdown` + `dropdownRange` | `200` ms, range `[150, 250]` (the value is **clamped** to it) | 2 |
+| `stagger.step` / `stagger.max` | `30` ms / `12` items (no staggering after that) | 3, 6 |
 | `press.scale` | `0.97` | 4 |
 | `stretch.amount` | `0.12` (12 %) | 5 |
-| `arc.bend` | `0.25` (curvatura = fração da distância) | 7 |
+| `arc.bend` | `0.25` (the curve, as a fraction of the distance) | 7 |
 | `duration.pulse` | `450` ms | 8 |
 | `popover.scale` / `duration.popover` / `duration.modal` | `0.95` / `200` / `240` | 10 |
 | `originFromTrigger` | `true` | 11, 12 |
-| `allowBounce` | `false` (curvas com overshoot são recusadas) | 13 |
-| `exitRatio` | `0.8` (a saída dura 20 % menos) | 15 |
+| `allowBounce` | `false` (curves with overshoot are refused) | 13 |
+| `exitRatio` | `0.8` (the exit is 20 % shorter) | 15 |
 | `duration.swap` / `blur` | `220` ms / `4` px | 16, 18 |
 | `duration.reveal` | `350` ms | 17 |
 | `rubber.resistance` / `rubber.settle` | `0.55` / `320` ms | 19 |
 | `duration.move` | `450` ms | 7, 9, 20 |
 
-Tokens CSS gerados na raiz: `--op-motion-ease-out/in/in-out`, `--op-motion-press-scale`, `--op-motion-press-duration`, `--op-motion-popover-scale`, `--op-motion-dropdown-duration`, `--op-motion-exit-ratio`, `--op-motion-stagger-step`, `--op-motion-blur`.
+CSS tokens written on the root: `--op-motion-ease-out/in/in-out`, `--op-motion-press-scale`, `--op-motion-press-duration`, `--op-motion-popover-scale`, `--op-motion-dropdown-duration`, `--op-motion-exit-ratio`, `--op-motion-stagger-step`, `--op-motion-blur`.
 
-Orçamento: o módulo (`optikos/motion`) pesa ~4 kB gzip; os componentes que animam (Dropdown/Menu/Window/Toast/DataView/Button) importam só a parte pequena (`popIn`, `popOut`, `stagger`, `pulse`, `enter`) e a configuração, ~2 kB. `rubberScroll`, `dragKnob`, `moveArc`, `swap`, `reveal`, `wipeColor` e `layoutId` só entram no bundle de quem os usa.
-Testes: o setup do vitest chama `motion.disable()`; os testes de motion ligam e simulam `Element.animate`.
+Size: the module (`optikos/motion`) is ~4 kB gzip; the components that animate (Dropdown/Menu/Window/Toast/DataView/Button) only import the small part (`popIn`, `popOut`, `stagger`, `pulse`, `enter`) and the configuration, ~2 kB. `rubberScroll`, `dragKnob`, `moveArc`, `swap`, `reveal`, `wipeColor` and `layoutId` only ship to whoever uses them.
+Tests: the vitest setup calls `motion.disable()`; the motion tests turn it on and fake `Element.animate`.
 
-## As 20 regras → o que existe
+## The 20 rules → what exists
 
-| # | Regra | Onde |
+| # | Rule | Where |
 |---|---|---|
-| 1 | Entradas com ease-out | `ease.out` é a curva de toda entrada (`enter()`, `popIn`, `stagger`) |
-| 2 | Dropdown 150–250 ms | `Dropdown`, `Menu`, `Select`... usam `popIn`; a duração é limitada a `dropdownRange` |
-| 3 | Stagger de 30 ms em listas | `stagger(els)`; `Menu` e `DataView` já escalonam (até `stagger.max`) |
-| 4 | Escala 0.97 ao pressionar | CSS: `.op-button`, `.op-dataview__item` e qualquer `[data-op-press]` |
-| 5 | Knob estica 12 % | `dragKnob(knob, track)` |
-| 6 | Stagger de detalhes | `staggerDetails(root, ['.title', '.text', '.chip'])` |
-| 7 | Movimento em arco | `moveArc(el, destino)` |
-| 8 | Pulso de sucesso | `pulse(el)`; `Button.pulse()`; o toast `success` pulsa |
-| 9 | Ease-in-out ao cruzar a tela | `ease.inOut` em `moveArc`, `layoutId` |
-| 10 | Popover nasce em 0.95 | `popIn` (`popover.scale`) em Dropdown, Window e MessageBox |
-| 11 | Entra a partir do gatilho | `transform-origin` calculado no gatilho (`originFromTrigger`) |
-| 12 | Sai em direção ao gatilho | `popOut` com a mesma origem |
-| 13 | Sem bounce | `motion.set` recusa curvas com overshoot (`allowBounce: false`) |
-| 14 | Sem tween no "hold" | CSS: enquanto pressionado, só `transform` faz transição |
-| 15 | Saída 20 % mais curta | `exitRatio` em `popOut`, fechar de Window |
-| 16 | Sobreposição de estados | `swap(host, novo)`: antigo e novo coexistem durante a transição |
-| 17 | Máscaras | `reveal(el)` (clip-path) e `wipeColor(el, cor)` |
-| 18 | Crossfade + blur | `swap(host, novoNó)` (ícones: `swap(el, iconEl('heart'))`) |
-| 19 | Rubber band só nos limites | `rubberScroll(scroller)`, `rubberBand(x, limite)` |
-| 20 | layoutId | `layoutId.snapshot(id, el)` + `layoutId.mount(id, novoEl)` (FLIP) |
+| 1 | Entrances use ease-out | `ease.out` is the curve of every entrance (`enter()`, `popIn`, `stagger`) |
+| 2 | Dropdowns take 150–250 ms | `Dropdown`, `Menu`, `Select`... use `popIn`; the duration is clamped to `dropdownRange` |
+| 3 | 30 ms stagger in lists | `stagger(els)`; `Menu` and `DataView` already stagger (up to `stagger.max`) |
+| 4 | 0.97 scale on press | CSS: `.op-button`, `.op-dataview__item` and any `[data-op-press]` |
+| 5 | The knob stretches 12 % | `dragKnob(knob, track)` |
+| 6 | Staggered details | `staggerDetails(root, ['.title', '.text', '.chip'])` |
+| 7 | Movement on an arc | `moveArc(el, target)` |
+| 8 | Success pulse | `pulse(el)`; `Button.pulse()`; the `success` toast pulses |
+| 9 | Ease-in-out across the screen | `ease.inOut` in `moveArc`, `layoutId` |
+| 10 | Popovers start at 0.95 | `popIn` (`popover.scale`) in Dropdown, Window and MessageBox |
+| 11 | Enter from the trigger | `transform-origin` computed from the trigger (`originFromTrigger`) |
+| 12 | Leave towards the trigger | `popOut` with the same origin |
+| 13 | No bounce | `motion.set` refuses curves with overshoot (`allowBounce: false`) |
+| 14 | No tween on "hold" | CSS: while pressed, only `transform` transitions |
+| 15 | Exits 20 % shorter | `exitRatio` in `popOut` and when a Window closes |
+| 16 | Overlapping states | `swap(host, next)`: the old and the new coexist during the transition |
+| 17 | Masks | `reveal(el)` (clip-path) and `wipeColor(el, color)` |
+| 18 | Crossfade + blur | `swap(host, newNode)` (icons: `swap(el, iconEl('heart'))`) |
+| 19 | Rubber band only at the limits | `rubberScroll(scroller)`, `rubberBand(x, limit)` |
+| 20 | layoutId | `layoutId.snapshot(id, el)` + `layoutId.mount(id, newEl)` (FLIP) |
 
-Demo: `demos/motion` (um cartão por regra, painel de configuração ao vivo e o interruptor global).
+Demo: `demos/motion` (one card per rule, a live settings panel and the global switch).

@@ -1,7 +1,7 @@
 {
  "button": [
   {
-   "title": "Variants",
+   "title": { "en": "Variants", "pt-BR": "Variantes" },
    "config": {
     "type": "container",
     "layout": "hbox",
@@ -35,7 +35,7 @@
    }
   },
   {
-   "title": "Loading and toggle",
+   "title": { "en": "Loading and toggle", "pt-BR": "Carregando e alternável" },
    "config": {
     "type": "container",
     "layout": "hbox",
@@ -64,7 +64,7 @@
  ],
  "icon": [
   {
-   "title": "Built-in icons",
+   "title": { "en": "Built-in icons", "pt-BR": "Ícones embutidos" },
    "config": {
     "type": "container",
     "layout": "hbox",
@@ -116,7 +116,7 @@
  ],
  "label": [
   {
-   "title": "Variants",
+   "title": { "en": "Variants", "pt-BR": "Variantes" },
    "config": {
     "type": "container",
     "layout": "vbox",
@@ -141,7 +141,7 @@
  ],
  "spacer": [
   {
-   "title": "Fill, fixed and line",
+   "title": { "en": "Fill, fixed and line", "pt-BR": "Preenche, fixo e linha" },
    "config": {
     "type": "toolbar",
     "items": [
@@ -168,7 +168,7 @@
  ],
  "container": [
   {
-   "title": "hbox with gap",
+   "title": { "en": "hbox with gap", "pt-BR": "hbox com espaçamento" },
    "config": {
     "type": "container",
     "layout": "hbox",
@@ -200,7 +200,7 @@
    }
   },
   {
-   "title": "grid layout",
+   "title": { "en": "grid layout", "pt-BR": "Layout grid" },
    "config": {
     "type": "container",
     "layout": {
@@ -275,7 +275,7 @@
  ],
  "panel": [
   {
-   "title": "Collapsible with tools",
+   "title": { "en": "Collapsible with tools", "pt-BR": "Recolhível com ferramentas" },
    "config": {
     "type": "panel",
     "title": "Customer",
@@ -303,7 +303,7 @@
  ],
  "toolbar": [
   {
-   "title": "Actions",
+   "title": { "en": "Actions", "pt-BR": "Ações" },
    "config": {
     "type": "toolbar",
     "items": [
@@ -335,15 +335,15 @@
  ],
  "viewport": [
   {
-   "title": "Full-page shell",
-   "description": "One per document (it is position:fixed over the page), so it is shown as code only. See the erp and admin demos.",
+   "title": { "en": "Full-page shell", "pt-BR": "Moldura de página inteira" },
+   "description": { "en": "One per document (it is position:fixed over the page), so it is shown as code only. See the erp and admin demos.", "pt-BR": "Só um por documento (é position:fixed sobre a página), então aparece só como código. Veja as demos erp e admin." },
    "code": "create({\n  type: 'viewport',\n  layout: 'border',\n  items: [\n    { type: 'toolbar', region: 'north', items: ['Optikos', '->', { type: 'button', text: 'Sign out' }] },\n    { type: 'navmenu', region: 'west', items: [{ id: 'home', text: 'Home', icon: 'home' }] },\n    { type: 'panel', region: 'center', title: 'Content' },\n  ],\n});",
    "demo": "/demos/erp/"
   }
  ],
  "fieldset": [
   {
-   "title": "Collapsible group",
+   "title": { "en": "Collapsible group", "pt-BR": "Grupo recolhível" },
    "config": {
     "type": "fieldset",
     "title": "Address",
@@ -363,7 +363,7 @@
  ],
  "textfield": [
   {
-   "title": "Label, help and validation",
+   "title": { "en": "Label, help and validation", "pt-BR": "Rótulo, ajuda e validação" },
    "config": {
     "type": "textfield",
     "label": "Email",
@@ -375,7 +375,7 @@
    }
   },
   {
-   "title": "Left label",
+   "title": { "en": "Left label", "pt-BR": "Rótulo à esquerda" },
    "config": {
     "type": "textfield",
     "label": "Name",
@@ -386,7 +386,7 @@
  ],
  "textarea": [
   {
-   "title": "Multi-line",
+   "title": { "en": "Multi-line", "pt-BR": "Várias linhas" },
    "config": {
     "type": "textarea",
     "label": "Notes",
@@ -398,7 +398,7 @@
  ],
  "numberfield": [
   {
-   "title": "Range and step",
+   "title": { "en": "Range and step", "pt-BR": "Limites e passo" },
    "config": {
     "type": "numberfield",
     "label": "Quantity",
@@ -412,7 +412,7 @@
  ],
  "checkbox": [
   {
-   "title": "States",
+   "title": { "en": "States", "pt-BR": "Estados" },
    "config": {
     "type": "container",
     "layout": "vbox",
@@ -439,7 +439,7 @@
  ],
  "radiogroup": [
   {
-   "title": "Vertical and horizontal",
+   "title": { "en": "Vertical and horizontal", "pt-BR": "Vertical e horizontal" },
    "config": {
     "type": "container",
     "layout": "vbox",
@@ -481,7 +481,7 @@
  ],
  "select": [
   {
-   "title": "Options",
+   "title": { "en": "Options", "pt-BR": "Opções" },
    "config": {
     "type": "select",
     "label": "Country",
@@ -497,7 +497,7 @@
    }
   },
   {
-   "title": "Label/value pairs",
+   "title": { "en": "Label/value pairs", "pt-BR": "Pares rótulo/valor" },
    "config": {
     "type": "select",
     "label": "Status",
@@ -521,7 +521,7 @@
  ],
  "combobox": [
   {
-   "title": "Type to filter",
+   "title": { "en": "Type to filter", "pt-BR": "Digite para filtrar" },
    "config": {
     "type": "combobox",
     "label": "Country",
@@ -539,7 +539,7 @@
  ],
  "listbox": [
   {
-   "title": "Selectable list",
+   "title": { "en": "Selectable list", "pt-BR": "Lista selecionável" },
    "config": {
     "type": "listbox",
     "ariaLabel": "Fruits",
@@ -569,7 +569,7 @@
  ],
  "suggestfield": [
   {
-   "title": "Local source with id badge",
+   "title": { "en": "Local source with id badge", "pt-BR": "Fonte local com selo de id" },
    "config": {
     "type": "suggestfield",
     "label": "Person",
@@ -623,7 +623,7 @@
  ],
  "lookupfield": [
   {
-   "title": "Search window (magnifier)",
+   "title": { "en": "Search window (magnifier)", "pt-BR": "Janela de pesquisa (lupa)" },
    "config": {
     "type": "lookupfield",
     "label": "Customer",
@@ -711,12 +711,12 @@
     "showValue": true,
     "width": 320
    },
-   "description": "Type to get suggestions or click the magnifier to open the window with filters and a grid."
+   "description": { "en": "Type to get suggestions or click the magnifier to open the window with filters and a grid.", "pt-BR": "Digite para receber sugestões ou clique na lupa para abrir a janela com filtros e grid." }
   }
  ],
  "secretfield": [
   {
-   "title": "Never reads the saved value back",
+   "title": { "en": "Never reads the saved value back", "pt-BR": "Nunca devolve o valor salvo" },
    "config": {
     "type": "secretfield",
     "label": "API token",
@@ -727,7 +727,7 @@
  ],
  "slider": [
   {
-   "title": "Single, range and marks",
+   "title": { "en": "Single, range and marks", "pt-BR": "Simples, intervalo e marcas" },
    "config": {
     "type": "container",
     "layout": "vbox",
@@ -766,7 +766,7 @@
  ],
  "datefield": [
   {
-   "title": "Date picker",
+   "title": { "en": "Date picker", "pt-BR": "Seletor de data" },
    "config": {
     "type": "datefield",
     "label": "Since",
@@ -776,7 +776,7 @@
  ],
  "daterangefield": [
   {
-   "title": "Date range",
+   "title": { "en": "Date range", "pt-BR": "Período" },
    "config": {
     "type": "daterangefield",
     "label": "Period",
@@ -789,14 +789,14 @@
  ],
  "calendar": [
   {
-   "title": "Single date",
+   "title": { "en": "Single date", "pt-BR": "Uma data" },
    "config": {
     "type": "calendar",
     "value": "2024-05-20"
    }
   },
   {
-   "title": "Range",
+   "title": { "en": "Range", "pt-BR": "Intervalo" },
    "config": {
     "type": "calendar",
     "range": true,
@@ -809,7 +809,7 @@
  ],
  "form": [
   {
-   "title": "Validation and values",
+   "title": { "en": "Validation and values", "pt-BR": "Validação e valores" },
    "config": {
     "type": "form",
     "width": 420,
@@ -851,7 +851,7 @@
    }
   },
   {
-   "title": "With tabs",
+   "title": { "en": "With tabs", "pt-BR": "Com abas" },
    "config": {
     "type": "form",
     "width": 460,
@@ -888,7 +888,7 @@
  ],
  "stepform": [
   {
-   "title": "Wizard with review",
+   "title": { "en": "Wizard with review", "pt-BR": "Assistente com revisão" },
    "config": {
     "type": "stepform",
     "width": 560,
@@ -929,7 +929,7 @@
  ],
  "stepper": [
   {
-   "title": "Progress through steps",
+   "title": { "en": "Progress through steps", "pt-BR": "Avanço pelas etapas" },
    "config": {
     "type": "stepper",
     "active": 1,
@@ -953,7 +953,7 @@
  ],
  "tabs": [
   {
-   "title": "Tabs with a closable one",
+   "title": { "en": "Tabs with a closable one", "pt-BR": "Abas, uma delas fechável" },
    "config": {
     "type": "tabs",
     "height": 160,
@@ -989,7 +989,7 @@
  ],
  "breadcrumb": [
   {
-   "title": "Collapses the middle",
+   "title": { "en": "Collapses the middle", "pt-BR": "Recolhe o meio" },
    "config": {
     "type": "breadcrumb",
     "maxItems": 4,
@@ -1020,7 +1020,7 @@
  ],
  "navmenu": [
   {
-   "title": "Grouped navigation",
+   "title": { "en": "Grouped navigation", "pt-BR": "Navegação agrupada" },
    "config": {
     "type": "navmenu",
     "width": 240,
@@ -1059,7 +1059,7 @@
  ],
  "pagination": [
   {
-   "title": "Manual mode",
+   "title": { "en": "Manual mode", "pt-BR": "Modo manual" },
    "config": {
     "type": "pagination",
     "total": 135,
@@ -1070,7 +1070,7 @@
  ],
  "table": [
   {
-   "title": "Simple table",
+   "title": { "en": "Simple table", "pt-BR": "Tabela simples" },
    "config": {
     "type": "table",
     "data": [
@@ -1155,7 +1155,7 @@
  ],
  "grid": [
   {
-   "title": "Sort, select, columns menu",
+   "title": { "en": "Sort, select, columns menu", "pt-BR": "Ordenar, selecionar, menu de colunas" },
    "config": {
     "type": "grid",
     "data": [
@@ -1246,7 +1246,7 @@
    }
   },
   {
-   "title": "Paging",
+   "title": { "en": "Paging", "pt-BR": "Paginação" },
    "config": {
     "type": "grid",
     "data": [
@@ -1327,7 +1327,7 @@
  ],
  "dataview": [
   {
-   "title": "Card grid",
+   "title": { "en": "Card grid", "pt-BR": "Grade de cartões" },
    "config": {
     "type": "dataview",
     "ariaLabel": "Photos",
@@ -1383,7 +1383,7 @@
  ],
  "filterbuilder": [
   {
-   "title": "AND/OR groups",
+   "title": { "en": "AND/OR groups", "pt-BR": "Grupos E/OU" },
    "config": {
     "type": "filterbuilder",
     "addMode": "pick",
@@ -1420,7 +1420,7 @@
  ],
  "searchgrid": [
   {
-   "title": "Filters + grid in one block",
+   "title": { "en": "Filters + grid in one block", "pt-BR": "Filtros + grid num bloco só" },
    "config": {
     "type": "searchgrid",
     "lookup": {
@@ -1511,15 +1511,15 @@
  ],
  "viewmanager": [
   {
-   "title": "Saved views",
-   "description": "Needs a Grid (and optionally a FilterBuilder) to point at, so it is shown as code. Storage is pluggable: local in the demos, an endpoint in production.",
+   "title": { "en": "Saved views", "pt-BR": "Visões salvas" },
+   "description": { "en": "Needs a Grid (and optionally a FilterBuilder) to point at, so it is shown as code. Storage is pluggable: local in the demos, an endpoint in production.", "pt-BR": "Precisa de um Grid (e, se quiser, de um FilterBuilder) para apontar, então aparece como código. O armazenamento é plugável: local nas demos, um endpoint em produção." },
    "code": "const grid = create({ type: 'grid', store, columns, columnsMenu: true });\nconst filters = create({ type: 'filterbuilder', store, fields });\ncreate({\n  type: 'viewmanager',\n  grid, filters,\n  storage: localViewStorage('customers'),      // or restViewStorage({ url: '/api/views' })\n  renderTo: toolbarEl,\n});",
    "demo": "/demos/crm/"
   }
  ],
  "dropdown": [
   {
-   "title": "Anchored popup",
+   "title": { "en": "Anchored popup", "pt-BR": "Popup ancorado" },
    "config": {
     "type": "dropdown",
     "content": {
@@ -1535,13 +1535,13 @@
     },
     "matchWidth": false
    },
-   "description": "The button below anchors the popup.",
+   "description": { "en": "The button below anchors the popup.", "pt-BR": "O botão abaixo ancora o popup." },
    "launch": "anchor"
   }
  ],
  "menu": [
   {
-   "title": "Items, check, submenu",
+   "title": { "en": "Items, check, submenu", "pt-BR": "Itens, marcação, submenu" },
    "config": {
     "type": "menu",
     "items": [
@@ -1580,7 +1580,7 @@
  ],
  "tooltip": [
   {
-   "title": "On hover and focus",
+   "title": { "en": "On hover and focus", "pt-BR": "Ao passar o mouse e no foco" },
    "config": {
     "type": "button",
     "icon": "star",
@@ -1591,7 +1591,7 @@
  ],
  "window": [
   {
-   "title": "Modal dialog",
+   "title": { "en": "Modal dialog", "pt-BR": "Diálogo modal" },
    "config": {
     "type": "window",
     "title": "Edit customer",
@@ -1625,7 +1625,7 @@
  ],
  "messagebox": [
   {
-   "title": "Confirm with danger",
+   "title": { "en": "Confirm with danger", "pt-BR": "Confirmação perigosa" },
    "config": {
     "text": "Delete 3 customers? This cannot be undone.",
     "title": "Delete",
@@ -1648,7 +1648,7 @@
  ],
  "toast": [
   {
-   "title": "Success toast",
+   "title": { "en": "Success toast", "pt-BR": "Aviso de sucesso" },
    "config": {
     "text": "Your changes were saved.",
     "title": "Saved",
@@ -1659,7 +1659,7 @@
  ],
  "commandpalette": [
   {
-   "title": "Ctrl+K palette",
+   "title": { "en": "Ctrl+K palette", "pt-BR": "Paleta Ctrl+K" },
    "config": {
     "type": "commandpalette",
     "commands": [
@@ -1695,13 +1695,13 @@
      }
     ]
    },
-   "description": "Press Ctrl+K (or the button).",
+   "description": { "en": "Press Ctrl+K (or the button).", "pt-BR": "Aperte Ctrl+K (ou o botão)." },
    "launch": "open"
   }
  ],
  "widget": [
   {
-   "title": "Floating side widget",
+   "title": { "en": "Floating side widget", "pt-BR": "Widget lateral flutuante" },
    "config": {
     "type": "widget",
     "title": "Assistant",
@@ -1721,7 +1721,7 @@
  ],
  "chat": [
   {
-   "title": "Conversation",
+   "title": { "en": "Conversation", "pt-BR": "Conversa" },
    "config": {
     "type": "chat",
     "me": "me",
@@ -1756,7 +1756,7 @@
  ],
  "spinner": [
   {
-   "title": "Spinner and loading mask",
+   "title": { "en": "Spinner and loading mask", "pt-BR": "Spinner e máscara de carregamento" },
    "config": {
     "type": "container",
     "layout": "hbox",

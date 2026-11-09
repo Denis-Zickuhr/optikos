@@ -1,10 +1,10 @@
-# Spinner / LoadMask  (type: 'spinner'; config `loading` em todo Component)
-Propósito:     Indicar carregamento: spinner solto e máscara sobre um componente.
-Anatomia:      Spinner: `<span class="op-spinner" role="progressbar">` (CSS puro). Máscara: `.op-mask` (overlay) > `.op-spinner` + `.op-mask__text`, dentro do `el` do componente.
-Config:        no Component: `loading: boolean | string` (string = texto da máscara) e `setLoading(v)`. No Spinner: `label`.
-               DECISÃO: a máscara faz parte do `Component` base (~20 linhas) porque Panel, Grid, Form e Window a usam; o componente `spinner` é só o elemento.
-Estados:       `is-loading` no alvo, `aria-busy="true"`; o conteúdo atrás fica `inert`.
-Teclado/ARIA:  `role=progressbar` sem valor (indeterminado) + `aria-label` localizado; foco não entra na área mascarada.
+# Spinner / LoadMask  (type: 'spinner'; the `loading` config on every Component)
+Purpose:       Shows that something is loading: a standalone spinner and a mask over a component.
+Anatomy:       Spinner: `<span class="op-spinner" role="progressbar">` (pure CSS). Mask: `.op-mask` (overlay) > `.op-spinner` + `.op-mask__text`, inside the component's `el`.
+Config:        on Component: `loading: boolean | string` (a string is the mask text) and `setLoading(v)`. On Spinner: `label`.
+               DECISION: the mask is part of the base `Component` (~20 lines) because Panel, Grid, Form and Window use it; the `spinner` component is just the element.
+States:        `is-loading` on the target, `aria-busy="true"`; the content behind it becomes `inert`.
+Keyboard/ARIA: `role=progressbar` without a value (indeterminate) + a localized `aria-label`; focus does not enter the masked area.
 Tokens:        `--op-spinner-size/stroke/color`, `--op-mask-bg`.
-Casos sandbox: spinner solto (3 tamanhos), máscara em panel/grid/form, texto na máscara, ligar/desligar.
-Fora do escopo: ProgressBar determinada (P1), Skeleton (P2).
+Sandbox cases: standalone spinner (3 sizes), mask on a panel/grid/form, text on the mask, toggling it.
+Out of scope:  a determinate ProgressBar (P1), Skeleton (P2).

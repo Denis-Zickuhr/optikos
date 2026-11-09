@@ -1,11 +1,12 @@
 // Runs one docs example: inline, or behind a button for things that float (windows, menus, toasts...).
 import { create, toast, MessageBox, type Component } from 'optikos';
 import { hydrate } from './hydrate';
+import type { Text } from './i18n';
 
 export type Launch = 'inline' | 'show' | 'open' | 'anchor' | 'toast' | 'messagebox';
 export interface Example {
-  title: string;
-  description?: string;
+  title: Text;
+  description?: Text;
   config?: Record<string, unknown>;
   launch?: Launch;
   code?: string;

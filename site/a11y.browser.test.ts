@@ -31,7 +31,7 @@ describe('accessibility of the docs examples (axe)', () => {
     for (const [name, list] of Object.entries(examples as Record<string, Example[]>)) {
       list.forEach((ex, i) => {
         if (!ex.config) return;
-        it(`${theme} · ${name} · ${ex.title}`, async () => {
+        it(`${theme} · ${name} · ${typeof ex.title === 'string' ? ex.title : ex.title.en}`, async () => {
           document.documentElement.setAttribute('data-op-theme', theme);
           const stage = document.body.appendChild(document.createElement('main'));
           stage.setAttribute('aria-label', `${name} example ${i + 1}`);

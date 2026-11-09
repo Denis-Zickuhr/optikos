@@ -17,10 +17,12 @@ if (existsSync(dir)) {
 }
 mkdirSync(dir, { recursive: true });
 
-const ficha = join(root, `docs/components/${name}.md`);
-if (!existsSync(ficha)) {
-  const model = readFileSync(join(root, 'docs/components/_modelo.md'), 'utf8').match(/```md\n([\s\S]*?)```/)[1];
-  writeFileSync(ficha, model.replace('<Nome>', Class).replace("'<type>'", `'${name}'`));
+// the spec sheet in English and its Portuguese translation, both from their language's template
+for (const [dir, title] of [['docs/components', '<Name>'], ['docs/pt-BR/components', '<Nome>']]) {
+  const ficha = join(root, dir, `${name}.md`);
+  if (existsSync(ficha)) continue;
+  const model = readFileSync(join(root, dir, '_modelo.md'), 'utf8').match(/```md\n([\s\S]*?)```/)[1];
+  writeFileSync(ficha, model.replace(title, Class).replace("'<type>'", `'${name}'`));
 }
 
 writeFileSync(join(dir, `${name}.ts`), `import { Component, type ComponentConfig, register } from 'optikos/core';
@@ -75,4 +77,4 @@ p.section('${Class}', 'TODO: show every case of docs/components/${name}.md', (ho
 `);
 }
 genIndex();
-console.log(`Created src/components/${category}/${name}, docs/components/${name}.md and a sandbox section.\nNext: fill the spec sheet first, then the code.`);
+console.log(`Created src/components/${category}/${name}, docs/components/${name}.md (+ docs/pt-BR/components/${name}.md) and a sandbox section.\nNext: fill the spec sheet first (both languages), then the code. Add an example to site/examples.json.`);

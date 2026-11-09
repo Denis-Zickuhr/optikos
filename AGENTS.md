@@ -10,7 +10,9 @@ Guia para agentes (IA ou humanos) que trabalham no Optikos. Leia `PHILOSOPHY.md`
   permitidas; nada entra em `dependencies` do `package.json`.
 - **Código enxuto.** Sem over-engineering, sem camadas "para o futuro" e sem config de
   configuração. Se a solução precisa de explicação longa, simplifique.
-- **Idioma:** código, APIs e identificadores em inglês. Docs de planejamento em português.
+- **Idioma:** código, APIs e identificadores em inglês. Docs públicas (fichas, guias, README, site) em inglês, com a
+  tradução pt-BR em `docs/pt-BR/` atualizada **no mesmo commit** (o teste `scripts/site.test.mjs` exige as duas).
+  Planejamento (`docs/internal/`) e o registro de decisões (`docs/architecture.md`) em português.
 - **Publicação no npm só por tag.** `git push` de uma tag `v<versão>` dispara o workflow Release (npm + docs no
   GitHub Pages). Sem tag não publica; o `scripts/release.mjs` recusa publicar fora de um commit com a tag da versão.
 - **Comandos de dev** ficam no `kai.yml` (ferramenta [kai](https://github.com/Denis-Zickuhr/kai)),
@@ -38,7 +40,8 @@ demos/           apps de demonstração completos (só API pública)
 dev/             índice e moldura de navegação do servidor de dev
 site/            docs vivas (`npm run site`; estático em `site-dist/` com `npm run site:build`) e exemplos
 scripts/         build, dev, site, servidor MCP, release, geradores
-docs/            catálogo, arquitetura, guias e fichas (`docs/components/<nome>.md`)
+docs/            fichas (`components/<nome>.md`), guias, catálogo (em inglês), arquitetura (pt)
+docs/pt-BR/      tradução das fichas e guias
 docs/internal/   planejamento (PLAN.md) e registro de rodadas (fixes.md)
 .github/workflows/ CI (check em push/PR) e Release (tag → npm + GitHub Pages)
 ```
@@ -56,7 +59,8 @@ docs/internal/   planejamento (PLAN.md) e registro de rodadas (fixes.md)
 
 ## Criando um componente
 
-1. Escreva a ficha em `docs/components/<nome>.md` (modelo em `docs/components/_modelo.md`).
+1. Escreva a ficha em `docs/components/<nome>.md` (modelo em `docs/components/_modelo.md`) e a tradução em
+   `docs/pt-BR/components/<nome>.md`. Acrescente um exemplo em `site/examples.json` (título nas duas línguas).
 2. Implemente estendendo `Component` (ou `Field`/`Container`), registre o `type`.
 3. CSS só com tokens; declare os tokens próprios do componente no topo do arquivo.
 4. Adicione casos na sandbox da categoria.

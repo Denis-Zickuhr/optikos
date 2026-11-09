@@ -1,10 +1,10 @@
 # Viewport  (type: 'viewport')
-Propósito:     Container raiz que ocupa a janela inteira (layout padrão `fit`).
-Anatomia:      `<div class="op-viewport">` (`position:fixed; inset:0`), montado em `document.body`.
-Config:        (Container) + `renderTo` (body). Só pode existir um por documento (o segundo lança erro).
+Purpose:       The root container that fills the whole window (default layout `fit`).
+Anatomy:       `<div class="op-viewport">` (`position:fixed; inset:0`), mounted on `document.body`.
+Config:        (Container) + `renderTo` (body). Only one per document (a second one throws).
 API:           (Container).
-Teclado/ARIA:  sem semântica; filhos definem regiões (`main`, `nav`).
+Keyboard/ARIA: no semantics; the children define regions (`main`, `nav`).
 Tokens:        `--op-viewport-bg`, `--op-viewport-fg`.
-Responsivo:    O que adapta é o *layout* do container (medido no próprio container, não na janela): `border` com drawers, `grid` e `hbox` que empilham. Ver `container.md`. O evento `narrow-change(bool)` avisa o app; o container ganha a classe `is-narrow`.
-Casos sandbox: border layout com sidebar/topbar, aninhamento com Tabs.
-Fora do escopo: múltiplos viewports, iframes.
+Responsive:    What adapts is the container's *layout* (measured on the container itself, not the window): `border` with drawers, `grid` and `hbox` that stack. See `container.md`. The `narrow-change(bool)` event tells the app; the container gets the `is-narrow` class.
+Sandbox cases: border layout with a sidebar/topbar, nesting with Tabs.
+Out of scope:  several viewports, iframes.

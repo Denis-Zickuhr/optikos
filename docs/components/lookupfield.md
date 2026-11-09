@@ -1,14 +1,14 @@
 # LookupField  (type: 'lookupfield')
-Propósito:     Escolher um registro de um conjunto grande (cliente, gerente, produto): digita e recebe sugestões, ou abre uma janela de pesquisa com filtros e grid pela lupa.
-Anatomia:      igual ao `SuggestField` (`op-suggest`) + `op-lookup`; botão-lupa à direita (`.op-lookup__btn`, `aria-haspopup=dialog`) em vez do ícone decorativo.
-               A lupa abre uma `Window` modal com um `SearchGrid` (filtros em cima, grid embaixo) e os botões Cancelar / Selecionar.
-Config:        (SuggestField, incl. `showValue` para exibir o id do registro) + `lookup: LookupDef | string` (a definição, ou o nome dado a `registerLookup`; ver `searchgrid.md`).
-               `valueField` (`id`) e `displayField` (`name`) vêm da definição; as sugestões digitadas filtram `queryField` (padrão: o 1º filtro) com `contains`.
-API:           (SuggestField) + `openDialog()`. `getValue()` é o `valueField` do registro; `getSelection()` é `{ value, label, raw }`.
-Eventos:       (SuggestField) `select(item)` ao escolher (na lista ou na janela), `change(value)`.
-Estados:       disabled/readonly desabilitam a lupa; `is-searching` (spinner à esquerda da lupa).
-Teclado/ARIA:  F4 ou Alt+↓ abre a janela (o texto digitado pré-preenche o filtro rápido); ↓/↑/Enter na lista de sugestões como no SuggestField;
-               na janela: Enter num filtro pesquisa, Enter/duplo clique numa linha escolhe, Esc cancela e devolve o foco ao campo.
-Tokens:        os do SuggestField e do SearchGrid.
-Casos sandbox: `fields` (padrão, obrigatório, desabilitado); demos CRM ("Account manager" no cadastro de cliente) e admin ("Manager" em Settings).
-Fora do escopo: seleção múltipla (o `selection: 'multi'` da definição vale só para o `SearchGrid` avulso; o campo usa o 1º registro), criar registro a partir da janela, campo sem edição de texto.
+Purpose:       Picks one record from a large set (customer, manager, product): type and get suggestions, or open a search window with filters and a grid from the magnifier.
+Anatomy:       like `SuggestField` (`op-suggest`) + `op-lookup`; a magnifier button on the right (`.op-lookup__btn`, `aria-haspopup=dialog`) instead of the decorative icon.
+               The magnifier opens a modal `Window` with a `SearchGrid` (filters on top, grid below) and the Cancel / Select buttons.
+Config:        (SuggestField, incl. `showValue` to display the record id) + `lookup: LookupDef | string` (the definition, or the name given to `registerLookup`; see `searchgrid.md`).
+               `valueField` (`id`) and `displayField` (`name`) come from the definition; typed suggestions filter `queryField` (default: the 1st filter) with `contains`.
+API:           (SuggestField) + `openDialog()`. `getValue()` is the record's `valueField`; `getSelection()` is `{ value, label, raw }`.
+Events:        (SuggestField) `select(item)` when picking (in the list or in the window), `change(value)`.
+States:        disabled/readonly disable the magnifier; `is-searching` (a spinner left of the magnifier).
+Keyboard/ARIA: F4 or Alt+↓ opens the window (the typed text pre-fills the quick filter); ↓/↑/Enter in the suggestion list as in SuggestField;
+               in the window: Enter in a filter searches, Enter/double click on a row picks it, Esc cancels and gives the focus back to the field.
+Tokens:        those of SuggestField and SearchGrid.
+Sandbox cases: `fields` (default, required, disabled); CRM demo ("Account manager" in the customer form) and admin demo ("Manager" in Settings).
+Out of scope:  multiple selection (the definition's `selection: 'multi'` only applies to a standalone `SearchGrid`; the field takes the 1st record), creating a record from the window, a field without text editing.

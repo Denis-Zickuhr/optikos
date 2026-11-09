@@ -1,15 +1,14 @@
 # Widget  (type: 'widget')
-Propósito:     Painel que **flutua por cima** da página, preso a uma borda (direita, esquerda, embaixo ou em cima): assistente de IA, chat de suporte, notas rápidas. Não empurra o layout. Diferente do `Window` (centrado, modal, arrastável).
-Anatomia:      `body > .op-layer` > `.op-widget.op-panel` (`op-widget--right|left|top|bottom`, `is-floating`, `is-open`) com o cabeçalho do `Panel` (título, ícone, ferramentas), corpo e barras. Herda tudo do `Panel`.
-Config:        (Panel) + `side: 'right'|'left'|'top'|'bottom'` (right), `floating: true` (`false` = painel comum na posição do layout, sem flutuar; `side` não vale),
-               `size` (largura nas laterais, altura em cima/embaixo; padrão pelos tokens), `sideSwitcher: false` (botões no cabeçalho para o usuário escolher o lado) e `sides: ['left','right','bottom']` (quais lados o seletor oferece),
-               `draggable: false` (o usuário move o widget pelo cabeçalho: arrastar com o ponteiro, ou Alt+setas / Shift+Alt+setas com o foco no cabeçalho; mexer o solta do lado, e `setSide()`/Alt+Home o devolvem),
-               `closable: true`, `closeAction: 'hide'`, `closeOnEsc: true` (Esc com o foco dentro fecha), `autoFocus: true` (foco vai para dentro ao abrir), `layout: 'fit'`.
-API:           `open()`/`show()`, `close()`/`hide()`, `setOpen(bool?)` (sem argumento alterna; `toggle()` continua sendo o recolher do Panel), `isOpen()`, `setSide(side)`, `setSize(size)`, `getSide()`, `getPosition()` (`{x, y}` em px da janela, ou `undefined` enquanto está no lado), `resetPosition()` + a API do Panel (`setTitle`, `setIcon`...).
-Eventos:       `before-show` (cancelável), `show`, `before-hide` (cancelável), `hide`, `side-change(side)`, `move({x, y} | undefined)`, e os do Panel (`before-close`, `close`).
-Estados:       `is-open` (visível, com transição de deslizar), `is-floating`.
-Teclado/ARIA:  Não é modal: a página continua utilizável e **sem** foco preso. `role=complementary` com o título como nome; Esc fecha quando o foco está dentro; o foco volta a quem abriu. O seletor de lado são botões com `aria-pressed`.
-Tokens:        `--op-widget-width` (24rem), `--op-widget-height` (26rem), `--op-widget-wide` (largura em cima/embaixo), `--op-widget-offset` (distância da borda), `--op-widget-shadow`, `--op-widget-radius`, `--op-widget-bg`.
-Casos sandbox: cada lado, seletor de lado, `floating: false` (docado no layout), com um `Chat` dentro, `size` customizado, vários widgets ao mesmo tempo.
-Fora do escopo: redimensionar, lembrar a posição entre visitas (o app guarda com `move`), botão flutuante (launcher) para abrir, lembrar o lado escolhido (o app guarda com `side-change`).
-Casos sandbox: (acima) + `draggable` com seletor de lado; demo `workbench`: widgets que não são chat (notas, timer de foco, configurações de visão) sobre um grid.
+Purpose:       A panel that **floats over** the page, pinned to an edge (right, left, bottom or top): an AI assistant, a support chat, quick notes. It does not push the layout. Unlike `Window` (centered, modal, draggable).
+Anatomy:       `body > .op-layer` > `.op-widget.op-panel` (`op-widget--right|left|top|bottom`, `is-floating`, `is-open`) with the `Panel` header (title, icon, tools), body and bars. It inherits everything from `Panel`.
+Config:        (Panel) + `side: 'right'|'left'|'top'|'bottom'` (right), `floating: true` (`false` = a regular panel in the layout, not floating; `side` does not apply),
+               `size` (width on the sides, height on top/bottom; default from the tokens), `sideSwitcher: false` (buttons in the header so the user picks the side) and `sides: ['left','right','bottom']` (which sides the switcher offers),
+               `draggable: false` (the user moves the widget by its header: drag with the pointer, or Alt+arrows / Shift+Alt+arrows with the focus on the header; moving it detaches it from the side, and `setSide()`/Alt+Home put it back),
+               `closable: true`, `closeAction: 'hide'`, `closeOnEsc: true` (Esc with the focus inside closes), `autoFocus: true` (the focus moves inside on open), `layout: 'fit'`.
+API:           `open()`/`show()`, `close()`/`hide()`, `setOpen(bool?)` (without an argument it toggles; `toggle()` is still the Panel collapse), `isOpen()`, `setSide(side)`, `setSize(size)`, `getSide()`, `getPosition()` (`{x, y}` in window px, or `undefined` while it is on a side), `resetPosition()` + the Panel API (`setTitle`, `setIcon`...).
+Events:        `before-show` (cancelable), `show`, `before-hide` (cancelable), `hide`, `side-change(side)`, `move({x, y} | undefined)`, and the Panel ones (`before-close`, `close`).
+States:        `is-open` (visible, with a slide transition), `is-floating`.
+Keyboard/ARIA: Not modal: the page stays usable and the focus is **not** trapped. `role=complementary` named by its title; Esc closes when the focus is inside; the focus goes back to the opener. The side switcher is buttons with `aria-pressed`.
+Tokens:        `--op-widget-width` (24rem), `--op-widget-height` (26rem), `--op-widget-wide` (width on top/bottom), `--op-widget-offset` (distance from the edge), `--op-widget-shadow`, `--op-widget-radius`, `--op-widget-bg`.
+Sandbox cases: each side, the side switcher, `floating: false` (docked in the layout), with a `Chat` inside, a custom `size`, several widgets at once, `draggable` with the side switcher; `workbench` demo: widgets that are not chats (notes, a focus timer, view settings) over a grid.
+Out of scope:  resizing, remembering the position between visits (the app stores it on `move`), a floating launcher button, remembering the chosen side (the app stores it on `side-change`).

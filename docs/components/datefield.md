@@ -1,12 +1,12 @@
 # DateField  (type: 'datefield')
-Propósito:     Campo de data com digitação e calendário em dropdown.
-Anatomia:      TextField + botão de calendário; Dropdown com Calendar.
-Config:        (TextField) + `value` (string ISO `YYYY-MM-DD` ou null), `min`, `max` (ISO), `firstDay`. O texto exibido é `dd/mm/aaaa` na ordem do locale (via `Intl`); não há `format` customizado.
-               DECISÃO: o valor do campo é sempre string ISO (serializável, sem fuso); o texto exibido segue o locale.
+Purpose:       A date field with typing and a calendar in a dropdown.
+Anatomy:       TextField + calendar button; a Dropdown with a Calendar.
+Config:        (TextField) + `value` (ISO string `YYYY-MM-DD` or null), `min`, `max` (ISO), `firstDay`. The displayed text follows the locale's day/month/year order (through `Intl`); there is no custom `format`.
+               DECISION: the field value is always an ISO string (serializable, no time zone); the displayed text follows the locale.
 API:           (Field) + `setMin`, `setMax`, `expand()`, `collapse()`.
-Eventos:       `change(iso)`, `expand`, `collapse`.
-Estados:       inválido se o texto não é data válida ou fora de min/max (mensagens localizadas).
-Teclado/ARIA:  Digitar aceita a ordem do locale (e ISO); ↓ ou Alt+↓ abre o calendário; setas/PageUp/PageDown dentro dele (ver Calendar); Esc fecha; `aria-haspopup=dialog`.
-Tokens:        `--op-picker-arrow-fg` + tokens do Calendar.
-Casos sandbox: vazio, com valor, min/max, locale en e pt-BR, inválido ao digitar, readonly.
-Fora do escopo: hora (DateTimeField/TimeField, P1), intervalos (ver DateRangeField, valor `{ start, end }` em ISO).
+Events:        `change(iso)`, `expand`, `collapse`.
+States:        invalid when the text is not a valid date or is outside min/max (localized messages).
+Keyboard/ARIA: Typing accepts the locale's order (and ISO); ↓ or Alt+↓ opens the calendar; arrows/PageUp/PageDown inside it (see Calendar); Esc closes. The input follows the WAI-ARIA APG date picker combobox: `role=combobox`, `aria-haspopup=dialog`, `aria-expanded`.
+Tokens:        `--op-picker-arrow-fg` + the Calendar tokens.
+Sandbox cases: empty, with a value, min/max, en and pt-BR locales, invalid while typing, readonly.
+Out of scope:  time (DateTimeField/TimeField, P1), ranges (see DateRangeField, value `{ start, end }` in ISO).

@@ -25,11 +25,14 @@ apontam para o código no GitHub, porque elas só existem no servidor de dev.
 
 ## Fonte única
 
-- Fichas: `docs/components/*.md`. Exemplos: `site/examples.json` (um array por componente; JSON puro).
+- Fichas: `docs/components/*.md` (inglês) e `docs/pt-BR/components/*.md` (português). Guias: `docs/<guia>.md` e `docs/pt-BR/<guia>.md`; `architecture.md` só em português.
+- Exemplos: `site/examples.json` (um array por componente; JSON puro; `title`/`description` como `{ "en": …, "pt-BR": … }`).
+- Idioma: seletor no topo (English/Português), lembrado no navegador; `?lang=pt-BR` força; sem escolha, segue o idioma do navegador. Trocar recarrega a página e chama `setLocale`, então os componentes dos exemplos também mudam de língua. Textos do próprio site em `site/i18n.ts` (teste exige as mesmas chaves nas duas línguas).
 - `scripts/docs-data.mjs` lê tudo e entrega para o site (`.dev/site.json`) e para o MCP.
 - JSON não diz "um Store" nem "uma função": `{"$store": [linhas]}` vira `new Store({ data })` e `{"$tpl": "{name}"}` vira um `renderer`.
 - Exemplo que não cabe em JSON (ex.: precisa de outro componente por referência) usa `code` + `demo` em vez de `config`.
-- `site/examples.test.ts` renderiza **todo** exemplo; `scripts/site.test.mjs` exige exemplo para toda ficha. Componente novo = ficha + exemplo.
+- `site/examples.test.ts` renderiza **todo** exemplo; `scripts/site.test.mjs` exige exemplo para toda ficha, as duas línguas em toda ficha (com as mesmas seções), em todo guia e em todo título de exemplo. Componente novo = ficha (en + pt-BR) + exemplo.
+- O MCP aceita `lang` (`en` padrão, ou `pt-BR`) em `list_components`, `get_component`, `search_docs` e `get_guide`.
 
 ## Servidor MCP
 

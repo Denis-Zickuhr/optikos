@@ -1,10 +1,10 @@
 # RadioGroup  (type: 'radiogroup')
-Propósito:     (Radio não existe solto: é uma opção do grupo.) Escolha única entre poucas opções visíveis. "Radio" é uma opção do grupo (não há componente solto).
-Anatomia:      Field > `div.op-radiogroup[role=radiogroup]` > `label.op-radio` > `input[type=radio]` + `.op-radio__dot` + `.op-radio__text`.
+Purpose:       One choice among a few visible options. A "radio" is an option of the group (there is no standalone radio component).
+Anatomy:       Field > `div.op-radiogroup[role=radiogroup]` > `label.op-radio` > `input[type=radio]` + `.op-radio__dot` + `.op-radio__text`.
 Config:        (Field) + `options: (string|{value,label,disabled?})[]`, `direction: 'vertical'|'horizontal'` (vertical).
 API:           (Field) + `setOptions`.
-Eventos:       `change(value)`.
-Teclado/ARIA:  Inputs nativos com o mesmo `name` (setas movem e selecionam, Tab entra/sai do grupo); grupo rotulado pelo label do campo (`aria-labelledby`).
+Events:        `change(value)`.
+Keyboard/ARIA: Native inputs sharing a `name` (arrows move and select, Tab enters/leaves the group); the group is labelled by the field label (`aria-labelledby`).
 Tokens:        `--op-radio-size/border/checked-bg/gap`.
-Casos sandbox: vertical, horizontal, opção desabilitada, required inválido, valor inicial.
-Fora do escopo: opções com HTML livre.
+Sandbox cases: vertical, horizontal, a disabled option, required and invalid, initial value.
+Out of scope:  options with free HTML.
