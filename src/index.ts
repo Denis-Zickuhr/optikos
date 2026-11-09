@@ -20,6 +20,7 @@ export * from './components/data/viewmanager/viewmanager';
 export * from './components/dates/calendar/calendar';
 export * from './components/feedback/spinner/spinner';
 export * from './components/fields/checkbox/checkbox';
+export * from './components/fields/checkboxgroup/checkboxgroup';
 export * from './components/fields/combobox/combobox';
 export * from './components/fields/datefield/datefield';
 export * from './components/fields/daterangefield/daterangefield';

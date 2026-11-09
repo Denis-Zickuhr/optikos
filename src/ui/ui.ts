@@ -8,6 +8,7 @@ import { DateField } from '../components/fields/datefield/datefield';
 import { DateRangeField } from '../components/fields/daterangefield/daterangefield';
 import { Checkbox } from '../components/fields/checkbox/checkbox';
 import { Toggle } from '../components/fields/toggle/toggle';
+import { CheckboxGroup } from '../components/fields/checkboxgroup/checkboxgroup';
 import { RadioGroup, type RadioOption } from '../components/fields/radiogroup/radiogroup';
 import { Select } from '../components/fields/select/select';
 import { ComboBox } from '../components/fields/combobox/combobox';
@@ -47,6 +48,8 @@ export const ui = {
   /** An on/off switch; `boxLabel` is the text beside it. */
   toggle: (name: string, boxLabel?: string, c?: Cfg) => field(Toggle, name, undefined, { boxLabel, ...c }),
   radio: (name: string, label: string, options: RadioOption[], c?: Cfg) => field(RadioGroup, name, label, { options, ...c }),
+  /** Several choices; the value is the list of checked values. */
+  checkGroup: (name: string, label: string, options: RadioOption[], c?: Cfg) => field(CheckboxGroup, name, label, { options, ...c }),
   select: (name: string, label: string, options: Options, c?: Cfg) => field(Select, name, label, { options, ...c }),
   combo: (name: string, label: string, options: Options, c?: Cfg) => field(ComboBox, name, label, { options, ...c }),
   suggest: (name: string, label: string, query: (text: string, o: { signal: AbortSignal }) => unknown, c?: Cfg) => field(SuggestField, name, label, { query, ...c }),

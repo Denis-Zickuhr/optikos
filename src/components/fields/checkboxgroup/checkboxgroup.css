@@ -1,0 +1,12 @@
+@layer optikos {
+  .op-checkboxgroup__options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-checkboxgroup-gap, var(--op-space-1));
+  }
+  .op-checkboxgroup__options--horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--op-checkboxgroup-gap, var(--op-space-4));
+  }
+}

@@ -31,6 +31,8 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 - `Toggle` (an on/off switch, `role="switch"`) and the `ui.toggle()` shortcut.
 
+- `CheckboxGroup` (several choices; the value is the list of checked values) and `ui.checkGroup()`.
+
 ### Changed
 
 - Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner

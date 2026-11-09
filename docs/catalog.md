@@ -47,7 +47,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (all P0, in the core).
 | PasswordField | `passwordfield` | P1 |
 | TimeField, DateTimeField | `timefield`, `datetimefield` | P1 |
 | DateRangeField | `daterangefield` | P1 ✔ |
-| CheckboxGroup | `checkboxgroup` | P1 |
+| CheckboxGroup | `checkboxgroup` | P1 ✔ |
 | Slider (a track with a knob, single or range) | `slider` | P1 ✔ |
 | Toggle | `toggle` | P1 ✔ |
 | TagField | `tagfield` | P1 |

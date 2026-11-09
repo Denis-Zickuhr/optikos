@@ -2015,5 +2015,62 @@
     ]
    }
   }
+ ],
+ "checkboxgroup": [
+  {
+   "title": {
+    "en": "Channels and days",
+    "pt-BR": "Canais e dias"
+   },
+   "config": {
+    "type": "container",
+    "layout": {
+     "type": "vbox",
+     "gap": 8
+    },
+    "items": [
+     {
+      "type": "checkboxgroup",
+      "name": "channels",
+      "label": "Notify me by",
+      "required": true,
+      "options": [
+       "Email",
+       "SMS",
+       {
+        "value": "push",
+        "label": "Push (app only)",
+        "disabled": true
+       }
+      ],
+      "value": [
+       "Email"
+      ]
+     },
+     {
+      "type": "checkboxgroup",
+      "name": "days",
+      "label": "Working days",
+      "direction": "horizontal",
+      "options": [
+       "Mon",
+       "Tue",
+       "Wed",
+       "Thu",
+       "Fri",
+       "Sat",
+       "Sun"
+      ],
+      "value": [
+       "Mon",
+       "Tue",
+       "Wed",
+       "Thu",
+       "Fri"
+      ]
+     }
+    ]
+   }
+  }
  ]
 }

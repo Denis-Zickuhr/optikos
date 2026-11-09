@@ -21,7 +21,7 @@ They return real instances, so they work in any `items: [...]`, mixed with decla
 |---|---|
 | `ui.text/email/password/area/number/date/dateRange/secret/slider(name, label?, cfg?)` | the field of the same name (`email`/`password` set the `inputType`) |
 | `ui.check(name, boxLabel?, cfg?)` · `ui.toggle(name, boxLabel?, cfg?)` | `Checkbox`, `Toggle` |
-| `ui.radio(name, label, options, cfg?)` · `ui.select` · `ui.combo` | option fields |
+| `ui.radio(name, label, options, cfg?)` · `ui.checkGroup` · `ui.select` · `ui.combo` | option fields |
 | `ui.suggest(name, label, query, cfg?)` · `ui.lookup(name, label, lookup, cfg?)` | search as you type / search window |
 | `ui.button/primary/danger(text, handler?, cfg?)` | `Button` (the `handler` is the 2nd argument) |
 | `ui.row(...items)` · `ui.col(...items)` · `ui.grid(columns, ...items)` | `hbox`, `vbox` and `grid` containers (a numeric `columns` collapses to one column on narrow containers) |

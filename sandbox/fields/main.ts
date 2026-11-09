@@ -123,3 +123,9 @@ p.section('Toggle', 'an on/off switch (role="switch"): Space or a click toggles;
   create({ type: 'toggle', boxLabel: 'Read-only', readonly: true, renderTo: host } as never);
   watch(on, ['change']);
 });
+
+p.section('CheckboxGroup', 'several choices; the value is the list of checked values in option order. Required = at least one.', (host, { watch }) => {
+  const g = create({ type: 'checkboxgroup', label: 'Notify me by', required: true, options: ['Email', 'SMS', { value: 'push', label: 'Push (disabled)', disabled: true }], renderTo: host } as never);
+  create({ type: 'checkboxgroup', label: 'Days', direction: 'horizontal', options: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], value: ['Mon', 'Fri'], renderTo: host } as never);
+  watch(g, ['change', 'invalid', 'valid']);
+});
