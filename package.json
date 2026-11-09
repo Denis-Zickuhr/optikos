@@ -83,6 +83,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:browser": "vitest run --config vitest.browser.config.ts",
+    "bench": "node scripts/bench.mjs",
     "check": "npm run gen && npm run typecheck && npm test && npm run build",
     "new:component": "node scripts/new-component.mjs",
     "release": "node scripts/release.mjs",

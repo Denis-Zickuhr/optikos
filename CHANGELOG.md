@@ -22,6 +22,11 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 - Each component now ships its own `en`/`pt-BR` messages, so the core is 2.2 kB (gzip) smaller and every standalone component about 0.5 kB smaller.
   Custom locales passed to `setLocale({...})` keep working; missing keys still fall back to English.
 
+### Fixed
+
+- Store: sorting text is 13× faster (100k records: 5.4 s → 0.41 s). The comparison reuses one `Intl.Collator` instead of
+  building one per `localeCompare` call; the order is unchanged.
+
 ## [0.1.0] - 2026-11-08
 
 First public release.
