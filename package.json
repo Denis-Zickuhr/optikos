@@ -72,6 +72,9 @@
     "CHANGELOG.md",
     "THIRD_PARTY_NOTICES.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "sandbox": "node scripts/dev.mjs sandbox",
