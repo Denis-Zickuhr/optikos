@@ -2,3 +2,4 @@ export function components(): { name: string; title: string; type: string | null
 export function guides(): { name: string; title: string; markdown: string }[];
 export function tokens(): Record<string, string>;
 export function themes(): string[];
+export function repo(): string;

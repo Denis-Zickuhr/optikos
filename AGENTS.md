@@ -11,6 +11,8 @@ Guia para agentes (IA ou humanos) que trabalham no Optikos. Leia `PHILOSOPHY.md`
 - **Código enxuto.** Sem over-engineering, sem camadas "para o futuro" e sem config de
   configuração. Se a solução precisa de explicação longa, simplifique.
 - **Idioma:** código, APIs e identificadores em inglês. Docs de planejamento em português.
+- **Publicação no npm só por tag.** `git push` de uma tag `v<versão>` dispara o workflow Release (npm + docs no
+  GitHub Pages). Sem tag não publica; o `scripts/release.mjs` recusa publicar fora de um commit com a tag da versão.
 - **Comandos de dev** ficam no `kai.yml` (ferramenta [kai](https://github.com/Denis-Zickuhr/kai)),
   espelhados em `package.json` scripts.
 
@@ -34,10 +36,11 @@ src/
 sandbox/         uma página por categoria de componente
 demos/           apps de demonstração completos (só API pública)
 dev/             índice e moldura de navegação do servidor de dev
-site/            docs vivas (`npm run site`) e exemplos (`examples.json`)
+site/            docs vivas (`npm run site`; estático em `site-dist/` com `npm run site:build`) e exemplos
 scripts/         build, dev, site, servidor MCP, release, geradores
 docs/            catálogo, arquitetura, guias e fichas (`docs/components/<nome>.md`)
 docs/internal/   planejamento (PLAN.md) e registro de rodadas (fixes.md)
+.github/workflows/ CI (check em push/PR) e Release (tag → npm + GitHub Pages)
 ```
 
 ## Convenções

@@ -18,7 +18,7 @@
   ],
   "author": "Denis Zickuhr",
   "license": "MIT",
-  "homepage": "https://github.com/Denis-Zickuhr/optikos#readme",
+  "homepage": "https://denis-zickuhr.github.io/optikos/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Denis-Zickuhr/optikos.git"
@@ -85,6 +85,7 @@
     "theme": "node scripts/theme.mjs",
     "gen": "node scripts/gen.mjs",
     "site": "node scripts/site.mjs",
+    "site:build": "node scripts/site.mjs build",
     "mcp": "node scripts/mcp.mjs"
   },
   "devDependencies": {

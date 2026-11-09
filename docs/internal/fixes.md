@@ -246,3 +246,7 @@ montados à mão na toolbar, e seleção por clique de linha. Faltam as operaç�
 - Observação de ambiente: o servidor de dev lê as pastas de `demos/` ao subir; uma demo nova exige reiniciar `npm run dev`.
 - `demos/demos.test.ts` sobe as duas demos no happy-dom e exercita o fluxo principal.
 - [x] **Correção `shop`**: o carrinho quebrava ao abrir (`Object.assign(el, { dataset })` lança: `dataset` só tem getter; criado o helper `act()`), a lista rolava na horizontal e o "Remove" era cortado (agora `✕`, `itemWidth` menor, `overflow-x:hidden`). Teste de ponta a ponta: carrinho → checkout → pedido → carrinho zerado.
+
+## Rodada 12 (pedido do dono)
+
+- [x] **Debounce em todo campo**: `debounce` (ms) na config de qualquer `Field` e evento `settled(value)` (decisão 44). `change` continua imediato. O shop passou a filtrar em `settled` (busca 300 ms, preço 150 ms).

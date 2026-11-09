@@ -105,7 +105,7 @@ commands:
         required: true
   - name: "Release"
     type: "command"
-    description: "Check + npm publish. Dry run unless unchecked."
+    description: "Check + npm publish. Dry run unless unchecked; a real publish needs the commit tagged v<version> (normally the Release workflow does it)."
     icon: "package"
     folder: "Release"
     command: "npm run release -- --dry-run={{DRY_RUN}}"
@@ -124,6 +124,13 @@ commands:
     is_background: true
     open_last_link: true
     cli_path: "docs"
+  - name: "Docs site build"
+    type: "command"
+    description: "Writes the static docs site to site-dist/ (what GitHub Pages publishes)"
+    icon: "hammer"
+    folder: "Docs"
+    command: "npm run site:build"
+    cli_path: "build"
   - name: "MCP server"
     type: "command"
     description: "Optikos MCP server over stdio (spec sheets, examples, tokens, themes, guides)"

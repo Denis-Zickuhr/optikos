@@ -187,7 +187,7 @@ export class Slider extends Field<V, SliderConfig> {
       knob.removeEventListener('pointercancel', up);
       this.el.classList.remove('is-dragging');
       stretch.release();
-      this.emit('slide-end', this.value);
+      (this.flushSettled(), this.emit('slide-end', this.value));
     };
     knob.addEventListener('pointermove', move);
     knob.addEventListener('pointerup', up);
@@ -217,7 +217,7 @@ export class Slider extends Field<V, SliderConfig> {
     if (!(e.key in to)) return;
     e.preventDefault();
     this.setAt(i, Math.max(lo, Math.min(hi, this.snap(to[e.key]))));
-    this.emit('slide-end', this.value);
+    (this.flushSettled(), this.emit('slide-end', this.value));
   }
 
   // ---- API ----------------------------------------------------------------------------------

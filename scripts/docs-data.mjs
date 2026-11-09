@@ -59,6 +59,11 @@ export function themes() {
   return ['light', ...readdirSync(p('src/themes')).filter((f) => f.endsWith('.css') && f !== 'base.css').map((f) => basename(f, '.css'))];
 }
 
+/** The GitHub URL from package.json `repository` (the static docs site links sandboxes and demos there). */
+export function repo() {
+  return JSON.parse(read('package.json')).repository.url.replace(/^git\+/, '').replace(/\.git$/, '');
+}
+
 export function siteData() {
-  return { components: components(), guides: guides(), tokens: tokens(), themes: themes() };
+  return { components: components(), guides: guides(), tokens: tokens(), themes: themes(), repo: repo() };
 }

@@ -5,3 +5,4 @@ coverage
 *.log
 *.tgz
 .claude/settings.local.json
+site-dist

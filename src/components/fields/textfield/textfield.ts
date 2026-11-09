@@ -67,7 +67,7 @@ export class TextField<V = string, C extends TextFieldConfig<V> = TextFieldConfi
   }
 
   protected onKey(e: KeyboardEvent): void {
-    if (e.key === 'Enter' && !e.defaultPrevented) this.emit('enter', this.getValue());
+    if (e.key === 'Enter' && !e.defaultPrevented) (this.flushSettled(), this.emit('enter', this.getValue()));
     else if (e.key === 'Escape' && this.config.clearable && this.input.value) {
       e.stopPropagation();
       this.setValue(this.parse(''));

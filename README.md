@@ -183,13 +183,14 @@ Current evergreen browsers. The JavaScript targets ES2022, and the CSS uses casc
 
 ## Documentation and demos
 
-- [Docs (Portuguese)](https://github.com/Denis-Zickuhr/optikos/tree/main/docs): one spec sheet per component in
+- [Docs site](https://denis-zickuhr.github.io/optikos/): every component with live, editable examples, its spec sheet,
+  the guides and the design tokens.
+- [Docs sources (Portuguese)](https://github.com/Denis-Zickuhr/optikos/tree/main/docs): one spec sheet per component in
   [`docs/components`](https://github.com/Denis-Zickuhr/optikos/tree/main/docs/components), plus guides on
   [theming](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/theming.md),
   [motion](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/motion.md),
   [`ui` shortcuts](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/ui.md) and
   [architecture](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/architecture.md).
-- Living docs site with editable examples: clone the repo and run `npm run site`.
 - [Demos](https://github.com/Denis-Zickuhr/optikos/tree/main/demos): CRM, admin dashboard, ERP, chat, photo gallery,
   shop, event landing page, workbench, motion lab and customization. Run them with `npm run dev`.
 
@@ -200,7 +201,7 @@ npm install
 npm run dev               # dev server: index of sandboxes and demos at /dev/
 npm run sandbox -- fields # one sandbox category
 npm run demo -- crm       # one demo
-npm run site              # living docs
+npm run site              # living docs, with live reload
 npm run check             # generate index, typecheck, tests, build with size budgets
 ```
 

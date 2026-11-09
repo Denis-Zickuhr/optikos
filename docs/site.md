@@ -9,6 +9,13 @@ Feito com o próprio Optikos, sem dependências novas.
 - Conteúdo: página inicial por categoria, uma página por componente, guias (arquitetura, tematização, motion, catálogo), tokens e temas, e a página do MCP.
 - `Ctrl+K` busca qualquer componente (é o `CommandPalette` da lib). O seletor do topo troca o tema do site inteiro.
 
+## Versão publicada (GitHub Pages)
+
+`npm run site:build` grava o site estático em `site-dist/` (um `index.html`, `main.js`, `site.json`, `optikos.css` e os
+temas, tudo com caminhos relativos, então funciona em `https://denis-zickuhr.github.io/optikos/`). O workflow Release
+publica essa pasta a cada tag `v*` (ou ao rodá-lo à mão em Actions). No site estático, os links para sandboxes e demos
+apontam para o código no GitHub, porque elas só existem no servidor de dev.
+
 ## Página de um componente
 
 1. **Exemplos ao vivo.** Cada exemplo mostra o componente funcionando e, embaixo, a config em JSON **editável**: *Apply* (ou Ctrl+Enter) recria o componente; *Reset* volta ao original; *Copy code* copia o `create({...})`.

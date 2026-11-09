@@ -30,11 +30,16 @@ export function initialState(): DevThemeState {
   return { theme: THEMES.includes(s.theme as DevTheme) ? (s.theme as DevTheme) : 'light', compact: !!s.compact, custom: !!s.custom };
 }
 
+/** Folder the page loaded optikos.css from ('/.dev/' on the dev servers, './' on the static docs site); themes and data sit next to it. */
+export function assetBase(): string {
+  return document.querySelector('link[href$="optikos.css"]')?.getAttribute('href')?.replace(/optikos\.css$/, '') ?? '/.dev/';
+}
+
 /** Loads the theme's stylesheet when the page did not link it, then sets `data-op-theme` on <html> and remembers it. */
 export function applyThemeState(s: DevThemeState, extra: () => void = () => {}): void {
   for (const name of [...s.theme.split(' '), 'compact']) {
     if (name !== 'light' && name !== 'night' && !document.querySelector(`link[href$="/themes/${name}.css"]`)) {
-      document.head.append(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: `/.dev/themes/${name}.css` }));
+      document.head.append(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: `${assetBase()}themes/${name}.css` }));
     }
   }
   extra();

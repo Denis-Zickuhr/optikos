@@ -27,6 +27,20 @@ npm run new:component -- <category> <name>
 This creates the spec sheet (`docs/components/<name>.md`), the `.ts`, `.css` and test files and a sandbox section.
 Fill in the spec sheet before writing the code. The full checklist is in [AGENTS.md](AGENTS.md).
 
+## Releasing
+
+Publishing to npm only happens from a version tag. CI (`.github/workflows/ci.yml`) runs `npm run check` on every push
+and pull request; pushing a tag `v<version>` runs `.github/workflows/release.yml`, which publishes that version to npm
+and then deploys the docs site to GitHub Pages.
+
+1. Add the new version's entry to `CHANGELOG.md` and commit it.
+2. `npm version patch` (or `minor` / `major`): bumps `package.json` and the lockfile, commits and creates the tag `v<version>`.
+3. `git push --follow-tags`.
+
+`npm run release` locally is a dry run. `scripts/release.mjs` refuses a real publish unless the current commit is
+tagged `v<package.json version>` and the working tree is clean. The docs site alone can be redeployed by running the
+Release workflow by hand (Actions → Release → Run workflow); that never publishes to npm.
+
 ## Reporting bugs
 
 Open an issue at https://github.com/Denis-Zickuhr/optikos/issues with the Optikos version, the browser and a minimal config that reproduces it.

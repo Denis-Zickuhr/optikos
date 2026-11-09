@@ -1,12 +1,13 @@
 // Optikos living docs: every component with its spec sheet and live, editable examples, plus guides, tokens and the MCP server.
-// Built with Optikos itself. Data comes from /.dev/site.json (scripts/docs-data.mjs), the same source the MCP server reads.
+// Built with Optikos itself. Data comes from site.json next to optikos.css (scripts/docs-data.mjs), the same source the MCP server reads.
+// `npm run site` serves it from the repo; `npm run site:build` writes the static copy published on GitHub Pages.
 import { create, NavMenu, CommandPalette, type NavItem } from 'optikos';
-import { THEMES, initialState, applyThemeState, type DevTheme } from '../dev/themes';
+import { THEMES, initialState, applyThemeState, assetBase, type DevTheme } from '../dev/themes';
 import { run, snippet, type Example } from './render';
 import { markdown, inline } from './markdown';
 
 interface Comp { name: string; title: string; type: string | null; category: string; summary: string; fields: Record<string, string>; examples: Example[] }
-interface Data { components: Comp[]; guides: { name: string; title: string; markdown: string }[]; tokens: Record<string, string>; themes: string[] }
+interface Data { components: Comp[]; guides: { name: string; title: string; markdown: string }[]; tokens: Record<string, string>; themes: string[]; repo: string; static?: boolean }
 
 const css = `
 body{margin:0;background:var(--op-color-bg);color:var(--op-color-fg);font:var(--op-font-size)/var(--op-line-height) var(--op-font-family)}
@@ -40,7 +41,9 @@ body{margin:0;background:var(--op-color-bg);color:var(--op-color-fg);font:var(--
 document.head.append(Object.assign(document.createElement('style'), { textContent: css }));
 document.title = 'Optikos docs';
 
-const data: Data = await (await fetch('/.dev/site.json')).json();
+const data: Data = await (await fetch(`${assetBase()}site.json`)).json();
+// Sandboxes and demos only exist on the dev server; the static site points to their source instead.
+const devLink = (path: string) => (data.static ? `${data.repo}/tree/main${path.replace(/\/$/, '')}` : path);
 const comps = new Map(data.components.map((c) => [c.name, c]));
 const root = document.body.appendChild(Object.assign(document.createElement('div'), { className: 'site' }));
 const top = root.appendChild(Object.assign(document.createElement('header'), { className: 'site__top' }));
@@ -141,7 +144,7 @@ function component(c: Comp) {
     inline(v, h('dd', '', '', dl));
   }
   const links = h('p', '', '', main);
-  inline(`More in the dev sandbox: [sandbox/${c.category}](/sandbox/${c.category}/)`, links);
+  inline(`More in the dev sandbox: [sandbox/${c.category}](${devLink(`/sandbox/${c.category}/`)})`, links);
 }
 
 function example(ex: Example) {
@@ -153,7 +156,7 @@ function example(ex: Example) {
   const code = h('div', 'site__code', '', box);
   if (!ex.config) {
     h('pre', '', ex.code ?? '', code);
-    if (ex.demo) inline(`Running example: [${ex.demo}](${ex.demo})`, h('p', '', '', code));
+    if (ex.demo) inline(`Running example: [${ex.demo}](${devLink(ex.demo)})`, h('p', '', '', code));
     stage.remove();
     return;
   }

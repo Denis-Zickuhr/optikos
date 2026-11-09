@@ -1,0 +1,60 @@
+# Pushing a tag v<version> (matching package.json) publishes that version to npm, then deploys the docs site.
+# No tag, no publish: running this workflow by hand only redeploys the docs site.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  npm:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing (OIDC) and provenance
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - run: npm ci
+      # scripts/release.mjs refuses unless the tag is v<package.json version>; then check, pack and publish.
+      - run: npm run release -- --dry-run=false
+        env:
+          NPM_CONFIG_PROVENANCE: true
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # only needed until trusted publishing is set up on npmjs.com
+
+  docs:
+    needs: npm
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run site:build
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site-dist
+      - id: deploy
+        uses: actions/deploy-pages@v5

@@ -68,9 +68,9 @@ function addToCart(p: Product, qty = 1, size?: string) {
 
 // ---- catalog ---------------------------------------------------------------------------------------------------------------------------------------------
 const store = new Store<Product>({ data: products });
-const q = ui.text('q', 'Search', { placeholder: 'Name or description', clearable: true });
+const q = ui.text('q', 'Search', { placeholder: 'Name or description', clearable: true, debounce: 300 });
 const cat = ui.radio('cat', 'Category', ['All', ...categories], { value: 'All' });
-const price = ui.slider('price', 'Price', { range: true, min: 0, max: 250, step: 5, value: [0, 250], showValue: 'always', format: (v: number) => `$${v}` });
+const price = ui.slider('price', 'Price', { range: true, min: 0, max: 250, step: 5, value: [0, 250], showValue: 'always', format: (v: number) => `$${v}`, debounce: 150 });
 const stock = ui.check('stock', 'In stock only');
 const sort = ui.select('sort', 'Sort by', [{ value: 'featured', label: 'Featured' }, { value: 'asc', label: 'Price: low to high' }, { value: 'desc', label: 'Price: high to low' }, { value: 'rating', label: 'Best rated' }], { value: 'featured' });
 
@@ -88,7 +88,7 @@ function applyFilters() {
   else if (s === 'rating') store.sort('rating', 'desc');
   else store.sort('id', 'asc');
 }
-for (const f of [q, cat, price, stock, sort]) f.on('change', applyFilters);
+for (const f of [q, cat, price, stock, sort]) f.on('settled', applyFilters); // `settled`: after typing or dragging pauses (search 300 ms, price 150 ms)
 
 const productCard = (m: Model<Product>) => {
   const p = m.data;

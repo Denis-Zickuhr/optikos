@@ -14,6 +14,8 @@ export interface FieldConfig<V = unknown> extends ComponentConfig {
   validators?: Validator<V>[];
   /** When to validate on its own. After the first error it revalidates on every change. Default `blur`. */
   validateOn?: 'blur' | 'change' | 'submit';
+  /** ms of quiet after the last change before `settled` fires (0 = right away). `change` itself is never delayed. */
+  debounce?: number;
 }
 
 /**
@@ -32,6 +34,7 @@ export abstract class Field<V = unknown, C extends FieldConfig<V> = FieldConfig<
   private helpEl!: HTMLElement;
   private errorEl!: HTMLElement;
   private dirty = false;
+  private cancelSettle?: () => void;
 
   constructor(config: C = {} as C) {
     super(config);
@@ -82,6 +85,7 @@ export abstract class Field<V = unknown, C extends FieldConfig<V> = FieldConfig<
     });
     this.listen(this.el, 'focusout', (e: FocusEvent) => {
       if (this.el.contains(e.relatedTarget as Node)) return;
+      this.flushSettled();
       this.el.classList.remove('is-focused');
       if ((c.validateOn ?? 'blur') === 'blur') this.validate();
       this.emit('blur');
@@ -119,6 +123,27 @@ export abstract class Field<V = unknown, C extends FieldConfig<V> = FieldConfig<
     if (silent) return;
     if (this.config.validateOn === 'change' || this.error) this.validate();
     this.emit('change', this.value, old);
+    this.queueSettled();
+  }
+
+  /** `settled(value)`: the value after the user stopped changing it for `debounce` ms (immediately without `debounce`). */
+  private queueSettled(): void {
+    this.cancelSettle?.();
+    this.cancelSettle = undefined;
+    const ms = this.config.debounce;
+    if (!ms) return void this.emit('settled', this.value);
+    this.cancelSettle = this.later(() => {
+      this.cancelSettle = undefined;
+      this.emit('settled', this.value);
+    }, ms);
+  }
+
+  /** Fires a pending `settled` now (Enter, blur, end of a drag...). No-op when nothing is waiting. */
+  protected flushSettled(): void {
+    if (!this.cancelSettle) return;
+    this.cancelSettle();
+    this.cancelSettle = undefined;
+    this.emit('settled', this.value);
   }
 
   private updateDirty(): void {
