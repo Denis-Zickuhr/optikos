@@ -49,7 +49,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
 | DateRangeField | `daterangefield` | P1 ✔ |
 | CheckboxGroup | `checkboxgroup` | P1 |
 | Slider (barra com bolinha, simples ou intervalo) | `slider` | P1 ✔ |
-| Toggle | `toggle` | P1 |
+| Toggle | `toggle` | P1 ✔ |
 | TagField | `tagfield` | P1 |
 | MaskField, CurrencyField | `maskfield`, `currencyfield` | P1 |
 | FileField | `filefield` | P1 |

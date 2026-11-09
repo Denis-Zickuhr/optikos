@@ -7,6 +7,7 @@ import { NumberField } from '../components/fields/numberfield/numberfield';
 import { DateField } from '../components/fields/datefield/datefield';
 import { DateRangeField } from '../components/fields/daterangefield/daterangefield';
 import { Checkbox } from '../components/fields/checkbox/checkbox';
+import { Toggle } from '../components/fields/toggle/toggle';
 import { RadioGroup, type RadioOption } from '../components/fields/radiogroup/radiogroup';
 import { Select } from '../components/fields/select/select';
 import { ComboBox } from '../components/fields/combobox/combobox';
@@ -43,6 +44,8 @@ export const ui = {
   slider: (name: string, label?: string, c?: Cfg) => field(Slider, name, label, c),
   /** `boxLabel` is the text beside the box. */
   check: (name: string, boxLabel?: string, c?: Cfg) => field(Checkbox, name, undefined, { boxLabel, ...c }),
+  /** An on/off switch; `boxLabel` is the text beside it. */
+  toggle: (name: string, boxLabel?: string, c?: Cfg) => field(Toggle, name, undefined, { boxLabel, ...c }),
   radio: (name: string, label: string, options: RadioOption[], c?: Cfg) => field(RadioGroup, name, label, { options, ...c }),
   select: (name: string, label: string, options: Options, c?: Cfg) => field(Select, name, label, { options, ...c }),
   combo: (name: string, label: string, options: Options, c?: Cfg) => field(ComboBox, name, label, { options, ...c }),

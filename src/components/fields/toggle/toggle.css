@@ -1,0 +1,39 @@
+@layer optikos {
+  :root {
+    --op-toggle-width: 2.25rem;
+    --op-toggle-height: 1.25rem;
+    --op-toggle-knob-inset: 0.1875rem;
+  }
+  /* the checkbox box becomes a track; its knob is a pseudo-element that slides */
+  .op-toggle .op-checkbox__box {
+    inline-size: var(--op-toggle-width);
+    block-size: var(--op-toggle-height);
+    border-radius: var(--op-radius-pill);
+    background: var(--op-toggle-track-bg, var(--op-color-border-strong));
+    border-color: transparent;
+    transition: background var(--op-duration) var(--op-easing);
+  }
+  .op-toggle .op-checkbox__box > * {
+    display: none;
+  }
+  .op-toggle .op-checkbox__box::after {
+    content: '';
+    position: absolute;
+    inset-block: var(--op-toggle-knob-inset);
+    inset-inline-start: var(--op-toggle-knob-inset);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--op-toggle-knob-bg, var(--op-color-surface));
+    box-shadow: var(--op-shadow-sm);
+    transition: translate var(--op-duration) var(--op-easing);
+  }
+  .op-toggle.is-checked .op-checkbox__box {
+    background: var(--op-toggle-on-bg, var(--op-color-primary));
+  }
+  .op-toggle.is-checked .op-checkbox__box::after {
+    translate: calc(var(--op-toggle-width) - var(--op-toggle-height)) 0;
+  }
+  [dir='rtl'] .op-toggle.is-checked .op-checkbox__box::after {
+    translate: calc((var(--op-toggle-width) - var(--op-toggle-height)) * -1) 0;
+  }
+}

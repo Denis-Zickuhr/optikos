@@ -135,7 +135,7 @@ create({ type: 'textfield', label: 'Search', renderTo: document.body });
 |---|---|
 | Base | `button`, `icon`, `label` |
 | Layout | `container`, `panel`, `viewport`, `fieldset`, `toolbar`, `spacer`, plus the layouts `fit`, `hbox`, `vbox`, `border`, `grid`, `card` |
-| Fields | `textfield`, `textarea`, `numberfield`, `secretfield`, `checkbox`, `radiogroup`, `select`, `combobox`, `suggestfield`, `lookupfield`, `datefield`, `daterangefield`, `slider`, `listbox` |
+| Fields | `textfield`, `textarea`, `numberfield`, `secretfield`, `checkbox`, `toggle`, `radiogroup`, `select`, `combobox`, `suggestfield`, `lookupfield`, `datefield`, `daterangefield`, `slider`, `listbox` |
 | Forms | `form` (validation, `load`/`getValues`, tabs), `stepform` (multi-step wizard) |
 | Data | `grid` (virtualized, sorting, selection, paging, column menu, bulk actions, inline editing with the `cellEditing()` plugin), `table`, `dataview`, `pagination`, `filterbuilder`, `searchgrid`, `viewmanager` (saved views), `tree` |
 | Dates | `calendar` (single date or range) |

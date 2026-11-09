@@ -1980,5 +1980,40 @@
     ]
    }
   }
+ ],
+ "toggle": [
+  {
+   "title": {
+    "en": "Settings switches",
+    "pt-BR": "Interruptores de ajuste"
+   },
+   "config": {
+    "type": "container",
+    "layout": {
+     "type": "vbox",
+     "gap": 4
+    },
+    "items": [
+     {
+      "type": "toggle",
+      "name": "mail",
+      "boxLabel": "Email me about new orders",
+      "value": true
+     },
+     {
+      "type": "toggle",
+      "name": "digest",
+      "boxLabel": "Weekly digest"
+     },
+     {
+      "type": "toggle",
+      "name": "beta",
+      "boxLabel": "Beta features (managed by your admin)",
+      "value": true,
+      "disabled": true
+     }
+    ]
+   }
+  }
  ]
 }

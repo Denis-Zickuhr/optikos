@@ -34,6 +34,7 @@ export * from './components/fields/slider/slider';
 export * from './components/fields/suggestfield/suggestfield';
 export * from './components/fields/textarea/textarea';
 export * from './components/fields/textfield/textfield';
+export * from './components/fields/toggle/toggle';
 export * from './components/form/form/form';
 export * from './components/form/stepform/stepform';
 export * from './components/layout/container/container';

@@ -29,6 +29,8 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 - `Tree` component: expand/collapse, single or multiple selection, tri-state cascading checkboxes, children loaded on
   demand, filter, and the WAI-ARIA tree keyboard.
 
+- `Toggle` (an on/off switch, `role="switch"`) and the `ui.toggle()` shortcut.
+
 ### Changed
 
 - Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner

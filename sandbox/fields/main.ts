@@ -115,3 +115,11 @@ p.section('Slider', 'a bar with a ball to drag: click the track, drag the ball (
   c({ type: 'slider', label: 'Disabled', value: 60, disabled: true, width: 280, renderTo: host });
   c({ type: 'slider', label: 'Read-only', value: 60, readonly: true, width: 280, renderTo: host });
 });
+
+p.section('Toggle', 'an on/off switch (role="switch"): Space or a click toggles; disabled and read-only.', (host, { watch }) => {
+  const on = create({ type: 'toggle', boxLabel: 'Email me about new orders', value: true, renderTo: host } as never);
+  create({ type: 'toggle', boxLabel: 'Weekly digest', renderTo: host } as never);
+  create({ type: 'toggle', boxLabel: 'Disabled', disabled: true, value: true, renderTo: host } as never);
+  create({ type: 'toggle', boxLabel: 'Read-only', readonly: true, renderTo: host } as never);
+  watch(on, ['change']);
+});
