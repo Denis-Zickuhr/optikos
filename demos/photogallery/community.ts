@@ -27,7 +27,7 @@ const postCard = (p: Post) => {
 };
 
 export function buildCommunity(ctx: Ctx): Container {
-  const store = new Store<any>({ data: [...posts], pageSize: 12, model: { idField: 'id' } });
+  const store = new Store({ data: [...posts], pageSize: 12, model: { idField: 'id' } });
   const feed = create<DataView>({ type: 'dataview', store, selection: 'single', itemWidth: '17rem', gap: '1rem', paging: true, flex: 1, ariaLabel: 'Community posts', renderer: (rec: Model) => postCard(asPost(rec)) });
   const reload = () => store.loadData([...posts]);
 

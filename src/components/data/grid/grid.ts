@@ -44,11 +44,11 @@ addMessages('pt-BR', {
   gridNoColumns: 'Nenhuma coluna encontrada',
 });
 
-export interface GridConfig extends ComponentConfig {
-  store?: Store<any>;
+export interface GridConfig<T extends Record<string, any> = any> extends ComponentConfig {
+  store?: Store<T>;
   /** Used when no `store` is given. */
-  data?: Record<string, any>[];
-  columns: Column[];
+  data?: Partial<T>[];
+  columns: Column<T>[];
   selection?: 'none' | 'single' | 'multi';
   /** Row height in px. Default: measured from the `--op-grid-row-height` / `--op-row-height` tokens. */
   rowHeight?: number;
@@ -62,9 +62,9 @@ export interface GridConfig extends ComponentConfig {
   /** Keep selected records when the page or the filters change. Default false. */
   keepSelection?: boolean;
   /** Buttons shown in a bar above the header while records are selected. */
-  bulkActions?: GridAction[];
+  bulkActions?: GridAction<T>[];
   /** Actions at the end of every row (see `rowActionsMode`). */
-  rowActions?: GridRowAction[];
+  rowActions?: GridRowAction<T>[];
   /** `'menu'` (default): one "⋯" button opens a menu. `'visible'`: every action is an icon button, always shown (dimmed until the row is hovered, active or selected). */
   rowActionsMode?: 'menu' | 'visible';
   /** A "Columns" button in the bar: toggle columns on and off, with search. */
@@ -77,19 +77,19 @@ export interface GridConfig extends ComponentConfig {
   groupHeaders?: boolean;
 }
 
-export interface GridAction {
+export interface GridAction<T extends Record<string, any> = any> {
   text: string;
   icon?: string;
   variant?: 'default' | 'danger';
-  handler: (records: Model[], grid: Grid) => void;
+  handler: (records: Model<T>[], grid: Grid<T>) => void;
 }
-export interface GridRowAction {
+export interface GridRowAction<T extends Record<string, any> = any> {
   text: string;
   icon?: string;
   variant?: 'default' | 'danger';
   /** Disabled for the records where this returns true. */
-  disabled?: (record: Model) => boolean;
-  handler: (record: Model, grid: Grid) => void;
+  disabled?: (record: Model<T>) => boolean;
+  handler: (record: Model<T>, grid: Grid<T>) => void;
 }
 export interface ColumnState {
   field: string;
@@ -105,9 +105,10 @@ const ACT_COL: Column = { field: ACT, width: 44, align: 'center', cls: 'op-grid_
 const ROW = 'var(--op-grid-row-height, var(--op-row-height))';
 
 /** Data grid with a virtualized body: only the visible rows (plus a small overscan) exist in the DOM. */
-export class Grid extends Component<GridConfig> {
+/** `T` is the record shape; `new Grid({ store })` infers it from a typed `Store<T>`. */
+export class Grid<T extends Record<string, any> = any> extends Component<GridConfig<T>> {
   protected override baseCls = 'op-grid';
-  private store!: Store<any>;
+  private store!: Store<T>;
   private offStore?: () => void;
   private headEl!: HTMLElement;
   private headRow!: HTMLElement;
@@ -117,7 +118,7 @@ export class Grid extends Component<GridConfig> {
   private table!: HTMLElement;
   private pager?: Pagination;
   private v!: ReturnType<typeof virtualize>;
-  private selected = new Set<Model>();
+  private selected = new Set<Model<T>>();
   private active = -1;
   private anchor = -1;
   private justDragged = false;
@@ -174,7 +175,7 @@ export class Grid extends Component<GridConfig> {
 
   protected override onRender() {
     const c = this.config;
-    this.bindStore(c.store ?? new Store({ data: c.data ?? [] }));
+    this.bindStore(c.store ?? new Store<T>({ data: c.data ?? [] }));
     this.buildHeader();
     this.buildBar();
     this.v = virtualize({
@@ -239,7 +240,7 @@ export class Grid extends Component<GridConfig> {
 
   // ---- store ---------------------------------------------------------------------------------
 
-  private bindStore(store: Store<any>) {
+  private bindStore(store: Store<T>) {
     this.offStore?.();
     this.store = store;
     const offChange = store.subscribe((c) => {
@@ -267,7 +268,7 @@ export class Grid extends Component<GridConfig> {
     if (this.selected.size !== before) this.emit('select', this.getSelection());
   }
 
-  setStore(store: Store<any>) {
+  setStore(store: Store<T>) {
     this.config.store = store;
     this.selected.clear();
     this.active = this.anchor = -1;
@@ -277,7 +278,7 @@ export class Grid extends Component<GridConfig> {
     this.paintSort();
     this.sync();
   }
-  getStore(): Store<any> {
+  getStore(): Store<T> {
     this.render();
     return this.store;
   }
@@ -629,12 +630,12 @@ export class Grid extends Component<GridConfig> {
 
   // ---- selection / keyboard ------------------------------------------------------------------
 
-  getSelection(): Model[] {
+  getSelection(): Model<T>[] {
     return [...this.selected];
   }
 
   /** Selects a record or row index. `add` keeps the current selection (multi mode). */
-  select(target: Model | number, opts: { add?: boolean } = {}): void {
+  select(target: Model<T> | number, opts: { add?: boolean } = {}): void {
     const rec = typeof target === 'number' ? this.store.getAt(target) : target;
     const mode = this.mode();
     if (!rec || mode === 'none') return;
@@ -783,7 +784,7 @@ export class Grid extends Component<GridConfig> {
     this.selectAllBtn!.setText(t('gridSelectAll', { n: more }));
   }
 
-  private openRowMenu(rec: Model, btn: HTMLElement) {
+  private openRowMenu(rec: Model<T>, btn: HTMLElement) {
     this.rowMenu ??= new Menu({});
     this.rowMenu.setItems((this.config.rowActions ?? []).map((a) => ({ text: a.text, icon: a.icon, disabled: !!a.disabled?.(rec), handler: () => a.handler(rec, this) })));
     this.rowMenu.showBy(btn);

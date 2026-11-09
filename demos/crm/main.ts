@@ -16,13 +16,14 @@ const customers = Array.from({ length: 240 }, (_, i) => ({
   notes: '',
 }));
 
-const store = new Store<any>({ data: customers, pageSize: 15, model: { idField: 'id' } });
+type Customer = (typeof customers)[number];
+const store = new Store({ data: customers, pageSize: 15, model: { idField: 'id' } });
 let nextId = customers.length + 1;
 
 // "Account manager" is picked from a bigger set than a dropdown can show: a lookup (search window with filters + grid)
 const staff = Array.from({ length: 400 }, (_, i) => ({ id: i + 1, name: `${names[(i * 3) % 10]} ${surnames[(i * 7) % 10]} ${i + 1}`, city: cities[i % cities.length], team: ['Sales', 'Support', 'Success'][i % 3] }));
 registerLookup('staff', {
-  store: () => new Store<any>({ data: staff, pageSize: 8 }),
+  store: () => new Store({ data: staff, pageSize: 8 }),
   columns: [{ field: 'id', header: '#', width: 64 }, { field: 'name', header: 'Name', minWidth: 180 }, { field: 'team', header: 'Team', width: 110 }, { field: 'city', header: 'City' }],
   filters: [{ type: 'textfield', name: 'name', placeholder: 'Name…' }, { type: 'select', name: 'team', placeholder: 'Any team', options: ['Sales', 'Support', 'Success'] }],
   valueField: 'id', displayField: 'name', title: 'Find an account manager', width: 760,
@@ -65,7 +66,7 @@ function editor(rec?: Model) {
   win.show();
 }
 
-async function deleteRecords(recs: Model[]) {
+async function deleteRecords(recs: Model<Customer>[]) {
   const what = recs.length === 1 ? recs[0].get('name') : `${recs.length} customers`;
   if (!(await MessageBox.confirm(`Delete ${what}? This cannot be undone.`, { danger: true, okText: 'Delete', title: 'Delete customers' }))) return;
   store.remove(recs);
@@ -73,17 +74,18 @@ async function deleteRecords(recs: Model[]) {
   toast({ text: recs.length === 1 ? 'Customer deleted' : `${recs.length} customers deleted` });
 }
 
-const grid: Grid = create<Grid>({
-  type: 'grid', store, paging: true, flex: 1, ariaLabel: 'Customers',
+// `new Grid({ store })` takes the record type from the typed Store: selections, actions and renderers are all `Model<Customer>`
+const grid = new Grid({
+  store, paging: true, flex: 1, ariaLabel: 'Customers',
   checkboxSelection: true, keepSelection: true, columnMenu: true, reorderableColumns: true, resizableColumns: true, // drag headers to reorder; Views saves the order
   bulkActions: [
-    { text: 'Mark active', icon: 'check', handler: (recs: Model[]) => { recs.forEach((r) => r.set('status', 'active')); toast({ type: 'success', text: `${recs.length} marked active` }); } },
-    { text: 'Delete', icon: 'trash', variant: 'danger', handler: (recs: Model[]) => void deleteRecords(recs) },
+    { text: 'Mark active', icon: 'check', handler: (recs) => { recs.forEach((r) => r.set('status', 'active')); toast({ type: 'success', text: `${recs.length} marked active` }); } },
+    { text: 'Delete', icon: 'trash', variant: 'danger', handler: (recs) => void deleteRecords(recs) },
   ],
   rowActionsMode: 'visible', // icon buttons in every row (dimmed until hover/selection); 'menu' folds them into a "⋯" menu
   rowActions: [
-    { text: 'Edit', icon: 'edit', handler: (rec: Model) => editor(rec) },
-    { text: 'Delete (deactivate first)', icon: 'trash', variant: 'danger', disabled: (rec: Model) => rec.get('status') === 'active', handler: (rec: Model) => void deleteRecords([rec]) },
+    { text: 'Edit', icon: 'edit', handler: (rec) => editor(rec) },
+    { text: 'Delete (deactivate first)', icon: 'trash', variant: 'danger', disabled: (rec) => rec.get('status') === 'active', handler: (rec) => void deleteRecords([rec]) },
   ],
   columns: [
     { field: 'id', header: '#', width: 64, sortable: true, align: 'right' },

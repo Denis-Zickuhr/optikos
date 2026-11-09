@@ -27,7 +27,7 @@ const searchCity = (text: string) => new Promise<{ value: string; label: string 
 
 const managers = Array.from({ length: 300 }, (_, i) => ({ id: i + 1, name: `${['Ada', 'Grace', 'Linus', 'Alan', 'Margaret'][i % 5]} ${['Lovelace', 'Hopper', 'Torvalds', 'Turing', 'Hamilton'][(i * 3) % 5]} ${i + 1}`, city: cities[i % cities.length] }));
 registerLookup('managers', {
-  store: () => new Store<any>({ data: managers, pageSize: 8 }),
+  store: () => new Store({ data: managers, pageSize: 8 }),
   columns: [{ field: 'id', header: '#', width: 64 }, { field: 'name', header: 'Name', minWidth: 180 }, { field: 'city', header: 'City' }],
   filters: [{ type: 'textfield', name: 'name', placeholder: 'Name…' }],
   valueField: 'id', displayField: 'name', title: 'Find a manager',

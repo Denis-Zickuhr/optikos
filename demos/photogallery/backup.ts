@@ -46,7 +46,7 @@ export function buildBackup(ctx: Ctx): Container {
   status.style.cssText = 'color:var(--op-color-fg-muted);font-size:var(--op-font-size-sm)';
   setProgress = (pct, text) => (bar.set(pct), (status.textContent = text));
 
-  const failedStore = new Store<any>({ data: [], pageSize: 6 });
+  const failedStore = new Store({ data: [], pageSize: 6 });
   const refresh = () => {
     const mb = photos.reduce((s, p) => s + p.size, 0) + files.reduce((s, f) => s + f.size / 1024, 0);
     used.set(`${bytes(mb)} of 100 GB`);
@@ -60,7 +60,7 @@ export function buildBackup(ctx: Ctx): Container {
   refresh();
   ctx.onPhotosChanged(refresh);
 
-  const deviceStore = new Store<any>({ data: devices });
+  const deviceStore = new Store({ data: devices });
   ctx.onPhotosChanged(() => deviceStore.loadData([...devices]));
   const grid = create<Grid>({
     type: 'grid', store: deviceStore, height: 190, ariaLabel: 'Devices', rowActionsMode: 'visible',

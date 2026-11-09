@@ -6,7 +6,7 @@ const orders = Array.from({ length: 120 }, (_, i) => ({
   id: 1000 + i, customer: customers[i % customers.length], total: Math.round(((i * 7919) % 90000) / 7) / 10,
   status: ['paid', 'pending', 'refunded'][i % 3], date: `2026-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 27) + 1).padStart(2, '0')}`,
 }));
-const store = new Store<any>({ data: orders, pageSize: 20 });
+const store = new Store({ data: orders, pageSize: 20 });
 
 const grid = create<Grid>({
   type: 'grid', store, paging: true, flex: 1, ariaLabel: 'Orders', striped: true,

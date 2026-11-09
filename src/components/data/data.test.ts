@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { create, Grid, Table, Pagination, Store, registerFormat, registerLookup, localViewStorage, restViewStorage } from 'optikos';
+import { describe, it, expect, expectTypeOf, vi, afterEach } from 'vitest';
+import { create, Grid, Table, Pagination, Store, Model, registerFormat, registerLookup, localViewStorage, restViewStorage } from 'optikos';
 
 const key = (el: Element, k: string, init: KeyboardEventInit = {}) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...init }));
 const type = (f: any, text: string) => {
@@ -1037,5 +1037,29 @@ describe('Grid: column groups', () => {
     open(g);
     expect(document.querySelector('.op-grid__colgroup')).toBeNull();
     expect((document.querySelector('.op-grid__colchips') as HTMLElement).hidden).toBe(true);
+  });
+});
+
+describe('Grid<T> typing', () => {
+  interface Order { id: number; customer: string; total: number }
+  it('infers the record type from a typed Store: selection, store, actions and renderers are typed', () => {
+    const store = new Store<Order>({ data: [{ id: 1, customer: 'Ada', total: 10 }] });
+    const g = new Grid({
+      store,
+      columns: [{ field: 'customer' }, { field: 'total', renderer: (_v, rec) => { expectTypeOf(rec.data).toEqualTypeOf<Order>(); return String(rec.data.total); } }],
+      bulkActions: [{ text: 'Archive', handler: (recs, grid) => { expectTypeOf(recs).toEqualTypeOf<Model<Order>[]>(); expectTypeOf(grid).toEqualTypeOf<Grid<Order>>(); } }],
+      rowActions: [{ text: 'Open', disabled: (rec) => rec.data.total > 100, handler: (rec) => expectTypeOf(rec.data.customer).toBeString() }],
+    });
+    expectTypeOf(g).toEqualTypeOf<Grid<Order>>();
+    expectTypeOf(g.getSelection()).toEqualTypeOf<Model<Order>[]>();
+    expectTypeOf(g.getStore()).toEqualTypeOf<Store<Order>>();
+    store.remove(g.getSelection()); // compiled before only with Store<any>
+    expect(g.getStore()).toBe(store);
+  });
+
+  it('stays loose without a typed store, and any Store can be swapped in', () => {
+    const g = create<Grid>({ type: 'grid', columns: [{ field: 'x' }] });
+    expectTypeOf<ReturnType<typeof g.getSelection>[number]['data']>().toBeAny();
+    g.setStore(new Store<{ name: string }>({ data: [] }));
   });
 });

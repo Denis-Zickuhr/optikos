@@ -1,8 +1,9 @@
 import { format, type Formatter } from './format';
 import type { Model } from './model';
 
-export interface Column {
-  field: string;
+/** A grid/table column. `T` is the record shape: `field` then autocompletes its keys (any string still works). */
+export interface Column<T extends Record<string, any> = any> {
+  field: Extract<keyof T, string> | (string & {});
   header?: string;
   /** Fixed width in px. */
   width?: number;
@@ -21,12 +22,12 @@ export interface Column {
   /** Name registered with `registerFormat` (`money`, `date`, `number`, `percent`, `bool`) or a function. */
   format?: string | Formatter;
   /** Full control over the cell content. Text is escaped; return a Node for markup. */
-  renderer?: (value: any, rec: Model, col: Column) => string | Node;
+  renderer?: (value: any, rec: Model<T>, col: Column<T>) => string | Node;
   cls?: string;
 }
 
 /** Cell content for a record: `renderer` first, then `format`, then the plain value. */
-export function cellContent(col: Column, rec: Model): string | Node {
+export function cellContent<T extends Record<string, any>>(col: Column<T>, rec: Model<T>): string | Node {
   const v = rec.data[col.field];
   if (col.renderer) return col.renderer(v, rec, col);
   if (col.format) return format(col.format, v);

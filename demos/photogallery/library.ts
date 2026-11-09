@@ -50,7 +50,7 @@ export interface LibraryDef { id: string; title: string; subtitle?: string; pred
 const SIZE = { Small: '8rem', Medium: '12rem', Large: '17rem' } as const;
 
 export function buildLibrary(ctx: Ctx, def: LibraryDef): Container {
-  const store = new Store<any>({ data: [...photos], pageSize: 60, model: { idField: 'id' } });
+  const store = new Store({ data: [...photos], pageSize: 60, model: { idField: 'id' } });
   let kind = 'all';
   const view = create<DataView>({
     type: 'dataview', store, selection: 'multi', itemWidth: SIZE.Medium, paging: true, flex: 1, ariaLabel: def.title,

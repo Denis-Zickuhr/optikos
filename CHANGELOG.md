@@ -10,6 +10,10 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 - `addMessages(lang, messages)` (from `optikos` and `optikos/core`): adds translation keys to a locale without overwriting
   keys the app already set.
 
+- `Grid<T>`: the record type flows from a typed `Store<T>` to `getSelection()`, `getStore()`, bulk and row actions and
+  column renderers; `Column.field` autocompletes the record's keys. `new Grid({ store })` infers it. Untyped grids keep
+  working as before (the default is `any`).
+
 ### Changed
 
 - Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner

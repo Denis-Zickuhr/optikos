@@ -10,7 +10,7 @@ const TYPE_TONE: Record<string, 'info' | 'warn' | 'ok' | 'muted' | 'bad'> = { pd
 const count = (n: FilterGroup['filters'][number] | null | undefined): number => (!n ? 0 : 'filters' in n ? n.filters.reduce((s, f) => s + count(f), 0) : 1);
 
 export function buildFiles(ctx: Ctx): Container {
-  const store = new Store<any>({ data: [...files], pageSize: 25, model: { idField: 'id' } });
+  const store = new Store({ data: [...files], pageSize: 25, model: { idField: 'id' } });
   const reload = () => store.loadData([...files]);
   ctx.onPhotosChanged(reload);
   const cols: Column[] = [
@@ -73,7 +73,7 @@ export function buildFiles(ctx: Ctx): Container {
 const PERM_TONE = { view: 'muted', comment: 'info', edit: 'warn' } as const;
 export function buildShared(ctx: Ctx): Container {
   const make = (direction: 'by' | 'with') => {
-    const store = new Store<any>({ data: shares.filter((s) => s.direction === direction), pageSize: 20, model: { idField: 'id' } });
+    const store = new Store({ data: shares.filter((s) => s.direction === direction), pageSize: 20, model: { idField: 'id' } });
     ctx.onPhotosChanged(() => store.loadData(shares.filter((s) => s.direction === direction)));
     return create<Grid>({
       type: 'grid', store, paging: true, flex: 1, striped: true, ariaLabel: direction === 'by' ? 'Shared by me' : 'Shared with me',
