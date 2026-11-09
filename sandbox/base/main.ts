@@ -44,3 +44,14 @@ p.section('Icon', 'built-in set, color follows the text; custom icon through reg
 p.section('Label', 'default, muted, title; associated to a field with `for`.', (host) => {
   for (const variant of ['default', 'muted', 'title'] as const) create<Label>({ type: 'label', text: `Label ${variant}`, variant, renderTo: host });
 });
+
+p.section('Badge and Chip', 'badges in every tone (with a dot, an icon, a count); chips as filters (toggle, aria-pressed), removable tags (× or Delete) and disabled.', (host, { watch, log }) => {
+  for (const tone of ['neutral', 'primary', 'success', 'warning', 'danger', 'info']) create({ type: 'badge', text: tone, tone, dot: tone !== 'neutral', renderTo: host } as never);
+  create({ type: 'badge', text: 3, tone: 'danger', renderTo: host } as never);
+  for (const text of ['Open', 'Paid', 'Shipped']) watch(create({ type: 'chip', text, selectable: true, renderTo: host } as never), ['change']);
+  for (const text of ['Lisbon', 'Porto']) {
+    const chip = create({ type: 'chip', text, icon: 'home', removable: true, renderTo: host } as never);
+    chip.on('remove', () => (log('remove', text), chip.destroy()));
+  }
+  create({ type: 'chip', text: 'Disabled', disabled: true, renderTo: host } as never);
+});

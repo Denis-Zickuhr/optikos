@@ -1,0 +1,39 @@
+@layer optikos {
+  :root {
+    --op-badge-dot-size: 0.5rem;
+    --op-badge-height: 1.5em;
+    --op-badge-icon-size: 1em;
+  }
+  .op-badge {
+    --_fg: var(--op-color-fg);
+    --_bg: var(--op-color-surface-2);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-1);
+    padding: 0 var(--op-badge-padding-x, var(--op-space-2));
+    min-block-size: var(--op-badge-height);
+    box-sizing: border-box;
+    color: var(--op-badge-fg, var(--_fg));
+    background: var(--op-badge-bg, var(--_bg));
+    border-radius: var(--op-badge-radius, var(--op-radius-pill));
+    font-size: var(--op-font-size-sm);
+    font-weight: var(--op-badge-font-weight, var(--op-font-weight-bold));
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .op-badge--primary { --_fg: var(--op-color-primary-text, var(--op-color-primary)); --_bg: var(--op-color-primary-soft); }
+  .op-badge--success { --_fg: var(--op-color-success); --_bg: var(--op-color-success-soft); }
+  .op-badge--warning { --_fg: var(--op-color-warning); --_bg: var(--op-color-warning-soft); }
+  .op-badge--danger { --_fg: var(--op-color-danger); --_bg: var(--op-color-danger-soft); }
+  .op-badge--info { --_fg: var(--op-color-info); --_bg: var(--op-color-info-soft); }
+  .op-badge__dot {
+    inline-size: var(--op-badge-dot-size);
+    block-size: var(--op-badge-dot-size);
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .op-badge .op-icon {
+    --op-icon-size: var(--op-badge-icon-size);
+  }
+}

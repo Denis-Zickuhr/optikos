@@ -86,6 +86,7 @@
     --op-grid-check-accent: var(--op-brand-gold-deep);
     --op-filterbuilder-chip-on-fg: var(--op-brand-gold-deep);
     /* gold is a fill and a hairline here; as text it is the deep gold */
+    --op-color-primary-text: var(--op-brand-gold-deep);
     --op-navmenu-active-fg: var(--op-brand-gold-deep);
     --op-chat-chip-fg: var(--op-brand-gold-deep);
     --op-chat-bg: #efe6d2;

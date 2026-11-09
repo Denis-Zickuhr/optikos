@@ -10,6 +10,8 @@ Tudo que é visual vem de uma custom property. Três camadas, todas em `@layer o
 
 Cada componente usa o token próprio e cai no semântico: `background: var(--op-button-bg, var(--op-color-surface))`.
 
+`--op-color-primary-text` é a cor primária **como texto** (chips selecionados, o badge primary...). Não vem definida por padrão (os componentes caem em `--op-color-primary`); um tema cujo primário só funciona como preenchimento a define (`brutal` usa a cor do texto, `brand` o ouro profundo).
+
 ## 1. Global, por escopo e por componente
 
 ```html

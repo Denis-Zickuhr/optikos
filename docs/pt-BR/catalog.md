@@ -11,8 +11,8 @@ Prioridade: **P0** = necessário para os demos; **P1** = completa a lib; **P2** 
 | Label | `label` | P0 |
 | SplitButton | `splitbutton` | P1 |
 | Link | `link` | P1 |
-| Badge | `badge` | P1 |
-| Chip | `chip` | P1 |
+| Badge | `badge` | P1 ✔ |
+| Chip | `chip` | P1 ✔ |
 | Avatar | `avatar` | P2 |
 
 ## Layout / Containers

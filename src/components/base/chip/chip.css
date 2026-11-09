@@ -1,0 +1,64 @@
+@layer optikos {
+  .op-chip {
+    display: inline-flex;
+    align-items: center;
+    max-inline-size: 100%;
+    box-sizing: border-box;
+    min-block-size: var(--op-chip-height, calc(var(--op-control-height) * 0.8));
+    color: var(--op-chip-fg, var(--op-color-fg));
+    background: var(--op-chip-bg, var(--op-color-surface));
+    border: var(--op-border-width) solid var(--op-chip-border, var(--op-color-border-strong));
+    border-radius: var(--op-chip-radius, var(--op-radius-pill));
+    font-size: var(--op-font-size-sm);
+    vertical-align: middle;
+  }
+  .op-chip__main,
+  .op-chip__remove {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-1);
+    padding: 0 var(--op-space-3);
+    min-block-size: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    border-radius: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .op-chip__main {
+    min-inline-size: 0;
+  }
+  .op-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-chip__remove {
+    padding-inline: var(--op-space-1) var(--op-space-2);
+    color: var(--op-color-fg-muted);
+  }
+  .op-chip__remove:hover:not(:disabled) {
+    color: var(--op-color-danger);
+  }
+  .op-chip__main:focus-visible,
+  .op-chip__remove:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: calc(var(--op-focus-width) * -1);
+  }
+  .op-chip:hover:not(.is-disabled) {
+    border-color: var(--op-chip-hover-border, var(--op-color-primary));
+  }
+  .op-chip.is-selected {
+    color: var(--op-chip-selected-fg, var(--op-color-primary-text, var(--op-color-primary)));
+    background: var(--op-chip-selected-bg, var(--op-color-primary-soft));
+    border-color: var(--op-chip-selected-border, var(--op-color-primary));
+  }
+  .op-chip.is-disabled {
+    color: var(--op-color-disabled-fg);
+    border-color: var(--op-color-border);
+  }
+  .op-chip.is-disabled button {
+    cursor: default;
+  }
+}

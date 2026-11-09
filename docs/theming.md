@@ -10,6 +10,8 @@ Everything visual comes from a custom property. Three layers, all in `@layer opt
 
 Each component uses its own token and falls back to the semantic one: `background: var(--op-button-bg, var(--op-color-surface))`.
 
+`--op-color-primary-text` is the primary color **as text** (selected chips, the primary badge...). It is not set by default (components fall back to `--op-color-primary`); a theme whose primary only works as a fill sets it (`brutal` uses the text color, `brand` the deep gold).
+
 ## 1. Global, scoped and per component
 
 ```html

@@ -133,7 +133,7 @@ create({ type: 'textfield', label: 'Search', renderTo: document.body });
 
 | Category | Components (`type`) |
 |---|---|
-| Base | `button`, `icon`, `label` |
+| Base | `button`, `icon`, `label`, `badge`, `chip` |
 | Layout | `container`, `panel`, `viewport`, `fieldset`, `toolbar`, `spacer`, plus the layouts `fit`, `hbox`, `vbox`, `border`, `grid`, `card` |
 | Fields | `textfield`, `textarea`, `numberfield`, `secretfield`, `checkbox`, `toggle`, `checkboxgroup`, `radiogroup`, `select`, `combobox`, `suggestfield`, `lookupfield`, `datefield`, `daterangefield`, `slider`, `listbox` |
 | Forms | `form` (validation, `load`/`getValues`, tabs), `stepform` (multi-step wizard) |

@@ -65,6 +65,7 @@
     --op-listbox-item-selected-fg: var(--op-color-fg);
     --op-filterbuilder-chip-on-fg: var(--op-color-fg);
     /* yellow is a fill, never text: active items and chips stay black on it */
+    --op-color-primary-text: var(--op-color-fg);
     --op-navmenu-active-fg: var(--op-color-fg);
     --op-chat-chip-fg: var(--op-color-fg);
     --op-chat-chip-border: var(--op-color-fg);

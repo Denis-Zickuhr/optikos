@@ -2072,5 +2072,100 @@
     ]
    }
   }
+ ],
+ "badge": [
+  {
+   "title": {
+    "en": "Tones",
+    "pt-BR": "Tons"
+   },
+   "config": {
+    "type": "container",
+    "layout": {
+     "type": "hbox",
+     "gap": 8,
+     "wrap": true
+    },
+    "items": [
+     {
+      "type": "badge",
+      "text": "Draft"
+     },
+     {
+      "type": "badge",
+      "text": "Paid",
+      "tone": "success",
+      "dot": true
+     },
+     {
+      "type": "badge",
+      "text": "Late",
+      "tone": "warning",
+      "dot": true
+     },
+     {
+      "type": "badge",
+      "text": "Canceled",
+      "tone": "danger"
+     },
+     {
+      "type": "badge",
+      "text": "Beta",
+      "tone": "primary",
+      "icon": "sparkles"
+     },
+     {
+      "type": "badge",
+      "text": "12 new",
+      "tone": "info"
+     }
+    ]
+   }
+  }
+ ],
+ "chip": [
+  {
+   "title": {
+    "en": "Filters and tags",
+    "pt-BR": "Filtros e tags"
+   },
+   "config": {
+    "type": "container",
+    "layout": {
+     "type": "hbox",
+     "gap": 8,
+     "wrap": true
+    },
+    "items": [
+     {
+      "type": "chip",
+      "text": "Open",
+      "selectable": true,
+      "selected": true
+     },
+     {
+      "type": "chip",
+      "text": "Paid",
+      "selectable": true
+     },
+     {
+      "type": "chip",
+      "text": "Shipped",
+      "selectable": true
+     },
+     {
+      "type": "chip",
+      "text": "Lisbon",
+      "icon": "home",
+      "removable": true
+     },
+     {
+      "type": "chip",
+      "text": "Archived",
+      "disabled": true
+     }
+    ]
+   }
+  }
  ]
 }
