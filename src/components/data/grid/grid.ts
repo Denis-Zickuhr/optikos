@@ -65,6 +65,8 @@ export interface GridConfig<T extends Record<string, any> = any> extends Compone
   bulkActions?: GridAction<T>[];
   /** Actions at the end of every row (see `rowActionsMode`). */
   rowActions?: GridRowAction<T>[];
+  /** Optional features (`cellEditing()`...). See `GridPlugin`. */
+  plugins?: GridPlugin<T>[];
   /** `'menu'` (default): one "⋯" button opens a menu. `'visible'`: every action is an icon button, always shown (dimmed until the row is hovered, active or selected). */
   rowActionsMode?: 'menu' | 'visible';
   /** A "Columns" button in the bar: toggle columns on and off, with search. */
@@ -75,6 +77,20 @@ export interface GridConfig<T extends Record<string, any> = any> extends Compone
   resizableColumns?: boolean;
   /** Show the group labels (`Column.group`) as a band over the header. Default true when any column has a group. */
   groupHeaders?: boolean;
+}
+
+/** Extends a Grid without growing its base: `init` runs once the grid is rendered and may return a cleanup. */
+export interface GridPlugin<T extends Record<string, any> = any> {
+  init(grid: Grid<T>): void | (() => void);
+  destroy?(): void;
+}
+
+/** What `cellAt` finds under a DOM node: the row index, its record, the column and the cell element. */
+export interface GridCell<T extends Record<string, any> = any> {
+  index: number;
+  record: Model<T>;
+  column: Column<T>;
+  el: HTMLElement;
 }
 
 export interface GridAction<T extends Record<string, any> = any> {
@@ -219,6 +235,36 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
       if (!this.store.pageSize) this.store.setPageSize(c.pageSize ?? 20);
     }
     this.own(() => this.pager?.destroy());
+    for (const p of c.plugins ?? []) {
+      const off = p.init(this);
+      if (off) this.own(off);
+      if (p.destroy) this.own(() => p.destroy!());
+    }
+  }
+
+  /** The row, record, column and cell element under a node (e.g. an event target), if it is a body cell. */
+  cellAt(node: EventTarget | null): GridCell<T> | undefined {
+    const cell = (node as HTMLElement | null)?.closest?.<HTMLElement>('.op-grid__body-row .op-grid__cell');
+    const index = Number(cell?.parentElement?.dataset.i);
+    const column = cell && this.cols()[Number(cell.getAttribute('aria-colindex')) - 1];
+    const record = cell && this.store.getAt(index);
+    return column && record && ![SEL, ACT].includes(column.field) ? { index, record, column, el: cell } : undefined;
+  }
+
+  /** The body cell of row `index` and column `field`, when that row is in the DOM (rows are virtualized). */
+  getCell(index: number, field: string): HTMLElement | undefined {
+    const n = this.cols().findIndex((c) => c.field === field);
+    return document.getElementById(`${this.id}-r${index}`)?.querySelector<HTMLElement>(`[aria-colindex="${n + 1}"]`) ?? undefined;
+  }
+
+  /** The visible data columns, in order (no checkbox/action columns). */
+  getColumns(): Column<T>[] {
+    return this.userCols();
+  }
+
+  /** The active row index (keyboard cursor), or -1. */
+  getActive(): number {
+    return this.active;
   }
 
   override notifyMount() {
@@ -709,7 +755,9 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
   }
 
   private onKey(e: KeyboardEvent) {
-    if ((e.target as HTMLElement).closest('.op-grid__header')) return; // header buttons keep their own keys
+    const target = e.target as HTMLElement;
+    if (target.closest('.op-grid__header')) return; // header buttons keep their own keys
+    if (target !== this.table && target.matches('input:not([type=checkbox]),textarea,select,[contenteditable]')) return; // an editor in a cell keeps its keys
     const n = this.store.count;
     if (!n) return;
     if ((e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) && this.active >= 0 && this.config.rowActions?.length) {

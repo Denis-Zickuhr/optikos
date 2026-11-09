@@ -73,7 +73,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (all P0, in the core).
 | Grid | `grid` | P0 (sort, select, page, virtualize) |
 | Table | `table` | P0 |
 | Pagination | `pagination` | P0 |
-| Grid P1 | ✔ column management (menu with search), ✔ selection column (checkbox) and bulk actions, ✔ reordering and resizing columns; missing: inline editing, frozen columns, grouping | P1 |
+| Grid P1 | ✔ column management (menu with search), ✔ selection column (checkbox) and bulk actions, ✔ reordering and resizing columns, ✔ inline editing (`cellEditing()` plugin); missing: frozen columns, grouping | P1 |
 | FilterBuilder | `filterbuilder` | P1 ✔ |
 | SearchGrid | `searchgrid` | P1 ✔ |
 | ViewManager (saved views of columns/filters/sorting) | `viewmanager` | P1 ✔ |

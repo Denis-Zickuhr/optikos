@@ -8,6 +8,7 @@ export * from './components/base/button/button';
 export * from './components/base/icon/icon';
 export * from './components/base/label/label';
 export * from './components/chat/chat/chat';
+export * from './components/data/cellediting/cellediting';
 export * from './components/data/dataview/dataview';
 export * from './components/data/filterbuilder/filterbuilder';
 export * from './components/data/grid/grid';

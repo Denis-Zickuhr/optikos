@@ -137,7 +137,7 @@ create({ type: 'textfield', label: 'Search', renderTo: document.body });
 | Layout | `container`, `panel`, `viewport`, `fieldset`, `toolbar`, `spacer`, plus the layouts `fit`, `hbox`, `vbox`, `border`, `grid`, `card` |
 | Fields | `textfield`, `textarea`, `numberfield`, `secretfield`, `checkbox`, `radiogroup`, `select`, `combobox`, `suggestfield`, `lookupfield`, `datefield`, `daterangefield`, `slider`, `listbox` |
 | Forms | `form` (validation, `load`/`getValues`, tabs), `stepform` (multi-step wizard) |
-| Data | `grid` (virtualized, sorting, selection, paging, column menu, bulk actions), `table`, `dataview`, `pagination`, `filterbuilder`, `searchgrid`, `viewmanager` (saved views) |
+| Data | `grid` (virtualized, sorting, selection, paging, column menu, bulk actions, inline editing with the `cellEditing()` plugin), `table`, `dataview`, `pagination`, `filterbuilder`, `searchgrid`, `viewmanager` (saved views) |
 | Dates | `calendar` (single date or range) |
 | Overlays | `window`, `MessageBox` (alert/confirm/prompt), `toast()`, `menu`, `dropdown`, `tooltip`, `widget`, `commandpalette` |
 | Navigation | `tabs`, `breadcrumb`, `navmenu`, `stepper` |

@@ -73,7 +73,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
 | Grid | `grid` | P0 (ordenar, selecionar, paginar, virtualizar) |
 | Table | `table` | P0 |
 | Pagination | `pagination` | P0 |
-| Grid P1 | ✔ gestão de colunas (menu com busca), ✔ coluna de seleção (checkbox) e ações em lote, ✔ reordenar e redimensionar colunas; falta: edição inline, colunas fixas, agrupamento | P1 |
+| Grid P1 | ✔ gestão de colunas (menu com busca), ✔ coluna de seleção (checkbox) e ações em lote, ✔ reordenar e redimensionar colunas, ✔ edição inline (plugin `cellEditing()`); falta: colunas fixas, agrupamento | P1 |
 | FilterBuilder | `filterbuilder` | P1 ✔ |
 | SearchGrid | `searchgrid` | P1 ✔ |
 | ViewManager (visões salvas de colunas/filtros/ordenação) | `viewmanager` | P1 ✔ |

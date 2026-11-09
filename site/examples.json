@@ -1782,5 +1782,80 @@
     ]
    }
   }
+ ],
+ "cellediting": [
+  {
+   "title": {
+    "en": "Edit in place",
+    "pt-BR": "Editar no lugar"
+   },
+   "description": {
+    "en": "Double click a cell (or press F2), type, Enter. Tab moves to the next editable cell.",
+    "pt-BR": "Duplo clique numa célula (ou F2), digite, Enter. Tab vai para a próxima célula editável."
+   },
+   "config": {
+    "type": "grid",
+    "height": 260,
+    "ariaLabel": "Editable people",
+    "plugins": [
+     {
+      "$plugin": "cellEditing"
+     }
+    ],
+    "columns": [
+     {
+      "field": "name",
+      "header": "Name",
+      "flex": 1,
+      "editor": {
+       "type": "textfield",
+       "required": true
+      }
+     },
+     {
+      "field": "role",
+      "header": "Role",
+      "editor": {
+       "type": "select",
+       "options": [
+        "Engineer",
+        "Admiral",
+        "Researcher",
+        "Director"
+       ]
+      }
+     },
+     {
+      "field": "total",
+      "header": "Total",
+      "format": "money",
+      "align": "right",
+      "editor": true
+     }
+    ],
+    "data": [
+     {
+      "name": "Ada Lovelace",
+      "role": "Engineer",
+      "total": 1280.5
+     },
+     {
+      "name": "Grace Hopper",
+      "role": "Admiral",
+      "total": 9400
+     },
+     {
+      "name": "Alan Turing",
+      "role": "Researcher",
+      "total": 780
+     },
+     {
+      "name": "Margaret Hamilton",
+      "role": "Director",
+      "total": 5120
+     }
+    ]
+   }
+  }
  ]
 }

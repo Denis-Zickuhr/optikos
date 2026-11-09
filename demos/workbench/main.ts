@@ -1,5 +1,5 @@
 // Workbench demo: floating, draggable Widgets that are not chats (notes, a focus timer, settings) over a data grid. Public API only.
-import { create, Store, toast, type Widget, type Grid, type Table, type Form, type Label, type Button } from 'optikos';
+import { create, Store, toast, cellEditing, type Widget, type Grid, type Table, type Form, type Label, type Button } from 'optikos';
 
 const customers = ['Acme', 'Globex', 'Initech', 'Umbrella', 'Hooli', 'Stark', 'Wayne', 'Wonka'];
 const orders = Array.from({ length: 120 }, (_, i) => ({
@@ -10,11 +10,14 @@ const store = new Store({ data: orders, pageSize: 20 });
 
 const grid = create<Grid>({
   type: 'grid', store, paging: true, flex: 1, ariaLabel: 'Orders', striped: true,
+  // double click (or F2) a customer, total or status to edit it in place
+  plugins: [cellEditing()],
   columns: [
-    { field: 'id', header: 'Order', width: 100, sortable: true }, { field: 'customer', sortable: true }, { field: 'total', format: 'money', align: 'right', sortable: true },
-    { field: 'status', sortable: true }, { field: 'date', format: 'date', sortable: true },
+    { field: 'id', header: 'Order', width: 100, sortable: true }, { field: 'customer', sortable: true, editor: { type: 'textfield', required: true } }, { field: 'total', format: 'money', align: 'right', sortable: true, editor: true },
+    { field: 'status', sortable: true, editor: { type: 'select', options: ['pending', 'paid', 'shipped', 'refunded'] } }, { field: 'date', format: 'date', sortable: true },
   ],
 });
+grid.on('edit', (rec: { get(f: string): unknown }, field: string, value: unknown) => toast({ text: `Order ${rec.get('id')}: ${field} → ${value}`, duration: 2000 }));
 
 // ---- Widget 1: notes. Free text saved in the browser; draggable, and the user can dock it left or right -------------------------
 interface Note { text: string; at: string }

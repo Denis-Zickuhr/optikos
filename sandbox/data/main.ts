@@ -1,4 +1,4 @@
-import { create, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
+import { create, cellEditing, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
 import { page } from '../../dev/kit';
 
 const p = page('data');
@@ -192,4 +192,17 @@ p.section('DataView · cards', 'a Store as a responsive grid of cards: columns a
   v.render();
   host.append(v.el);
   create<DataView>({ type: 'dataview', data: [], emptyText: 'Nothing to show', width: '100%', renderer: () => '', renderTo: host });
+});
+
+p.section('Grid · inline editing (cellEditing plugin)', 'double click a cell (or F2 on the active row), type, Enter saves, Esc cancels, Tab moves to the next editable cell. Name is required; record #3 is locked; # is not editable; a boolean gets a checkbox editor.', (host, { watch }) => {
+  const g = create<Grid>({
+    type: 'grid', renderTo: host, height: 300, store: new Store({ data: make(30) }), plugins: [cellEditing()],
+    columns: [
+      { field: 'id', header: '#', width: 70, align: 'right' },
+      { field: 'name', header: 'Name', flex: 2, editor: { type: 'textfield', required: true }, editable: (r: { get(f: string): unknown }) => r.get('id') !== 3 },
+      { field: 'total', header: 'Total', format: 'money', align: 'right', editor: true },
+      { field: 'active', header: 'Active', align: 'center', editor: true, renderer: (v: boolean) => (v ? '✓' : '') }, // a boolean gets a checkbox
+    ],
+  } as never);
+  watch(g, ['before-edit', 'edit', 'edit-cancel']);
 });

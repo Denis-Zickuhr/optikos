@@ -1,0 +1,33 @@
+@layer optikos {
+  /* the editor fills the cell: no label, no error line, the row height */
+  .op-grid__cell.is-editing {
+    position: relative;
+    padding-block: 0;
+    padding-inline: var(--op-grid-editor-inset, var(--op-space-1));
+    overflow: visible;
+  }
+  .op-grid__editor {
+    inline-size: 100%;
+  }
+  .op-grid__editor .op-textfield__input {
+    min-block-size: 0;
+    block-size: calc(var(--op-grid-row-height, var(--op-row-height)) - 2 * var(--op-space-1));
+  }
+  .op-grid__editor.is-invalid .op-textfield__input {
+    border-color: var(--op-color-danger);
+  }
+  .op-grid__editor .op-field__error {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 100%;
+    padding: var(--op-space-1) var(--op-space-2);
+    color: var(--op-color-danger-fg);
+    background: var(--op-color-danger);
+    border-radius: var(--op-radius-sm);
+    font-size: var(--op-font-size-sm);
+    white-space: nowrap;
+  }
+  .op-grid__editor .op-field__error:empty {
+    display: none;
+  }
+}

@@ -22,6 +22,10 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
   screens whose shown code is the code that runs), a gallery of the demos (published with the site) and tabbed
   component pages.
 
+- Grid plugins (`plugins: [...]`) and the first one, `cellEditing()`: double click or F2 to edit a cell, Enter to save,
+  Tab to the next editable cell; editors come from `Column.editor`. New Grid helpers for plugins: `cellAt`, `getCell`,
+  `getColumns`, `getActive`.
+
 ### Changed
 
 - Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner

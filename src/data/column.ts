@@ -24,6 +24,10 @@ export interface Column<T extends Record<string, any> = any> {
   /** Full control over the cell content. Text is escaped; return a Node for markup. */
   renderer?: (value: any, rec: Model<T>, col: Column<T>) => string | Node;
   cls?: string;
+  /** With the `cellEditing()` grid plugin: `true` (an editor for the value's type), a field type (`'select'`) or a field config. */
+  editor?: boolean | string | Record<string, any>;
+  /** With `cellEditing()`: whether this record's cell can be edited (default: every record, when `editor` is set). */
+  editable?: (rec: Model<T>) => boolean;
 }
 
 /** Cell content for a record: `renderer` first, then `format`, then the plain value. */

@@ -1,5 +1,5 @@
 import { describe, it, expect, expectTypeOf, vi, afterEach } from 'vitest';
-import { create, Grid, Table, Pagination, Store, Model, registerFormat, registerLookup, localViewStorage, restViewStorage } from 'optikos';
+import { create, Grid, Table, Pagination, Store, Model, cellEditing, registerFormat, registerLookup, localViewStorage, restViewStorage } from 'optikos';
 
 const key = (el: Element, k: string, init: KeyboardEventInit = {}) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...init }));
 const type = (f: any, text: string) => {
@@ -1061,5 +1061,79 @@ describe('Grid<T> typing', () => {
     const g = create<Grid>({ type: 'grid', columns: [{ field: 'x' }] });
     expectTypeOf<ReturnType<typeof g.getSelection>[number]['data']>().toBeAny();
     g.setStore(new Store<{ name: string }>({ data: [] }));
+  });
+});
+
+describe('Grid plugin: cellEditing', () => {
+  const setup = (extra: object = {}) => {
+    const store = new Store({ data: rows(5) });
+    const g = mk<Grid>({
+      type: 'grid', store, height: 300, plugins: [cellEditing()],
+      columns: [{ field: 'id', header: '#' }, { field: 'name', header: 'Name', editor: { type: 'textfield', required: true } }, { field: 'total', header: 'Total', editor: true }],
+      ...extra,
+    });
+    const events: unknown[][] = [];
+    for (const e of ['edit', 'edit-cancel']) g.on(e, (...a: unknown[]) => events.push([e, ...a]));
+    return { g, store, events, cell: (i: number, f: string) => g.getCell(i, f)!, table: g.el.querySelector<HTMLElement>('[role=grid]')! };
+  };
+  const dbl = (el: Element) => el.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+  const input = (el: Element) => el.querySelector<HTMLInputElement>('input')!;
+  const typeIn = (i: HTMLInputElement, v: string) => {
+    i.value = v;
+    i.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  it('a double click opens an editor with the value; Enter writes it to the record and fires edit', () => {
+    const { store, events, cell } = setup();
+    dbl(cell(1, 'name'));
+    const i = input(cell(1, 'name'));
+    expect(i.value).toBe('Name 002');
+    expect(document.activeElement).toBe(i);
+    typeIn(i, 'Ada');
+    key(i, 'Enter');
+    expect(store.getAt(1)!.get('name')).toBe('Ada');
+    expect(store.getAt(1)!.isDirty()).toBe(true);
+    expect(cell(1, 'name').textContent).toBe('Ada');
+    expect(events[0]).toEqual(['edit', store.getAt(1), 'name', 'Ada', 'Name 002']);
+  });
+
+  it('Esc cancels; an invalid value keeps the editor open; numbers get a number field', () => {
+    const { store, events, cell } = setup();
+    dbl(cell(0, 'name'));
+    key(input(cell(0, 'name')), 'Escape');
+    expect(cell(0, 'name').textContent).toBe('Name 001');
+    expect(events[0][0]).toBe('edit-cancel');
+    dbl(cell(0, 'name'));
+    typeIn(input(cell(0, 'name')), '');
+    key(input(cell(0, 'name')), 'Enter');
+    expect(cell(0, 'name').querySelector('.op-grid__editor')).not.toBeNull(); // still editing: required
+    key(input(cell(0, 'name')), 'Escape');
+    dbl(cell(0, 'total'));
+    expect(cell(0, 'total').querySelector('.op-numberfield, [role=spinbutton]')).not.toBeNull();
+    typeIn(input(cell(0, 'total')), '42');
+    key(input(cell(0, 'total')), 'Enter');
+    expect(store.getAt(0)!.get('total')).toBe(42);
+  });
+
+  it('F2 edits the active row; Tab goes to the next editable cell, across rows', () => {
+    const { g, cell, table } = setup();
+    g.focusRow(2);
+    key(table, 'F2');
+    expect(document.activeElement).toBe(input(cell(2, 'name')));
+    key(input(cell(2, 'name')), 'Tab');
+    expect(document.activeElement).toBe(input(cell(2, 'total')));
+    key(input(cell(2, 'total')), 'Tab');
+    expect(document.activeElement).toBe(input(cell(3, 'name')));
+  });
+
+  it('before-edit and editable(record) can refuse; columns without editor never edit', () => {
+    const { g, cell } = setup({ columns: [{ field: 'id', header: '#' }, { field: 'name', editor: true, editable: (r: Model) => r.get('id') !== 1 }] });
+    dbl(cell(0, 'name'));
+    expect(cell(0, 'name').querySelector('input')).toBeNull();
+    dbl(cell(0, 'id'));
+    expect(cell(0, 'id').querySelector('input')).toBeNull();
+    g.on('before-edit', () => false);
+    dbl(cell(1, 'name'));
+    expect(cell(1, 'name').querySelector('input')).toBeNull();
   });
 });
