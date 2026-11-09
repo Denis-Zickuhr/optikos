@@ -35,7 +35,7 @@ export class Button extends Component<ButtonConfig> {
     this.busyTextEl = h('span', 'op-button__busy-text');
     el.append(
       h('span', 'op-button__face', {}, this.iconHost, this.textEl),
-      h('span', 'op-button__busy', { 'aria-hidden': 'true' }, h('span', 'op-spinner op-button__spinner'), this.busyTextEl),
+      h('span', 'op-button__busy', {}, h('span', 'op-spinner op-button__spinner', { 'aria-hidden': 'true' }), this.busyTextEl),
     );
     return el;
   }
@@ -97,8 +97,8 @@ export class Button extends Component<ButtonConfig> {
     if (typeof loading === 'string') this.setLoadingText(loading);
     if (!this.rendered) return;
     this.el.classList.toggle('is-loading', !!loading);
-    if (loading) this.el.setAttribute('aria-busy', 'true');
-    else this.el.removeAttribute('aria-busy');
+    // the visible (loading) face names the button; it ignores clicks meanwhile, so it is announced as unavailable
+    for (const a of ['aria-busy', 'aria-disabled']) (loading ? this.el.setAttribute(a, 'true') : this.el.removeAttribute(a));
   }
 
   setLoadingText(text: string) {

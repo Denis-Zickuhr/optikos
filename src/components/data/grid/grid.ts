@@ -113,6 +113,8 @@ export class Grid extends Component<GridConfig> {
   private headRow!: HTMLElement;
   private viewport!: HTMLElement;
   private emptyEl!: HTMLElement;
+  /** The focusable `role=grid` part (header + rows); the root also holds the bulk bar and the pager, which a grid may not contain. */
+  private table!: HTMLElement;
   private pager?: Pagination;
   private v!: ReturnType<typeof virtualize>;
   private selected = new Set<Model>();
@@ -149,7 +151,7 @@ export class Grid extends Component<GridConfig> {
 
   protected override build() {
     const c = this.config;
-    const el = h('div', this.baseCls, { role: 'grid', tabindex: 0, 'aria-multiselectable': c.selection === 'multi' || c.checkboxSelection ? 'true' : null });
+    const el = h('div', this.baseCls);
     this.headRow = h('div', 'op-grid__row op-grid__header-row', { role: 'row' });
     this.headEl = h('div', 'op-grid__header', {}, this.headRow);
     this.viewport = h('div', 'op-grid__viewport');
@@ -160,7 +162,8 @@ export class Grid extends Component<GridConfig> {
       this.barEl = h('div', 'op-grid__bar', {}, this.bulkEl);
       el.append(this.barEl);
     }
-    el.append(this.headEl, this.viewport, this.emptyEl);
+    this.table = h('div', 'op-grid__table', { role: 'grid', tabindex: 0, 'aria-multiselectable': c.selection === 'multi' || c.checkboxSelection ? 'true' : null }, this.headEl, this.viewport, this.emptyEl);
+    el.append(this.table);
     el.classList.toggle('op-grid--striped', !!c.striped);
     if (c.paging) {
       this.pager = new Pagination({ cls: 'op-grid__pager' });
@@ -255,7 +258,7 @@ export class Grid extends Component<GridConfig> {
     if (!this.config.keepSelection) for (const r of this.selected) if (this.store.indexOf(r) < 0) this.selected.delete(r);
     this.active = Math.min(this.active, this.store.count - 1);
     this.v.setCount(this.store.count);
-    this.el.setAttribute('aria-rowcount', String(this.store.totalCount + 1));
+    this.table.setAttribute('aria-rowcount', String(this.store.totalCount + 1));
     this.emptyEl.textContent = this.config.emptyText ?? t('empty');
     this.emptyEl.hidden = this.store.count > 0 || !!this.config.loading;
     this.el.classList.toggle('is-empty', this.store.count === 0);
@@ -297,7 +300,7 @@ export class Grid extends Component<GridConfig> {
     this.el.classList.toggle('op-grid--actions-visible', this.visibleActions());
     this.el.classList.toggle('op-grid--reorderable', !!this.config.reorderableColumns);
     this.el.classList.toggle('op-grid--resizable', !!this.config.resizableColumns);
-    this.el.setAttribute('aria-colcount', String(cols.length));
+    this.table.setAttribute('aria-colcount', String(cols.length));
     this.selAll = undefined;
     this.headRow.replaceChildren(
       ...cols.map((c, i) => {
@@ -686,14 +689,18 @@ export class Grid extends Component<GridConfig> {
   }
 
   private updateActiveDescendant() {
-    if (this.active >= 0 && this.active < this.store.count) this.el.setAttribute('aria-activedescendant', `${this.id}-r${this.active}`);
-    else this.el.removeAttribute('aria-activedescendant');
+    if (this.active >= 0 && this.active < this.store.count) this.table.setAttribute('aria-activedescendant', `${this.id}-r${this.active}`);
+    else this.table.removeAttribute('aria-activedescendant');
   }
 
   focusRow(i: number) {
     this.render();
     this.setActive(Math.max(0, Math.min(i, this.store.count - 1)));
-    this.el.focus();
+    this.table.focus();
+  }
+
+  protected override focusEl(): HTMLElement {
+    return this.table;
   }
 
   scrollToRow(i: number) {

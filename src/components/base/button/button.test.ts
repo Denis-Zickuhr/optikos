@@ -90,12 +90,16 @@ describe('Button', () => {
       expect(face.querySelector('.op-icon')).not.toBeNull();
       expect(busy.querySelector('.op-spinner')).not.toBeNull();
       expect(busy.querySelector('.op-button__busy-text')!.textContent).toBe('Saving…');
-      expect(busy.getAttribute('aria-hidden')).toBe('true');
+      // CSS visibility hides the inactive face from assistive tech too; only the spinner is decorative
+      expect(busy.hasAttribute('aria-hidden')).toBe(false);
+      expect(busy.querySelector('.op-spinner')!.getAttribute('aria-hidden')).toBe('true');
       // state toggles only a class: the structure (and so the size) is identical before and after
       const before = b.el.innerHTML;
       b.setLoading(true);
       expect(b.el.innerHTML).toBe(before);
       expect(b.el.classList.contains('is-loading')).toBe(true);
+      expect(b.el.getAttribute('aria-busy')).toBe('true');
+      expect(b.el.getAttribute('aria-disabled')).toBe('true');
       b.setLoading(false);
       expect(b.el.innerHTML).toBe(before);
     });

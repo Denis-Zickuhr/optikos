@@ -8,17 +8,17 @@
     --op-color-surface: #ffffff;
     --op-color-surface-2: #f4f5fd;
     --op-color-fg: #2d3142;
-    --op-color-fg-muted: #7b819b;
+    --op-color-fg-muted: #636983;
     --op-color-border: #e6e9f7;
     --op-color-border-strong: #d6dbf0;
     --op-color-hover: #f1efff;
     --op-color-selected: #e6e0ff;
-    --op-color-primary: #7c5cff;
-    --op-color-primary-hover: #6a48f5;
+    --op-color-primary: #6844ff;
+    --op-color-primary-hover: #5530f0;
     --op-color-primary-fg: #ffffff;
     --op-color-primary-soft: #efeaff;
-    --op-color-danger: #ef5b7b;
-    --op-color-danger-hover: #dc4565;
+    --op-color-danger: #d33a63;
+    --op-color-danger-hover: #b92a51;
     --op-color-danger-fg: #ffffff;
     --op-color-danger-soft: #ffe9ee;
     --op-color-success: #2fb59a;
@@ -59,7 +59,7 @@
     --op-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
 
     --op-button-radius: var(--op-radius-pill);
-    --op-button-primary-bg: linear-gradient(135deg, #8b6cff, #6f4df0);
+    --op-button-primary-bg: linear-gradient(135deg, #7656ff, #5a36f0) #6844ff;
     --op-panel-radius: 1.25rem;
     --op-panel-shadow: var(--op-shadow);
     --op-panel-border: transparent;

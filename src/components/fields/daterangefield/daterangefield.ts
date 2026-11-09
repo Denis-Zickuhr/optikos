@@ -52,6 +52,7 @@ export class DateRangeField extends TextField<DateRange | null, DateRangeFieldCo
   protected override createControl() {
     const wrap = super.createControl();
     const input = this.input;
+    input.setAttribute('role', 'combobox'); // APG date picker combobox
     input.setAttribute('aria-haspopup', 'dialog');
     input.setAttribute('aria-expanded', 'false');
     const trigger = h('button', 'op-picker__trigger', { type: 'button', tabindex: -1, 'aria-label': t('calOpen') }, iconEl('calendar'));

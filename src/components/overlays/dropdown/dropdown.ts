@@ -1,6 +1,6 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register, create, type AnyConfig } from '../../../core/registry';
-import { h } from '../../../core/dom';
+import { h, uid } from '../../../core/dom';
 import { toLayer } from '../../../core/layer';
 import { place, track, type Placement } from '../../../core/position';
 import { focusables } from '../../../core/focus';
@@ -54,6 +54,10 @@ export class Dropdown extends Component<DropdownConfig> {
     if (this.open_ || this.destroyed || this.emit('before-open') === false) return;
     const anchor = this.getAnchor();
     toLayer(this.el, anchor);
+    if (anchor && this.el.getAttribute('role') === 'dialog' && !this.el.hasAttribute('aria-label') && !this.el.hasAttribute('aria-labelledby')) {
+      anchor.id ||= uid();
+      this.el.setAttribute('aria-labelledby', anchor.id);
+    }
     this.leaving++; // a pending hide from a close animation must not hide us again
     this.el.getAnimations?.().forEach((a) => a.cancel());
     this.el.hidden = false;

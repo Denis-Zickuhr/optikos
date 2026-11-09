@@ -16,7 +16,7 @@
     --op-color-primary-soft: #fff1b8;
     --op-color-danger: #ff3b30;
     --op-color-danger-hover: #e0261c;
-    --op-color-danger-fg: #ffffff;
+    --op-color-danger-fg: #111111;
     --op-color-danger-soft: #ffd9d6;
     --op-color-success: #1fa463;
     --op-color-success-soft: #c9f2dc;
@@ -64,6 +64,10 @@
     --op-tabs-tab-active-fg: var(--op-color-fg);
     --op-listbox-item-selected-fg: var(--op-color-fg);
     --op-filterbuilder-chip-on-fg: var(--op-color-fg);
+    /* yellow is a fill, never text: active items and chips stay black on it */
+    --op-navmenu-active-fg: var(--op-color-fg);
+    --op-chat-chip-fg: var(--op-color-fg);
+    --op-chat-chip-border: var(--op-color-fg);
     --op-grid-check-accent: var(--op-color-fg);
   }
 

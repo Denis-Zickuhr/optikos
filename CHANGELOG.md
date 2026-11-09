@@ -12,6 +12,13 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ### Changed
 
+- Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner
+  `.op-grid__table`, because the root also holds the bulk bar and the pager. Code that read those attributes from
+  `grid.el` should query `grid.el.querySelector('[role=grid]')`; `grid.focus()` keeps working.
+- Accessibility fixes found by automated axe checks in every theme: Button keeps its name while loading (and is
+  `aria-disabled`), Stepper steps keep their names on phones, DateField/DateRangeField follow the date picker combobox
+  pattern, an unnamed Dropdown dialog is named by its anchor, and contrast fixes in the light (`fg-muted`), `dark`
+  (primary), `soft`, `brutal`, `brand` and `brand night` themes and in Chat bubbles.
 - Each component now ships its own `en`/`pt-BR` messages, so the core is 2.2 kB (gzip) smaller and every standalone component about 0.5 kB smaller.
   Custom locales passed to `setLocale({...})` keep working; missing keys still fall back to English.
 

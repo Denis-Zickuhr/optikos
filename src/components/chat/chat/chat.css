@@ -115,7 +115,6 @@
     margin-inline-start: var(--op-space-3);
     margin-block-start: var(--op-space-2);
     font-size: var(--op-font-size-sm);
-    opacity: 0.7;
   }
   .op-chat__status {
     display: inline-flex;

@@ -11,8 +11,8 @@
     --op-color-border-strong: var(--op-gray-600);
     --op-color-hover: #2b3a52;
     --op-color-selected: #1e3a8a;
-    --op-color-primary: var(--op-blue-500);
-    --op-color-primary-hover: #60a5fa;
+    --op-color-primary: #60a5fa; /* blue-400: primary text keeps 4.5:1 on the dark surfaces */
+    --op-color-primary-hover: #93c5fd;
     --op-color-primary-fg: var(--op-gray-900);
     --op-color-primary-soft: #172554;
     --op-color-danger: #f87171;

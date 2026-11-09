@@ -42,7 +42,7 @@
     --op-color-surface: var(--op-gray-0);
     --op-color-surface-2: var(--op-gray-100);
     --op-color-fg: var(--op-gray-900);
-    --op-color-fg-muted: var(--op-gray-500);
+    --op-color-fg-muted: #5e6b80; /* a shade under gray-500: keeps 4.5:1 on surface-2 */
     --op-color-border: var(--op-gray-200);
     --op-color-border-strong: var(--op-gray-300);
     --op-color-hover: var(--op-gray-100);

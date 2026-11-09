@@ -88,9 +88,9 @@ describe('Grid', () => {
   it('renders header + only the visible rows of 100,000, with correct ARIA', () => {
     const store = new Store({ data: rows(100000) });
     const g = mk<Grid>({ type: 'grid', store, columns: cols, height: 300, ariaLabel: 'Orders' });
-    expect(g.el.getAttribute('role')).toBe('grid');
-    expect(g.el.getAttribute('aria-rowcount')).toBe('100001');
-    expect(g.el.getAttribute('aria-colcount')).toBe('3');
+    expect(g.el.querySelector('.op-grid__table')!.getAttribute('role')).toBe('grid');
+    expect(g.el.querySelector('[role=grid]')!.getAttribute('aria-rowcount')).toBe('100001');
+    expect(g.el.querySelector('[role=grid]')!.getAttribute('aria-colcount')).toBe('3');
     expect(g.el.querySelectorAll('[role=columnheader]')).toHaveLength(3);
     const r = body(g);
     expect(r.length).toBeLessThan(50);
@@ -146,7 +146,7 @@ describe('Grid', () => {
     g.el.focus();
     key(g.el, 'ArrowDown');
     expect(g.getSelection().map((r) => r.data.id)).toEqual([4]);
-    expect(g.el.getAttribute('aria-activedescendant')).toBe(body(g)[3].id);
+    expect(g.el.querySelector('[role=grid]')!.getAttribute('aria-activedescendant')).toBe(body(g)[3].id);
     key(g.el, 'End');
     expect(g.getSelection()[0].data.id).toBe(10);
     key(g.el, 'Home');
@@ -159,7 +159,7 @@ describe('Grid', () => {
   it('multi selection: ctrl toggles, shift ranges, space, ctrl+A, shift+arrow', () => {
     const g = mk<Grid>({ type: 'grid', data: rows(10), columns: cols, selection: 'multi' });
     const ids = () => g.getSelection().map((r) => r.data.id).sort((a, b) => a - b);
-    expect(g.el.getAttribute('aria-multiselectable')).toBe('true');
+    expect(g.el.querySelector('[role=grid]')!.getAttribute('aria-multiselectable')).toBe('true');
     body(g)[1].click();
     body(g)[4].dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }));
     expect(ids()).toEqual([2, 5]);
@@ -230,7 +230,7 @@ describe('Grid', () => {
     (g.el.querySelector('[data-page="2"]') as HTMLElement).click();
     expect(text(body(g)[0])[0]).toBe('21');
     expect(body(g)[0].getAttribute('aria-rowindex')).toBe('22');
-    expect(g.el.getAttribute('aria-rowcount')).toBe('96');
+    expect(g.el.querySelector('[role=grid]')!.getAttribute('aria-rowcount')).toBe('96');
     const defaults = mk<Grid>({ type: 'grid', data: rows(50), columns: cols, paging: true, pageSize: 10 });
     expect(body(defaults)).toHaveLength(10);
   });

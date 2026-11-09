@@ -57,7 +57,7 @@ describe('Grid virtualization (browser)', () => {
     expect(rows().length).toBeLessThan(60);
     const row = rows()[0] as HTMLElement;
     const probe = g.el.appendChild(document.createElement('div'));
-    probe.style.height = 'var(--op-grid-row-height, var(--op-row-height))';
+    probe.style.cssText = 'position:absolute;height:var(--op-grid-row-height, var(--op-row-height))';
     const token = probe.getBoundingClientRect().height;
     probe.remove();
     expect(token).toBeGreaterThan(20);

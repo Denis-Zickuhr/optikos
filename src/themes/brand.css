@@ -6,14 +6,14 @@
     color-scheme: light;
     --op-brand-gold: #c9a24b;
     --op-brand-gold-light: #ecd28c;
-    --op-brand-gold-deep: #9a7426;
+    --op-brand-gold-deep: #846321; /* deep enough for text: 4.6:1 on champagne */
 
     --op-brand-onyx: #1c1710;
     --op-color-bg: #f5efe2;
     --op-color-surface: #fffdf8;
     --op-color-surface-2: #f2eadb;
     --op-color-fg: #231d14;
-    --op-color-fg-muted: #7b6d55;
+    --op-color-fg-muted: #746750;
     --op-color-border: #e3d7bb;
     --op-color-border-strong: #bda265;
     --op-color-hover: #f7efdc;
@@ -85,6 +85,9 @@
     --op-listbox-item-selected-fg: var(--op-brand-gold-deep);
     --op-grid-check-accent: var(--op-brand-gold-deep);
     --op-filterbuilder-chip-on-fg: var(--op-brand-gold-deep);
+    /* gold is a fill and a hairline here; as text it is the deep gold */
+    --op-navmenu-active-fg: var(--op-brand-gold-deep);
+    --op-chat-chip-fg: var(--op-brand-gold-deep);
     --op-chat-bg: #efe6d2;
     --op-chat-bubble-me-bg: #f1e3bd;
     --op-chat-bubble-me-fg: var(--op-color-fg);
@@ -107,13 +110,13 @@
   }
   [data-op-theme~='brand'] .op-button--primary {
     color: var(--op-color-primary-fg);
-    background: linear-gradient(135deg, var(--op-brand-gold-light) 0%, var(--op-brand-gold) 48%, var(--op-brand-gold-deep) 100%);
+    background: linear-gradient(135deg, var(--op-brand-gold-light) 0%, var(--op-brand-gold) 48%, var(--op-brand-gold-deep) 100%) var(--op-brand-gold);
     border-color: var(--op-brand-gold-light);
     box-shadow: 0 4px 12px rgb(154 116 38 / 0.28), inset 0 1px 0 rgb(255 255 255 / 0.45);
   }
   [data-op-theme~='brand'] .op-button--primary:hover:not(:disabled) {
     color: var(--op-color-primary-fg);
-    background: linear-gradient(135deg, #f6e3a6 0%, var(--op-brand-gold-light) 50%, var(--op-brand-gold) 100%);
+    background: linear-gradient(135deg, #f6e3a6 0%, var(--op-brand-gold-light) 50%, var(--op-brand-gold) 100%) var(--op-brand-gold-light);
     box-shadow: 0 6px 20px rgb(154 116 38 / 0.38), inset 0 1px 0 rgb(255 255 255 / 0.55);
   }
   [data-op-theme~='brand'] .op-button--ghost {
@@ -191,6 +194,7 @@
   /* "brand night": the same jewelry, on onyx */
   [data-op-theme~='brand'][data-op-theme~='night'] {
     color-scheme: dark;
+    --op-brand-gold-deep: #af842b; /* on onyx the "deep" gold that reads as text is a lighter one */
     --op-color-bg: #0d0b09;
     --op-color-surface: #16120e;
     --op-color-surface-2: #1d1812;
@@ -202,7 +206,7 @@
     --op-color-selected: #2c2313;
     --op-color-primary-hover: var(--op-brand-gold-light);
     --op-color-primary-soft: #2a2110;
-    --op-color-danger: #d1506b;
+    --op-color-danger: #d35670;
     --op-color-danger-hover: #e0708a;
     --op-color-danger-fg: #1a0a0f;
     --op-color-danger-soft: #331119;

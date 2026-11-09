@@ -542,6 +542,7 @@
    "title": "Selectable list",
    "config": {
     "type": "listbox",
+    "ariaLabel": "Fruits",
     "items": [
      {
       "value": 1,
@@ -1329,6 +1330,7 @@
    "title": "Card grid",
    "config": {
     "type": "dataview",
+    "ariaLabel": "Photos",
     "data": [
      {
       "id": 1,

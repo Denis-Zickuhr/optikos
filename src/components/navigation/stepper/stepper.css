@@ -102,10 +102,15 @@
   .op-stepper__step.is-error .op-stepper__btn {
     color: var(--op-color-danger);
   }
-  /* phones: only the current step keeps its words */
+  /* phones: only the current step shows its words; the others keep them for screen readers (the button's name) */
   @media (max-width: 40rem) {
     .op-stepper__step:not(.is-current) .op-stepper__text {
-      display: none;
+      position: absolute;
+      inline-size: 0;
+      block-size: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
     .op-stepper__step:not(.is-current) {
       flex: none;

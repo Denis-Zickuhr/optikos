@@ -6,3 +6,4 @@ coverage
 *.tgz
 .claude/settings.local.json
 site-dist
+.vitest

@@ -23,9 +23,18 @@
     border-radius: var(--op-grid-radius, var(--op-radius));
     overflow: hidden;
   }
-  .op-grid:focus-visible {
+  /* header + rows: the focusable role=grid part, between the bulk bar and the pager */
+  .op-grid__table {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    position: relative;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+  .op-grid__table:focus-visible {
     outline: var(--op-focus-width) solid var(--op-color-focus);
-    outline-offset: 0;
+    outline-offset: calc(var(--op-focus-width) * -1);
   }
   .op-grid__header {
     position: relative;
