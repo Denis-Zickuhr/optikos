@@ -17,7 +17,7 @@ describe('docs data (feeds the docs site and the MCP server)', () => {
     expect(slider.docs['pt-BR'].fields['Propósito']).toMatch(/bolinha/);
     expect(Object.keys(slider.fields)).toEqual(expect.arrayContaining(['Config', 'API', 'Tokens']));
     expect(tokens()['--op-color-primary']).toBeTruthy();
-    expect(themes()).toEqual(expect.arrayContaining(['light', 'dark', 'brand']));
+    expect(themes().sort()).toEqual(['compact', 'dark', 'light']);
     expect(guides().map((g) => g.name)).toContain('architecture');
   });
 });

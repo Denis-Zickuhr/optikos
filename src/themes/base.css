@@ -37,74 +37,74 @@
     --op-amber-600: #d97706;
     --op-amber-700: #b45309;
 
-    /* semantic colors */
-    --op-color-bg: var(--op-gray-50);
+    /* semantic colors: steel blue on cool grey, made for long sessions in grids and forms */
+    --op-color-bg: #edf0f4;
     --op-color-surface: var(--op-gray-0);
-    --op-color-surface-2: var(--op-gray-100);
-    --op-color-fg: var(--op-gray-900);
-    --op-color-fg-muted: #5e6b80; /* a shade under gray-500: keeps 4.5:1 on surface-2 */
-    --op-color-border: var(--op-gray-200);
-    --op-color-border-strong: var(--op-gray-300);
-    --op-color-hover: var(--op-gray-100);
-    --op-color-selected: var(--op-blue-100);
-    --op-color-primary: var(--op-blue-600);
-    --op-color-primary-hover: var(--op-blue-700);
+    --op-color-surface-2: #f3f5f8;
+    --op-color-fg: #1b2430;
+    --op-color-fg-muted: #5b6676; /* keeps 4.5:1 on surface-2 */
+    --op-color-border: #d8dee6;
+    --op-color-border-strong: #a9b3c1;
+    --op-color-hover: #eaeff6;
+    --op-color-selected: #d9e6f7;
+    --op-color-primary: #1f4e8c;
+    --op-color-primary-hover: #173d6f;
     --op-color-primary-fg: var(--op-gray-0);
-    --op-color-primary-soft: var(--op-blue-50);
-    --op-color-danger: var(--op-red-600);
-    --op-color-danger-hover: var(--op-red-700);
+    --op-color-primary-soft: #e4edf8;
+    --op-color-danger: #b3261e;
+    --op-color-danger-hover: #8f1d17;
     --op-color-danger-fg: var(--op-gray-0);
-    --op-color-danger-soft: var(--op-red-50);
-    --op-color-success: var(--op-green-600);
-    --op-color-success-soft: var(--op-green-50);
-    --op-color-warning: var(--op-amber-600);
-    --op-color-warning-soft: var(--op-amber-50);
-    --op-color-info: var(--op-blue-600);
-    --op-color-info-soft: var(--op-blue-50);
-    --op-color-focus: var(--op-blue-500);
-    --op-color-disabled-fg: var(--op-gray-400);
-    --op-color-disabled-bg: var(--op-gray-100);
-    --op-color-overlay: rgb(15 23 42 / 0.5);
-    --op-color-inverse-bg: var(--op-gray-800);
-    --op-color-inverse-fg: var(--op-gray-50);
+    --op-color-danger-soft: #fbe4e2;
+    --op-color-success: #1e7a4d;
+    --op-color-success-soft: #dff2e8;
+    --op-color-warning: #9a5b00;
+    --op-color-warning-soft: #fcecc9;
+    --op-color-info: #1f5fa8;
+    --op-color-info-soft: #dfeaf8;
+    --op-color-focus: #2f7bd6;
+    --op-color-disabled-fg: #9aa4b2;
+    --op-color-disabled-bg: #eef1f5;
+    --op-color-overlay: rgb(16 24 38 / 0.5);
+    --op-color-inverse-bg: #14213a;
+    --op-color-inverse-fg: #eaf0fa;
 
     /* typography */
-    --op-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --op-font-family: 'Segoe UI', Inter, Roboto, 'Helvetica Neue', Arial, system-ui, sans-serif;
     --op-font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-    --op-font-size: 0.875rem;
-    --op-font-size-sm: 0.75rem;
-    --op-font-size-lg: 1rem;
-    --op-font-size-xl: 1.25rem;
-    --op-line-height: 1.4;
+    --op-font-size: 0.9375rem;
+    --op-font-size-sm: 0.8125rem;
+    --op-font-size-lg: 1.0625rem;
+    --op-font-size-xl: 1.3125rem;
+    --op-line-height: 1.45;
     --op-font-weight: 400;
     --op-font-weight-medium: 500;
     --op-font-weight-bold: 600;
 
-    /* spacing, density, shape */
+    /* spacing, density, shape: comfortable, small radii, hairline borders */
     --op-space-1: 0.25rem;
     --op-space-2: 0.5rem;
-    --op-space-3: 0.75rem;
-    --op-space-4: 1rem;
+    --op-space-3: 0.875rem;
+    --op-space-4: 1.125rem;
     --op-space-5: 1.5rem;
-    --op-space-6: 2rem;
-    --op-control-height: 2.25rem;
-    --op-control-padding-x: 0.75rem;
-    --op-row-height: 2.25rem;
+    --op-space-6: 2.25rem;
+    --op-control-height: 2.375rem;
+    --op-control-padding-x: 0.875rem;
+    --op-row-height: 2.75rem;
     --op-border-width: 1px;
-    --op-radius-sm: 0.25rem;
-    --op-radius: 0.375rem;
-    --op-radius-lg: 0.75rem;
+    --op-radius-sm: 0.1875rem;
+    --op-radius: 0.25rem;
+    --op-radius-lg: 0.375rem;
     --op-radius-pill: 62.5rem;
     --op-focus-width: 2px;
-    --op-focus-offset: 2px;
-    --op-icon-size: 1.25em;
-    --op-icon-stroke: 2;
+    --op-focus-offset: 1px;
+    --op-icon-size: 1.3em;
+    --op-icon-stroke: 1.75;
 
-    /* elevation and motion */
-    --op-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.08);
-    --op-shadow: 0 4px 12px rgb(15 23 42 / 0.12);
-    --op-shadow-lg: 0 12px 32px rgb(15 23 42 / 0.2);
-    --op-duration: 120ms;
+    /* elevation and motion: flat at rest, shadows only on what floats */
+    --op-shadow-sm: none;
+    --op-shadow: 0 2px 6px rgb(16 24 38 / 0.14);
+    --op-shadow-lg: 0 10px 28px rgb(16 24 38 / 0.28);
+    --op-duration: 90ms;
 
     /* scrollbars follow the theme: thin, thumb from the strong border, track transparent */
     --op-scrollbar-width: thin;
@@ -113,6 +113,26 @@
     --op-scrollbar-track: transparent;
     --op-easing: ease-out;
     --op-z-layer: 1000;
+  }
+
+  /* The light look's component colors (a navy sidebar, a tinted grid header). Literal values, and not on :root under
+     another theme, so a theme that does not set them keeps the component defaults. dark.css sets its own. */
+  :root:not([data-op-theme]),
+  [data-op-theme~='light'],
+  [data-op-theme='compact'] {
+    --op-navmenu-item-height: 2.5rem;
+    --op-navmenu-bg: #14213a;
+    --op-navmenu-fg: #d5ddeb;
+    --op-navmenu-group-fg: #8195b4;
+    --op-navmenu-item-hover-bg: #1d2f52;
+    --op-navmenu-active-bg: #203c6a;
+    --op-navmenu-active-fg: #ffffff;
+    --op-navmenu-active-bar: #5ea6f5;
+    --op-navmenu-badge-bg: #5ea6f5;
+    --op-navmenu-badge-fg: #0a1730;
+    --op-grid-header-bg: #e6ebf1;
+    --op-grid-header-fg: #2a3547;
+    --op-field-label-weight: 600;
   }
 
   @media (prefers-reduced-motion: reduce) {

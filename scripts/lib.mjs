@@ -29,15 +29,19 @@ function cssFilesIn(dir) {
     .sort();
 }
 
-/** Writes optikos.css (tokens + layouts + all components), css/<name>.css and themes/*.css into outDir. */
-export function buildCss(outDir) {
+/**
+ * Writes optikos.css (tokens + layouts + all components), css/<name>.css and themes/*.css into outDir.
+ * `devThemes` also writes the dev-only themes of dev/themes/ (never shipped or on the public site).
+ */
+export function buildCss(outDir, { devThemes = false } = {}) {
   mkdirSync(join(outDir, 'css'), { recursive: true });
   mkdirSync(join(outDir, 'themes'), { recursive: true });
   const read = (f) => readFileSync(f, 'utf8');
   const parts = [p('src/themes/base.css'), ...cssFilesIn(p('src/core')), ...cssFilesIn(p('src/layout')), ...cssFilesIn(p('src/components')), ...cssFilesIn(p('src/motion'))].filter(existsSync);
   writeFileSync(join(outDir, 'optikos.css'), parts.map(read).join('\n'));
   for (const f of parts) writeFileSync(join(outDir, 'css', basename(f)), read(f));
-  for (const f of cssFilesIn(p('src/themes'))) if (basename(f) !== 'base.css') writeFileSync(join(outDir, 'themes', basename(f)), read(f));
+  const themes = [...cssFilesIn(p('src/themes')), ...(devThemes ? cssFilesIn(p('dev/themes')) : [])];
+  for (const f of themes) if (basename(f) !== 'base.css') writeFileSync(join(outDir, 'themes', basename(f)), read(f));
 }
 
 /** Rewrites src/index.ts: core, data, themes and one export line per component (generated; do not edit by hand). */

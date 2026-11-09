@@ -19,7 +19,7 @@
     padding: var(--op-panel-header-padding, var(--op-space-2) var(--op-space-3));
     background: var(--op-panel-header-bg, var(--op-color-surface-2));
     color: var(--op-panel-header-fg, var(--op-color-fg));
-    border-block-end: var(--op-border-width) solid var(--op-panel-border, var(--op-color-border));
+    border-block-end: var(--op-border-width) solid var(--op-panel-header-border, var(--op-panel-border, var(--op-color-border-strong)));
     font-weight: var(--op-font-weight-bold);
   }
   .op-panel__title {

@@ -7,7 +7,8 @@ Feito com o próprio Optikos, sem dependências novas.
 
 - kai: pasta **Docs → Docs site** (abre `http://localhost:5180/site/`); no terminal, `npm run site`.
 - Conteúdo: página inicial por categoria, uma página por componente, guias (arquitetura, tematização, motion, catálogo), tokens e temas, e a página do MCP.
-- `Ctrl+K` busca qualquer componente (é o `CommandPalette` da lib). O seletor do topo troca o tema do site inteiro.
+- `Ctrl+K` busca qualquer componente (é o `CommandPalette` da lib). O seletor do topo troca o tema do site inteiro; o site
+  oferece só os temas publicados (`light` e `dark`, `PUBLIC_THEMES` em `dev/themes.ts`).
 
 ## Versão publicada (GitHub Pages)
 
@@ -21,7 +22,7 @@ apontam para o código no GitHub, porque elas só existem no servidor de dev.
 - **Início** (vitrine): proposta, `npm i optikos` copiável, um formulário de verdade no hero, números reais medidos no build (kB do núcleo, componentes, temas, tokens), pilares, troca de tema que repinta a página inteira, "config → tela" lado a lado, receitas e demos.
 - **Componentes**: índice por categoria e uma página por componente (abaixo).
 - **Receitas** (`site/recipes/*.ts`): telas pequenas e completas. Cada arquivo exporta uma função que monta a tela num host e devolve a limpeza; o site roda essa função e mostra **o próprio arquivo** como código (o `site.json` leva o texto). Metadados bilíngues em `site/recipes/index.ts`; teste em `site/recipes/recipes.test.ts`.
-- **Demos**: galeria com prévia ao vivo (iframe reduzido) de cada app de `demos/`. No build estático as demos são publicadas em `site-dist/demos/<nome>/` (sem a moldura de dev, caminhos relativos, chunks partilhados com o site).
+- **Demos**: galeria com prévia ao vivo (iframe reduzido) de cada app de `demos/`. No build estático as demos são publicadas em `site-dist/demos/<nome>/` (sem a moldura de dev, caminhos relativos, chunks partilhados com o site); uma demo que usa um tema só de dev (`dev/themes/`) leva a própria cópia do CSS na sua pasta.
 - **Guias** (Começar, Tematização, ui, Motion, Catálogo, Desempenho, Arquitetura), **Tokens e temas** (amostras com o valor vivo do tema atual) e **Servidor MCP**.
 - Busca Ctrl+K: páginas, componentes, receitas, guias, demos e tokens.
 

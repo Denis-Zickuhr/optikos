@@ -16,7 +16,7 @@
     display: flex;
     flex: none;
     gap: var(--op-tabs-gap, var(--op-space-1));
-    background: var(--op-tabs-bar-bg, var(--op-color-surface));
+    background: var(--op-tabs-bar-bg, var(--op-color-surface-2));
     border-block-end: var(--op-border-width) solid var(--op-color-border);
     overflow-x: auto;
     overflow-y: hidden;

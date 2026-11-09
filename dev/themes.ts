@@ -1,5 +1,8 @@
 // Dev-only: the themes offered in the sandbox bar and the demo frame, shared so the choice follows you between pages.
-export const THEMES = ['light', 'corporate', 'dark', 'brutal', 'soft', 'terminal', 'editorial', 'brand', 'brand night'] as const;
+// `light` and `dark` ship in the package (src/themes); the rest are dev-only looks (dev/themes) to stress the tokens.
+export const THEMES = ['light', 'dark', 'comic', 'legacy', 'brutal', 'soft', 'terminal', 'editorial', 'brand', 'brand night'] as const;
+/** What the public docs site offers: only the shipped themes. */
+export const PUBLIC_THEMES = ['light', 'dark'] as const;
 export type DevTheme = (typeof THEMES)[number];
 
 const KEY = 'kit-theme';
@@ -18,16 +21,16 @@ const read = (): Partial<DevThemeState> => {
 };
 
 /** `?theme=brutal compact` wins over the remembered choice (handy for screenshots). */
-export function initialState(): DevThemeState {
+export function initialState(offered: readonly DevTheme[] = THEMES): DevThemeState {
   const asked = new URLSearchParams(location.search).get('theme')?.split(/\s+/);
   // a demo can ask for its own look with <meta name="op-theme" content="corporate">; ?theme= still wins
   const own = document.querySelector<HTMLMetaElement>('meta[name="op-theme"]')?.content;
   const s: Partial<DevThemeState> = !asked && own
     ? { theme: own as DevTheme }
     : asked
-    ? { theme: [...THEMES].sort((a, b) => b.length - a.length).find((t) => t.split(' ').every((w) => asked.includes(w))), compact: asked.includes('compact'), custom: asked.includes('custom') }
+    ? { theme: [...offered].sort((a, b) => b.length - a.length).find((t) => t.split(' ').every((w) => asked.includes(w))), compact: asked.includes('compact'), custom: asked.includes('custom') }
     : read();
-  return { theme: THEMES.includes(s.theme as DevTheme) ? (s.theme as DevTheme) : 'light', compact: !!s.compact, custom: !!s.custom };
+  return { theme: offered.includes(s.theme as DevTheme) ? (s.theme as DevTheme) : 'light', compact: !!s.compact, custom: !!s.custom };
 }
 
 /** Folder the page loaded optikos.css from ('/.dev/' on the dev servers, './' on the static docs site); themes and data sit next to it. */

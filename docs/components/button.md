@@ -10,6 +10,6 @@ API:           `setText`, `setIcon`, `setVariant`, `setLoading`, `setLoadingText
 Events:        `click(ev)` (cancelable: a handler/listener that returns `false` prevents the native submit), `toggle(pressed)`.
 States:        `is-disabled`, `is-loading` (blocks clicks; `aria-busy` and `aria-disabled`, and the loading text is the accessible name), `is-pressed` (toggle, `aria-pressed`), visible focus.
 Keyboard/ARIA: native Enter/Space (it is a `<button>`); icon-only needs `ariaLabel` (console warning in dev); `aria-pressed` on toggles.
-Tokens:        `--op-button-bg/fg/border/radius/padding-x/padding-y/gap/font-weight`, `--op-button-{hover,active}-bg`, per variant (`--op-button-primary-bg`...).
+Tokens:        `--op-button-bg/fg/border/radius/padding-x/padding-y/gap/font-weight`, `--op-button-{hover,active}-bg`, per variant (`--op-button-primary-bg`...), `--op-button-primary-shadow`.
 Sandbox cases: variants, text only/icon only/both, disabled, loading, `stableSize` true vs false side by side with a loading toggle, toggle, submit inside a form, per-component theme.
 Out of scope:  built-in menu and split (SplitButton is P1); button groups (use Toolbar).

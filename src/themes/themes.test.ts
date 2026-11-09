@@ -43,15 +43,24 @@ describe('defineTheme', () => {
   });
 });
 
-describe('shipped theme stylesheets', () => {
-  const { readFileSync } = require('node:fs') as typeof import('node:fs');
+describe('theme stylesheets', () => {
+  const { readFileSync, readdirSync } = require('node:fs') as typeof import('node:fs');
+  it('the package ships only light (base), dark and compact', () => {
+    expect(readdirSync('src/themes').filter((f) => f.endsWith('.css')).sort()).toEqual(['base.css', 'compact.css', 'dark.css']);
+  });
+  it('dark.css repaints every semantic color of the base', () => {
+    const names = (css: string) => [...css.matchAll(/(--op-color-[\w-]+):/g)].map((m) => m[1]);
+    const dark = new Set(names(readFileSync('src/themes/dark.css', 'utf8')));
+    for (const token of names(readFileSync('src/themes/base.css', 'utf8'))) expect(dark.has(token), token).toBe(true);
+  });
+  // dev-only looks (dev/themes): full themes that change color AND shape/density/typography, not just the palette
   const must = ['--op-color-bg', '--op-color-surface', '--op-color-fg', '--op-color-border', '--op-color-primary', '--op-color-primary-fg', '--op-radius', '--op-border-width', '--op-space-3', '--op-control-height', '--op-font-family'];
-  for (const name of ['brutal', 'soft', 'terminal', 'editorial', 'brand', 'corporate']) {
-    it(`${name}.css is layered, scoped by data-op-theme and sets the shape tokens`, () => {
-      const css = readFileSync(`src/themes/${name}.css`, 'utf8');
+  for (const file of readdirSync('dev/themes').filter((f) => f.endsWith('.css'))) {
+    const name = file.slice(0, -4);
+    it(`dev theme ${name}.css is layered, scoped by data-op-theme and sets the shape tokens`, () => {
+      const css = readFileSync(`dev/themes/${file}`, 'utf8');
       expect(css).toMatch(/@layer optikos\s*\{/);
       expect(css).toContain(`[data-op-theme~='${name}']`);
-      // a full theme changes color AND shape/density/typography, not just the palette
       for (const token of must) expect(css, token).toContain(`${token}:`);
     });
   }

@@ -149,8 +149,8 @@ create({ type: 'textfield', label: 'Search', renderTo: document.body });
 All styles are in `@layer optikos`, so any CSS you write outside a layer wins without `!important`.
 A theme is a value of `data-op-theme`, on `<html>` or on any element to scope it. Themes can be combined: `data-op-theme="dark compact"`.
 
-Ready-made themes: `light` (default, included in `optikos.css`), `dark`, `compact` (density), `corporate`, `soft`,
-`brutal`, `terminal`, `editorial` and `brand`. Each one is a file in `optikos/themes/<theme>.css`.
+Ready-made themes: `light` (default, included in `optikos.css`), `dark` and `compact` (density). Each one is a file in
+`optikos/themes/<theme>.css`.
 
 Write a theme in CSS:
 

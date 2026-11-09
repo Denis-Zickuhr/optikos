@@ -37,6 +37,13 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ### Changed
 
+- **Themes (breaking):** the package now ships only `light` (default), `dark` and `compact`. The default look is the
+  former `corporate` theme (steel blue on cool gray, small radii, hairline borders, a navy sidebar, 2.375rem controls,
+  2.75rem rows, 15px text) and `dark` is its night version. `optikos/themes/{corporate,brutal,soft,terminal,editorial,brand}.css`
+  were removed, and `ThemeName` keeps only `Light` and `Dark`. Grid headers and panel title bars now use the strong
+  border, the selected Grid row shows a primary bar (`--op-grid-selected-bar`, `--op-grid-selected-bar-width`), the
+  primary button has a subtle inner shadow (`--op-button-primary-shadow`) and the tab bar sits on `surface-2`; new
+  tokens `--op-grid-header-border` and `--op-panel-header-border`.
 - Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner
   `.op-grid__table`, because the root also holds the bulk bar and the pager. Code that read those attributes from
   `grid.el` should query `grid.el.querySelector('[role=grid]')`; `grid.focus()` keeps working.

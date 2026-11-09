@@ -7,6 +7,6 @@ API:           `setTitle`, `setIcon`, `collapse()`, `expand()`, `toggle()`, `clo
 Eventos:       `before-collapse`/`before-expand`/`before-close` (canceláveis), `collapse`, `expand`, `close`.
 Estados:       `is-collapsed`, `is-loading` (via `loading`).
 Teclado/ARIA:  `role="region"` + `aria-labelledby` (título). Header recolhível tem botão com `aria-expanded`/`aria-controls`. Fechar = botão com label localizado.
-Tokens:        `--op-panel-bg/fg/border/radius/shadow/header-bg/header-fg/header-padding/body-padding`.
+Tokens:        `--op-panel-bg/fg/border/radius/shadow/header-bg/header-fg/header-border/header-padding/body-padding`.
 Casos sandbox: simples, recolhível, com tbar/bbar/buttons, layouts hbox/vbox/grid dentro, closable, loading.
 Fora do escopo: arrastar/redimensionar panel (só Window arrasta); abas (Tabs).

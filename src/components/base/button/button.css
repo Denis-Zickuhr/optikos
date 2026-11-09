@@ -1,6 +1,7 @@
 @layer optikos {
   :root {
     --op-button-spinner-size: 1em;
+    --op-button-primary-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.25);
   }
 
   .op-button {
@@ -72,6 +73,7 @@
     --_border: var(--op-button-primary-bg, var(--op-color-primary));
     --_hover: var(--op-button-primary-hover-bg, var(--op-color-primary-hover));
     --_active: var(--op-button-primary-hover-bg, var(--op-color-primary-hover));
+    box-shadow: var(--op-button-primary-shadow);
   }
   .op-button--danger {
     --_bg: var(--op-button-danger-bg, var(--op-color-danger));

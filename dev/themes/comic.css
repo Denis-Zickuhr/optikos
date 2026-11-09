@@ -1,0 +1,162 @@
+/* Comic: ink outlines, halftone paper, caption boxes, primary red and pop yellow, bold hand-lettered type, buttons that
+   jump off the page. Dev-only theme. data-op-theme="comic" */
+@layer optikos {
+  [data-op-theme~='comic'] {
+    color-scheme: light;
+    --op-comic-ink: #141414;
+    --op-comic-yellow: #ffd83a;
+    --op-comic-cyan: #4cc4ee;
+    --op-comic-dot: rgb(20 20 20 / 0.09);
+
+    --op-color-bg: #fff2c2;
+    --op-color-surface: #fffdf4;
+    --op-color-surface-2: #fff6d6;
+    --op-color-fg: var(--op-comic-ink);
+    --op-color-fg-muted: #4d4636;
+    --op-color-border: var(--op-comic-ink);
+    --op-color-border-strong: var(--op-comic-ink);
+    --op-color-hover: #ffeaa0;
+    --op-color-selected: #ffe066;
+    --op-color-primary: #c8231a;
+    --op-color-primary-hover: #a51b12;
+    --op-color-primary-fg: #ffffff;
+    --op-color-primary-soft: #ffe6e2;
+    --op-color-danger: #c4122f;
+    --op-color-danger-hover: #9c0d24;
+    --op-color-danger-fg: #ffffff;
+    --op-color-danger-soft: #ffd6dc;
+    --op-color-success: #176a31;
+    --op-color-success-soft: #cdf0d4;
+    --op-color-warning: #874a00;
+    --op-color-warning-soft: #ffe3b0;
+    --op-color-info: #1060a0;
+    --op-color-info-soft: #d2ecf8;
+    --op-color-focus: #1a73c8;
+    --op-color-disabled-fg: #8a826d;
+    --op-color-disabled-bg: #f1e8c8;
+    --op-color-overlay: rgb(20 20 20 / 0.55);
+    --op-color-inverse-bg: var(--op-comic-ink);
+    --op-color-inverse-fg: #fffdf4;
+
+    --op-font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', 'Comic Relief', 'Marker Felt', cursive, sans-serif;
+    --op-font-size: 0.9375rem;
+    --op-font-size-sm: 0.8125rem;
+    --op-font-size-lg: 1.125rem;
+    --op-font-size-xl: 1.5rem;
+    --op-line-height: 1.4;
+    --op-font-weight-medium: 700;
+    --op-font-weight-bold: 800;
+
+    --op-space-1: 0.25rem;
+    --op-space-2: 0.5rem;
+    --op-space-3: 0.875rem;
+    --op-space-4: 1.25rem;
+    --op-control-height: 2.5rem;
+    --op-control-padding-x: 1rem;
+    --op-row-height: 2.625rem;
+    --op-border-width: 2.5px;
+    --op-radius-sm: 0.375rem;
+    --op-radius: 0.625rem;
+    --op-radius-lg: 0.875rem;
+    --op-focus-width: 3px;
+    --op-focus-offset: 2px;
+    --op-icon-stroke: 2.5;
+
+    --op-shadow-sm: 3px 3px 0 var(--op-comic-ink);
+    --op-shadow: 5px 5px 0 var(--op-comic-ink);
+    --op-shadow-lg: 8px 8px 0 var(--op-comic-ink);
+    --op-duration: 120ms;
+    --op-easing: cubic-bezier(0.34, 1.56, 0.64, 1); /* a little overshoot: things "pop" */
+
+    --op-panel-shadow: var(--op-shadow);
+    --op-panel-header-bg: var(--op-comic-yellow);
+    --op-panel-header-fg: var(--op-comic-ink);
+    --op-grid-header-bg: var(--op-comic-cyan);
+    --op-grid-header-fg: var(--op-comic-ink);
+    --op-grid-row-selected-bg: var(--op-color-selected);
+    --op-grid-selected-bar: var(--op-color-primary);
+    --op-tabs-bar-bg: transparent;
+    --op-tabs-tab-active-border: var(--op-color-primary);
+    --op-field-label-weight: 800;
+    --op-button-primary-shadow: var(--op-shadow-sm);
+    --op-tooltip-bg: #fffdf4;
+    --op-tooltip-fg: var(--op-comic-ink);
+
+    --op-navmenu-bg: var(--op-comic-ink);
+    --op-navmenu-fg: #fff6d6;
+    --op-navmenu-group-fg: var(--op-comic-yellow);
+    --op-navmenu-item-hover-bg: #2c2c2c;
+    --op-navmenu-active-bg: var(--op-comic-yellow);
+    --op-navmenu-active-fg: var(--op-comic-ink);
+    --op-navmenu-active-bar: var(--op-color-primary);
+    --op-navmenu-badge-bg: var(--op-color-primary);
+    --op-navmenu-badge-fg: #ffffff;
+  }
+
+  /* halftone paper: a dot screen over the page background */
+  [data-op-theme~='comic'] {
+    background-image: radial-gradient(var(--op-comic-dot) 1px, transparent 1.4px);
+    background-size: 7px 7px;
+  }
+
+  /* lettering: titles and buttons shout a little */
+  [data-op-theme~='comic'] :is(.op-panel__header, .op-grid__header, .op-tabs__tab, .op-button, .op-fieldset__legend) {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  /* the title bar is a yellow caption box */
+  [data-op-theme~='comic'] .op-panel__title {
+    font-size: var(--op-font-size-lg);
+  }
+
+  /* buttons jump off the page on hover and squash when pressed */
+  [data-op-theme~='comic'] .op-button {
+    box-shadow: var(--op-shadow-sm);
+    transition: transform var(--op-duration) var(--op-easing), box-shadow var(--op-duration) var(--op-easing), background var(--op-duration);
+  }
+  [data-op-theme~='comic'] .op-button:hover:not(:disabled) {
+    transform: translate(-1px, -2px) rotate(-1.5deg);
+    box-shadow: var(--op-shadow);
+  }
+  [data-op-theme~='comic'] .op-button:active:not(:disabled),
+  [data-op-theme~='comic'] .op-button.is-pressed {
+    transform: translate(2px, 2px) scale(0.97);
+    box-shadow: none;
+  }
+  [data-op-theme~='comic'] .op-button--ghost {
+    box-shadow: none;
+  }
+
+  /* fields are word balloons: round, inked, with a little shadow under the text */
+  [data-op-theme~='comic'] .op-textfield__input {
+    border-radius: var(--op-radius-lg);
+  }
+  [data-op-theme~='comic'] .op-textfield__input:focus {
+    box-shadow: 3px 3px 0 var(--op-color-focus);
+  }
+
+  /* tooltips are speech balloons */
+  [data-op-theme~='comic'] .op-tooltip {
+    border: 2px solid var(--op-comic-ink);
+    border-radius: 1rem;
+    box-shadow: var(--op-shadow-sm);
+    font-weight: 700;
+  }
+
+  /* panels and windows are comic panels: inked frame and a hard drop shadow */
+  [data-op-theme~='comic'] .op-window {
+    border: var(--op-border-width) solid var(--op-comic-ink);
+  }
+  [data-op-theme~='comic'] .op-tabs__tab.is-active {
+    background: var(--op-comic-yellow);
+    color: var(--op-comic-ink);
+    border-radius: var(--op-radius) var(--op-radius) 0 0;
+  }
+  [data-op-theme~='comic'] .op-grid__body-row:hover {
+    background: var(--op-color-hover);
+  }
+  [data-op-theme~='comic'] .op-toast {
+    border: var(--op-border-width) solid var(--op-comic-ink);
+    box-shadow: var(--op-shadow);
+  }
+}

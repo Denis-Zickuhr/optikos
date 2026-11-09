@@ -10,6 +10,6 @@ API:           `setText`, `setIcon`, `setVariant`, `setLoading`, `setLoadingText
 Eventos:       `click(ev)` (cancelável: handler/listener que retorna `false` impede o submit nativo), `toggle(pressed)`.
 Estados:       `is-disabled`, `is-loading` (bloqueia clique; `aria-busy` e `aria-disabled`, e o texto de loading é o nome acessível), `is-pressed` (toggle, `aria-pressed`), foco visível.
 Teclado/ARIA:  Enter/Space nativos (é `<button>`); só ícone exige `ariaLabel` (aviso no console em dev); `aria-pressed` no toggle.
-Tokens:        `--op-button-bg/fg/border/radius/padding-x/padding-y/gap/font-weight`, `--op-button-{hover,active}-bg`, por variante (`--op-button-primary-bg`...).
+Tokens:        `--op-button-bg/fg/border/radius/padding-x/padding-y/gap/font-weight`, `--op-button-{hover,active}-bg`, por variante (`--op-button-primary-bg`...), `--op-button-primary-shadow`.
 Casos sandbox: variantes, só texto/só ícone/ambos, disabled, loading, `stableSize` true vs false lado a lado com toggle de loading, toggle, submit dentro de form, tema por componente.
 Fora do escopo: menu embutido e split (SplitButton é P1); grupos de botões (use Toolbar).

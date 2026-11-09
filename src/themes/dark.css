@@ -1,38 +1,53 @@
-/* Dark theme: only semantic colors and shadows change. Use data-op-theme="dark" on any element. */
+/* Dark: the same sober look at night. Steel blue on deep slate, quiet borders, a darker sidebar; shape and density come
+   from the base. Use data-op-theme="dark" on any element. */
 @layer optikos {
   [data-op-theme~='dark'] {
     color-scheme: dark; /* native controls follow */
-    --op-color-bg: var(--op-gray-900);
-    --op-color-surface: var(--op-gray-800);
-    --op-color-surface-2: #273449;
-    --op-color-fg: var(--op-gray-100);
-    --op-color-fg-muted: var(--op-gray-400);
-    --op-color-border: var(--op-gray-700);
-    --op-color-border-strong: var(--op-gray-600);
-    --op-color-hover: #2b3a52;
-    --op-color-selected: #1e3a8a;
-    --op-color-primary: #60a5fa; /* blue-400: primary text keeps 4.5:1 on the dark surfaces */
-    --op-color-primary-hover: #93c5fd;
-    --op-color-primary-fg: var(--op-gray-900);
-    --op-color-primary-soft: #172554;
-    --op-color-danger: #f87171;
-    --op-color-danger-hover: #fca5a5;
-    --op-color-danger-fg: var(--op-gray-900);
-    --op-color-danger-soft: #450a0a;
-    --op-color-success: #4ade80;
-    --op-color-success-soft: #052e16;
-    --op-color-warning: #fbbf24;
-    --op-color-warning-soft: #422006;
-    --op-color-info: #60a5fa;
-    --op-color-info-soft: #172554;
-    --op-color-focus: #60a5fa;
-    --op-color-disabled-fg: var(--op-gray-500);
-    --op-color-disabled-bg: #1b2538;
-    --op-color-overlay: rgb(0 0 0 / 0.65);
-    --op-color-inverse-bg: var(--op-gray-100);
-    --op-color-inverse-fg: var(--op-gray-900);
-    --op-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-    --op-shadow: 0 4px 12px rgb(0 0 0 / 0.5);
+    --op-color-bg: #0f141c;
+    --op-color-surface: #161d28;
+    --op-color-surface-2: #1c2532;
+    --op-color-fg: #e2e8f0;
+    --op-color-fg-muted: #9ba7b8;
+    --op-color-border: #2a3444;
+    --op-color-border-strong: #435064;
+    --op-color-hover: #212d3e;
+    --op-color-selected: #1d3557;
+    --op-color-primary: #6ea8ec; /* primary text keeps 4.5:1 on the dark surfaces */
+    --op-color-primary-hover: #93bff2;
+    --op-color-primary-fg: #0b1524;
+    --op-color-primary-soft: #172a45;
+    --op-color-danger: #f28b82;
+    --op-color-danger-hover: #f6aaa3;
+    --op-color-danger-fg: #1f0b09;
+    --op-color-danger-soft: #3b1715;
+    --op-color-success: #5cc493;
+    --op-color-success-soft: #10301f;
+    --op-color-warning: #e9b44c;
+    --op-color-warning-soft: #36270c;
+    --op-color-info: #6ea8ec;
+    --op-color-info-soft: #172a45;
+    --op-color-focus: #6ea8ec;
+    --op-color-disabled-fg: #647186;
+    --op-color-disabled-bg: #1a222e;
+    --op-color-overlay: rgb(0 0 0 / 0.62);
+    --op-color-inverse-bg: #e2e8f0;
+    --op-color-inverse-fg: #0f141c;
+    --op-shadow-sm: none;
+    --op-shadow: 0 2px 8px rgb(0 0 0 / 0.45);
     --op-shadow-lg: 0 12px 32px rgb(0 0 0 / 0.6);
+
+    --op-navmenu-item-height: 2.5rem;
+    --op-navmenu-bg: #0b1018;
+    --op-navmenu-fg: #c6d0de;
+    --op-navmenu-group-fg: #7f8ea6;
+    --op-navmenu-item-hover-bg: #172131;
+    --op-navmenu-active-bg: #1b3050;
+    --op-navmenu-active-fg: #ffffff;
+    --op-navmenu-active-bar: #6ea8ec;
+    --op-navmenu-badge-bg: #6ea8ec;
+    --op-navmenu-badge-fg: #0b1524;
+    --op-grid-header-bg: #1a2230;
+    --op-grid-header-fg: #d3dbe6;
+    --op-field-label-weight: 600;
   }
 }

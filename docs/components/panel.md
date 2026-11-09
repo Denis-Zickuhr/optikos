@@ -7,6 +7,6 @@ API:           `setTitle`, `setIcon`, `collapse()`, `expand()`, `toggle()`, `clo
 Events:        `before-collapse`/`before-expand`/`before-close` (cancelable), `collapse`, `expand`, `close`.
 States:        `is-collapsed`, `is-loading` (through `loading`).
 Keyboard/ARIA: `role="region"` + `aria-labelledby` (the title). A collapsible header has a button with `aria-expanded`/`aria-controls`. Close = a button with a localized label.
-Tokens:        `--op-panel-bg/fg/border/radius/shadow/header-bg/header-fg/header-padding/body-padding`.
+Tokens:        `--op-panel-bg/fg/border/radius/shadow/header-bg/header-fg/header-border/header-padding/body-padding`.
 Sandbox cases: plain, collapsible, with tbar/bbar/buttons, hbox/vbox/grid layouts inside, closable, loading.
 Out of scope:  dragging/resizing a panel (only Window drags); tabs (Tabs).

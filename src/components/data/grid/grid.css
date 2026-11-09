@@ -9,6 +9,7 @@
     --op-grid-action-gap: var(--op-space-1);
     --op-grid-action-idle-opacity: 0.45;
     --op-grid-action-disabled-opacity: 0.3;
+    --op-grid-selected-bar-width: 0.125rem;
   }
   .op-grid {
     --_border: var(--op-grid-border, var(--op-color-border));
@@ -42,7 +43,7 @@
     overflow: hidden;
     color: var(--op-grid-header-fg, var(--op-color-fg));
     background: var(--op-grid-header-bg, var(--op-color-surface-2));
-    border-block-end: var(--op-border-width) solid var(--_border);
+    border-block-end: var(--op-border-width) solid var(--op-grid-header-border, var(--op-color-border-strong));
     font-weight: var(--op-font-weight-bold);
   }
   .op-grid__row {
@@ -71,6 +72,7 @@
   }
   .op-grid__body-row.is-selected {
     background: var(--op-grid-row-selected-bg, var(--op-color-selected));
+    box-shadow: inset var(--op-grid-selected-bar-width) 0 0 var(--op-grid-selected-bar, var(--op-color-primary));
   }
   .op-grid__body-row.is-active {
     outline: var(--op-focus-width) solid var(--op-color-focus);

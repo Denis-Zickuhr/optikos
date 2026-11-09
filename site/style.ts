@@ -19,6 +19,8 @@ body{margin:0;background:var(--op-color-bg);color:var(--op-color-fg);font:var(--
 .site__nav{position:sticky;inset-block-start:var(--site-top);align-self:start;block-size:calc(100vh - var(--site-top));box-sizing:border-box;overflow:auto;padding:.75rem .5rem;
   border-inline-end:1px solid var(--op-color-border);background:var(--op-color-surface)}
 .site__nav .op-textfield{margin-block-end:.5rem}
+/* the docs index reads as part of the page, not as an app sidebar: the menu takes the surface colors in every theme */
+.site__nav .op-navmenu{--op-navmenu-bg:transparent;--op-navmenu-fg:var(--op-color-fg);--op-navmenu-group-fg:var(--op-color-fg-muted);--op-navmenu-item-hover-bg:var(--op-color-hover);--op-navmenu-active-bg:var(--op-color-primary-soft);--op-navmenu-active-fg:var(--op-color-primary);--op-navmenu-active-bar:var(--op-color-primary);--op-navmenu-item-height:var(--op-control-height)}
 
 /* content */
 .site__main{padding:2rem 2.5rem 4rem;max-inline-size:68rem;inline-size:100%;box-sizing:border-box;min-inline-size:0}

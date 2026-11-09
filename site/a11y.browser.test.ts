@@ -6,7 +6,7 @@ import examples from './examples.json';
 import { run, type Example } from './render';
 import { recipes } from './recipes/index';
 
-const THEMES = ['light', 'dark', 'corporate', 'soft', 'brutal', 'terminal', 'editorial', 'brand', 'brand night', 'dark compact'];
+const THEMES = ['light', 'dark', 'comic', 'legacy', 'soft', 'brutal', 'terminal', 'editorial', 'brand', 'brand night', 'dark compact'];
 // Rules about a whole page (one h1, landmarks, title) do not apply to a component shown alone.
 const PAGE_RULES = Object.fromEntries(['region', 'page-has-heading-one', 'landmark-one-main', 'document-title', 'html-has-lang'].map((r) => [r, { enabled: false }]));
 // The Grid's scrolling viewport is not a tab stop on purpose: the focusable role=grid around it moves the active row with

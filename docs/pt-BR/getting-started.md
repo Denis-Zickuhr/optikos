@@ -39,7 +39,7 @@ import 'optikos/themes/dark.css';
 document.documentElement.setAttribute('data-op-theme', 'dark');
 ```
 
-Temas prontos: `light` (padrão), `dark`, `compact`, `corporate`, `soft`, `brutal`, `terminal`, `editorial`, `brand`.
+Temas prontos: `light` (padrão), `dark` e `compact` (densidade).
 Os temas se combinam (`"dark compact"`) e podem valer só para um elemento. Um tema seu sai em poucas linhas com
 `defineTheme` (veja o guia **Tematização**).
 

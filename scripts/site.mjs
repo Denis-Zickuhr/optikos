@@ -41,7 +41,14 @@ if (process.argv[2] === 'build') {
   for (const d of demos()) {
     const dir = join(root, 'demos', d);
     mkdirSync(join(out, 'demos', d), { recursive: true });
-    const html = readFileSync(join(dir, 'index.html'), 'utf8').replaceAll(`/.dev/demos/${d}/main.js`, './main.js').replaceAll('/.dev/', '../../').replaceAll(`/demos/${d}/`, './');
+    let html = readFileSync(join(dir, 'index.html'), 'utf8').replaceAll(`/.dev/demos/${d}/main.js`, './main.js');
+    // a demo with a dev-only look (dev/themes) carries its own copy: the site itself publishes only light and dark
+    html = html.replace(/\/\.dev\/themes\/([\w-]+)\.css/g, (m, name) => {
+      if (!existsSync(join(root, 'dev/themes', `${name}.css`))) return m;
+      copyFileSync(join(root, 'dev/themes', `${name}.css`), join(out, 'demos', d, `${name}.css`));
+      return `./${name}.css`;
+    });
+    html = html.replaceAll('/.dev/', '../../').replaceAll(`/demos/${d}/`, './');
     writeFileSync(join(out, 'demos', d, 'index.html'), html);
     for (const f of readdirSync(dir)) if (!/\.(ts|html)$/.test(f)) copyFileSync(join(dir, f), join(out, 'demos', d, f));
     entries[`demos/${d}/main`] = `demos/${d}/main.ts`;

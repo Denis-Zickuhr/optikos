@@ -10,7 +10,7 @@ Everything visual comes from a custom property. Three layers, all in `@layer opt
 
 Each component uses its own token and falls back to the semantic one: `background: var(--op-button-bg, var(--op-color-surface))`.
 
-`--op-color-primary-text` is the primary color **as text** (selected chips, the primary badge...). It is not set by default (components fall back to `--op-color-primary`); a theme whose primary only works as a fill sets it (`brutal` uses the text color, `brand` the deep gold).
+`--op-color-primary-text` is the primary color **as text** (selected chips, the primary badge...). It is not set by default (components fall back to `--op-color-primary`); a theme whose primary only works as a fill sets it (a yellow or gold primary, for example, sets it to the text color or a deeper shade).
 
 ## 1. Global, scoped and per component
 
@@ -25,7 +25,11 @@ Each component uses its own token and falls back to the semantic one: `backgroun
 create({ type: 'button', theme: { radius: '0', primaryBg: '#16a34a' } }); // --op-button-radius, --op-button-primary-bg (this instance only)
 ```
 
-Included themes: `light` (the default, in `optikos.css`), `dark.css`, `compact.css` (density: smaller controls and spacing). Combine them: `data-op-theme="dark compact"`.
+Included themes: `light` (the default, in `optikos.css`), `dark.css` and `compact.css` (density: smaller controls and spacing). Combine them: `data-op-theme="dark compact"`.
+
+The default look is sober and made for back-office work: steel blue on cool gray, small radii, hairline borders, flat
+surfaces, a navy sidebar (`--op-navmenu-*`), 2.375rem controls, 2.75rem rows and 15px text, for long sessions in grids
+and forms. `dark` is the same look at night: deep slate surfaces, a darker sidebar, the same shape and density.
 
 Windows, menus, dropdowns and toasts live in `body > .op-layer`; they copy the `data-op-theme` of the element that opened them, so a dark scope stays dark in its popups.
 
@@ -68,18 +72,10 @@ To produce the `.css` at build time: `npm run theme -- my-theme.ts my-theme.css`
 - Declare theme-dependent tokens where they are used (`var(--op-x, var(--op-color-…))`), never in a `:root` with `var()` (it would not re-evaluate inside `data-op-theme`).
 - Text must keep a 4.5:1 contrast in every theme: the browser test `site/a11y.browser.test.ts` runs axe on every example in every theme.
 
-## Ready-made themes (complete looks)
+## Going further: a complete look
 
-Besides `light` (default), `dark` and `compact` (density), six themes change **colors, shape, density and typography** (not just the palette), so the same app looks like another product. Each one is a file in `optikos/themes/<name>.css`; turn it on with `data-op-theme="<name>"` (and combine with `compact` if you want).
-
-| Theme | What it looks like |
-|---|---|
-| `corporate` | sober and orderly, for back-office work: steel blue on cool gray, small radii, hairline borders, flat, a navy sidebar (`--op-navmenu-*`), 2.375rem controls, 2.75rem rows, 15px text; made for long sessions in grids and forms |
-| `brutal` | 3px black borders, no radius, hard offset shadows, loud yellow (as a fill, never as text), uppercase labels; buttons "lift" on hover and "sink" on click |
-| `soft` | light and airy: large radii, pill buttons, pastel violet, diffuse shadows, borderless fields (a soft fill), tall rows |
-| `terminal` | phosphor green on black, monospace, no radius, dense, a glowing focus, titles with `>` |
-| `brand` | luxury/jewelry, **light and for daily use**: champagne and ivory, onyx text, antique gold, high-contrast serif, hairlines, spaced capitals, onyx title bands with gold text, a gold-leaf primary button. `data-op-theme="brand night"` gives the dark (onyx) version |
-| `editorial` | warm paper, serif type, ink rules instead of boxes, underline-only fields, small-caps buttons, oxblood accent |
-
-They show how far a theme goes with tokens and scoped rules (`[data-op-theme~='x'] .op-button { … }`). For themes like these, use component tokens (`--op-panel-header-bg`, `--op-grid-header-bg`, `--op-button-radius`...) before writing a rule; write a rule only for what a token cannot reach (uppercase, offset shadow, underlined field). In popups (menu, window, dropdown) the `data-op-theme` attribute sits on the floating element itself, so prefer tokens to descendant selectors.
-In development, the sandbox bar and the demo frame have a picker with all of them (`?theme=brutal` works too).
+A theme can change **colors, shape, density and typography**, not just the palette, so the same app looks like another
+product: set the semantic and component tokens first (`--op-panel-header-bg`, `--op-grid-header-bg`, `--op-button-radius`...),
+then write scoped rules (`[data-op-theme~='x'] .op-button { … }`) only for what a token cannot reach (uppercase, an offset
+shadow, an underlined field). In popups (menu, window, dropdown) the `data-op-theme` attribute sits on the floating element
+itself, so prefer tokens to descendant selectors.

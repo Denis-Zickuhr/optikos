@@ -1,0 +1,194 @@
+/* Legacy: the classic desktop-in-the-browser look. Pale blue frame, glossy blue title bars, grey bevelled grid headers,
+   small Tahoma-style type, tight rows, square-ish gradient buttons. Dev-only theme. data-op-theme="legacy" */
+@layer optikos {
+  [data-op-theme~='legacy'] {
+    color-scheme: light;
+    --op-legacy-frame: #99bbe8;
+    --op-legacy-title: #15428b;
+    --op-legacy-bar-top: #e4ecf7;
+    --op-legacy-bar-bottom: #c9d9ef;
+
+    --op-color-bg: #dfe8f6;
+    --op-color-surface: #ffffff;
+    --op-color-surface-2: #eef3fa;
+    --op-color-fg: #000000;
+    --op-color-fg-muted: #4b5563;
+    --op-color-border: #c5d3e6;
+    --op-color-border-strong: #99bbe8;
+    --op-color-hover: #e9f0fa;
+    --op-color-selected: #dfe8f6;
+    --op-color-primary: #2a5ea8;
+    --op-color-primary-hover: #1f4c8c;
+    --op-color-primary-fg: #ffffff;
+    --op-color-primary-soft: #e3ecf8;
+    --op-color-primary-text: var(--op-legacy-title);
+    --op-color-danger: #c0271d;
+    --op-color-danger-hover: #9e1f17;
+    --op-color-danger-fg: #ffffff;
+    --op-color-danger-soft: #fbe3e1;
+    --op-color-success: #2e7a1f;
+    --op-color-success-soft: #e2f2dc;
+    --op-color-warning: #8c5a00;
+    --op-color-warning-soft: #fff1cc;
+    --op-color-info: #1f5fa8;
+    --op-color-info-soft: #e1ecf9;
+    --op-color-focus: #7eadd9;
+    --op-color-disabled-fg: #8c8c8c;
+    --op-color-disabled-bg: #f2f2f2;
+    --op-color-overlay: rgb(80 100 130 / 0.45);
+    --op-color-inverse-bg: #ffffe1; /* tooltips: pale yellow notes */
+    --op-color-inverse-fg: #000000;
+
+    --op-font-family: Tahoma, Verdana, Geneva, Arial, sans-serif;
+    --op-font-size: 0.75rem;
+    --op-font-size-sm: 0.6875rem;
+    --op-font-size-lg: 0.8125rem;
+    --op-font-size-xl: 1rem;
+    --op-line-height: 1.35;
+    --op-font-weight-medium: 400;
+    --op-font-weight-bold: 700;
+
+    --op-space-1: 0.1875rem;
+    --op-space-2: 0.3125rem;
+    --op-space-3: 0.5rem;
+    --op-space-4: 0.75rem;
+    --op-space-5: 1rem;
+    --op-space-6: 1.5rem;
+    --op-control-height: 1.5rem;
+    --op-control-padding-x: 0.375rem;
+    --op-row-height: 1.5rem;
+    --op-border-width: 1px;
+    --op-radius-sm: 2px;
+    --op-radius: 3px;
+    --op-radius-lg: 5px;
+    --op-radius-pill: 3px;
+    --op-focus-width: 1px;
+    --op-focus-offset: 0;
+    --op-icon-size: 1.15em;
+    --op-icon-stroke: 2;
+
+    --op-shadow-sm: none;
+    --op-shadow: 0 2px 5px rgb(0 0 0 / 0.25);
+    --op-shadow-lg: 0 4px 12px rgb(0 0 0 / 0.35);
+    --op-duration: 0ms;
+
+    --op-panel-border: var(--op-legacy-frame);
+    --op-panel-header-border: var(--op-legacy-frame);
+    --op-panel-header-fg: var(--op-legacy-title);
+    --op-panel-header-padding: 0.25rem 0.4rem;
+    --op-grid-border: #99bbe8;
+    --op-grid-header-fg: #000000;
+    --op-grid-header-border: #d0d0d0;
+    --op-grid-row-stripe-bg: #fafafa;
+    --op-grid-row-hover-bg: #efefef;
+    --op-grid-row-selected-bg: #dfe8f6;
+    --op-grid-selected-bar-width: 0;
+    --op-tabs-tab-fg: var(--op-legacy-title);
+    --op-tabs-tab-active-fg: var(--op-legacy-title);
+    --op-tabs-tab-active-border: transparent;
+    --op-tabs-tab-padding-y: 0.25rem;
+    --op-tabs-tab-padding-x: 0.625rem;
+    --op-toolbar-padding: 0.125rem 0.25rem;
+    --op-toolbar-border: var(--op-legacy-frame);
+    --op-field-label-weight: 400;
+    --op-textfield-border: #b5b8c8;
+    --op-button-border: #a3b5cf;
+    --op-button-primary-shadow: none;
+
+    --op-navmenu-item-height: 1.5rem;
+    --op-navmenu-bg: #ffffff;
+    --op-navmenu-fg: #000000;
+    --op-navmenu-group-fg: var(--op-legacy-title);
+    --op-navmenu-item-hover-bg: #eef3fb;
+    --op-navmenu-active-bg: #dfe8f6;
+    --op-navmenu-active-fg: var(--op-legacy-title);
+    --op-navmenu-active-bar: var(--op-legacy-frame);
+    --op-navmenu-badge-bg: var(--op-legacy-title);
+    --op-navmenu-badge-fg: #ffffff;
+  }
+
+  /* glossy title bars and toolbars: a light-to-mid blue gradient with a white highlight line */
+  [data-op-theme~='legacy'] :is(.op-panel__header, .op-toolbar) {
+    background: linear-gradient(var(--op-legacy-bar-top), var(--op-legacy-bar-bottom));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7);
+  }
+  [data-op-theme~='legacy'] .op-panel__header {
+    font-size: var(--op-font-size);
+  }
+  /* grid column headers: grey bevel, a vertical rule between columns */
+  [data-op-theme~='legacy'] .op-grid__header {
+    background: linear-gradient(#f9f9f9, #e3e4e6);
+    font-weight: 400;
+  }
+  [data-op-theme~='legacy'] .op-grid__hcell + .op-grid__hcell {
+    border-inline-start: 1px solid #d0d0d0;
+  }
+  [data-op-theme~='legacy'] .op-grid__body-row {
+    border-block-end-color: #ededed;
+  }
+  [data-op-theme~='legacy'] .op-grid__body-row.is-selected {
+    outline: 1px dotted #a3bae9;
+    outline-offset: -1px;
+  }
+
+  /* buttons: a gloss over the variant's own color (so primary, danger and the current page keep theirs) */
+  [data-op-theme~='legacy'] .op-button {
+    background-image: linear-gradient(rgb(255 255 255 / 0.6), rgb(0 40 100 / 0.08));
+  }
+  [data-op-theme~='legacy'] .op-button:hover:not(:disabled) {
+    background-image: linear-gradient(rgb(255 255 255 / 0.5), rgb(0 60 140 / 0.12));
+    border-color: var(--op-legacy-frame);
+  }
+  [data-op-theme~='legacy'] .op-button:active:not(:disabled),
+  [data-op-theme~='legacy'] .op-button.is-pressed {
+    background-image: linear-gradient(rgb(0 40 100 / 0.12), rgb(255 255 255 / 0.3));
+  }
+  [data-op-theme~='legacy'] :is(.op-button--primary, .op-button--danger) {
+    background-image: linear-gradient(rgb(255 255 255 / 0.16), rgb(255 255 255 / 0));
+    font-weight: 700;
+  }
+  [data-op-theme~='legacy'] :is(.op-button--primary, .op-button--danger):hover:not(:disabled) {
+    background-image: linear-gradient(rgb(255 255 255 / 0.12), rgb(255 255 255 / 0));
+  }
+  [data-op-theme~='legacy'] :is(.op-button--ghost, .op-pagination__btn.is-current) {
+    background-image: none;
+  }
+
+  /* text fields: the faint inner shadow at the top */
+  [data-op-theme~='legacy'] .op-textfield__input {
+    background-image: linear-gradient(#ececec, #ffffff 3px);
+  }
+  [data-op-theme~='legacy'] .op-textfield__input:focus {
+    border-color: var(--op-color-focus);
+    outline: none;
+  }
+
+  /* tabs: rounded-top tabs on a blue strip, the active one opens into the panel */
+  [data-op-theme~='legacy'] .op-tabs__bar {
+    gap: 2px;
+    padding: 2px 2px 0;
+    background: linear-gradient(var(--op-legacy-bar-top), var(--op-legacy-bar-bottom));
+    border-block-end-color: var(--op-legacy-frame);
+  }
+  [data-op-theme~='legacy'] .op-tabs__tab {
+    background: linear-gradient(#f2f6fb, #d6e3f3);
+    border: 1px solid #8db2e3;
+    border-block-end: 0;
+    border-radius: var(--op-radius) var(--op-radius) 0 0;
+    margin-block-end: 0;
+  }
+  [data-op-theme~='legacy'] .op-tabs__tab.is-active {
+    background: #ffffff;
+    margin-block-end: -1px;
+  }
+
+  /* windows: the whole frame is pale blue, the body sits inside it */
+  [data-op-theme~='legacy'] .op-window {
+    border: 1px solid var(--op-legacy-frame);
+    border-radius: var(--op-radius-lg);
+    background: var(--op-color-bg);
+  }
+  [data-op-theme~='legacy'] .op-tooltip {
+    border: 1px solid #8c8c8c;
+  }
+}

@@ -36,5 +36,5 @@ export const Op = e({
 export type Op = (typeof Op)[keyof typeof Op];
 
 /** The shipped themes (`setTheme(ThemeName.Dark)`; add `' compact'` for the dense variant). */
-export const ThemeName = e({ Light: 'light', Dark: 'dark', Corporate: 'corporate', Brutal: 'brutal', Soft: 'soft', Terminal: 'terminal', Editorial: 'editorial', Brand: 'brand' } as const);
+export const ThemeName = e({ Light: 'light', Dark: 'dark' } as const);
 export type ThemeName = (typeof ThemeName)[keyof typeof ThemeName];

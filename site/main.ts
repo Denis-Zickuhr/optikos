@@ -3,7 +3,7 @@
 // Data comes from site.json next to optikos.css (scripts/site.mjs): `npm run site` serves it, `npm run site:build` writes
 // the static copy published on GitHub Pages.
 import { create, ui, toast, stagger, iconEl, Container, type NavItem, type NavMenu, type CommandPalette, type Select, type Form, type Component } from 'optikos';
-import { THEMES, initialState, applyThemeState, assetBase, type DevTheme } from '../dev/themes';
+import { PUBLIC_THEMES, initialState, applyThemeState, assetBase, type DevTheme } from '../dev/themes';
 import { run, snippet, type Example } from './render';
 import { markdown, inline } from './markdown';
 import { lang, LANGS, setLang, t, tx, type Lang, type Key } from './i18n';
@@ -59,10 +59,10 @@ const LINKS: [string, Key][] = [['components', 'components'], ['recipes', 'recip
 for (const [id, key] of LINKS) Object.assign(el('a', '', t(key), links), { href: `#/${id}` }).dataset.route = id;
 create({ type: 'button', icon: 'search', text: `${t('search')} Ctrl K`, ariaLabel: `${t('search')} Ctrl K`, cls: 'site__search', variant: 'ghost', renderTo: top, handler: () => palette.open() } as never);
 create({ type: 'select', cls: 'site__lang', ariaLabel: t('language'), options: LANGS, value: lang, stableSize: false, renderTo: top, listeners: { change: (v: Lang) => v && v !== lang && setLang(v) } } as never);
-const state = initialState();
+const state = initialState(PUBLIC_THEMES);
 const themeListeners = new Set<(theme: string) => void>();
 const themeSelect = create<Select>({
-  type: 'select', cls: 'site__theme', ariaLabel: t('theme'), options: [...THEMES], value: state.theme, stableSize: false, renderTo: top,
+  type: 'select', cls: 'site__theme', ariaLabel: t('theme'), options: [...PUBLIC_THEMES], value: state.theme, stableSize: false, renderTo: top,
   listeners: { change: (v: string) => { if (!v) return; applyThemeState({ ...state, theme: v as DevTheme }); themeListeners.forEach((fn) => fn(v)); } },
 } as never);
 applyThemeState(state);
@@ -194,7 +194,7 @@ function home() {
   const themes = section('themesTitle', 'themesText');
   const chips = el('div', 'home__themes', '', themes);
   const mark = (theme: string) => chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.theme === theme)));
-  for (const theme of THEMES) {
+  for (const theme of PUBLIC_THEMES) {
     const b = el('button', 'home__theme', theme, chips);
     b.type = 'button';
     b.dataset.theme = theme;

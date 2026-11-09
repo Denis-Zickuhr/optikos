@@ -15,10 +15,10 @@ const demos = dirs('demos');
 
 const out = join(root, '.dev');
 mkdirSync(out, { recursive: true });
-const css = () => buildCss(out);
+const css = () => buildCss(out, { devThemes: true });
 css();
 writePages(out);
-watch(join(root, 'src'), { recursive: true }, (_, f) => f?.endsWith('.css') && css());
+for (const d of ['src', 'dev/themes']) watch(join(root, d), { recursive: true }, (_, f) => f?.endsWith('.css') && css());
 for (const d of ['sandbox', 'demos']) if (existsSync(join(root, d))) watch(join(root, d), { recursive: true }, (_, f) => f?.endsWith('main.ts') && writePages(out));
 
 // Demos get the dev frame (a floating "back to index / go to…" widget) through a generated wrapper entry,
