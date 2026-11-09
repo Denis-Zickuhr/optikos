@@ -4,6 +4,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import axe from 'axe-core';
 import examples from './examples.json';
 import { run, type Example } from './render';
+import { recipes } from './recipes/index';
 
 const THEMES = ['light', 'dark', 'corporate', 'soft', 'brutal', 'terminal', 'editorial', 'brand', 'brand night', 'dark compact'];
 // Rules about a whole page (one h1, landmarks, title) do not apply to a component shown alone.
@@ -48,6 +49,23 @@ describe('accessibility of the docs examples (axe)', () => {
           expect(await violations(document)).toEqual([]);
           stop();
         });
+      });
+    }
+  }
+});
+
+describe('accessibility of the docs recipes (axe)', () => {
+  for (const theme of ['light', 'dark']) {
+    for (const r of recipes) {
+      it(`${theme} · recipe ${r.id}`, async () => {
+        document.documentElement.setAttribute('data-op-theme', theme);
+        const stage = document.body.appendChild(document.createElement('main'));
+        stage.style.margin = '4rem';
+        const stop = r.mount(stage);
+        await frame();
+        await Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => {})));
+        expect(await violations(document)).toEqual([]);
+        stop();
       });
     }
   }

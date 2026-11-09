@@ -73,6 +73,11 @@ export abstract class Field<V = unknown, C extends FieldConfig<V> = FieldConfig<
     const input = this.inputEl;
     input.id ||= uid('op-input');
     (this.labelEl as HTMLLabelElement).htmlFor = input.id;
+    // a field without a visible label is named by `ariaLabel` on its control (the root is just a wrapper)
+    if (c.ariaLabel && input !== this.el) {
+      input.setAttribute('aria-label', c.ariaLabel);
+      this.el.removeAttribute('aria-label');
+    }
     this.setLabel(c.label ?? '');
     this.setHelp(c.help ?? '');
     this.setRequired(!!c.required);

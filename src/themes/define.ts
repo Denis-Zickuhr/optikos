@@ -8,11 +8,12 @@ export interface ThemeDefinition {
   color?: Partial<Record<ColorToken | string, string>>;
   font?: Values;
   space?: Values;
-  radius?: Values;
+  /** `radius: '0.5rem'` sets `--op-radius`; `radius: { sm, lg, pill }` sets `--op-radius-sm`... */
+  radius?: Values | string | number;
   shadow?: Values;
   control?: Values;
-  /** Any other key is a component scope: `{ button: { radius: 0 } }` → `--op-button-radius`. */
-  [group: string]: Values | undefined;
+  /** Any other key is a component scope: `{ button: { radius: 0 } }` → `--op-button-radius`. A plain value sets the group's own token (`{ radius: 0 }` → `--op-radius`). */
+  [group: string]: Values | string | number | undefined;
 }
 
 export interface Theme {
@@ -33,7 +34,9 @@ export function defineTheme(def: ThemeDefinition, name = 'custom'): Theme {
   const lines: string[] = [];
   for (const group in def) {
     const values = def[group];
-    for (const key in values) lines.push(`    --op-${kebab(group)}-${kebab(key)}: ${values[key as keyof typeof values]};`);
+    if (values == null) continue;
+    if (typeof values !== 'object') lines.push(`    --op-${kebab(group)}: ${values};`);
+    else for (const key in values) lines.push(`    --op-${kebab(group)}-${kebab(key)}: ${values[key]};`);
   }
   const css = `@layer optikos {\n  [data-op-theme~='${name}'] {\n${lines.join('\n')}\n  }\n}\n`;
   return {

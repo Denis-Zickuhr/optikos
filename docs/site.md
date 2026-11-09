@@ -16,11 +16,20 @@ temas, tudo com caminhos relativos, então funciona em `https://denis-zickuhr.gi
 publica essa pasta a cada tag `v*` (ou ao rodá-lo à mão em Actions). No site estático, os links para sandboxes e demos
 apontam para o código no GitHub, porque elas só existem no servidor de dev.
 
+## O que o site tem
+
+- **Início** (vitrine): proposta, `npm i optikos` copiável, um formulário de verdade no hero, números reais medidos no build (kB do núcleo, componentes, temas, tokens), pilares, troca de tema que repinta a página inteira, "config → tela" lado a lado, receitas e demos.
+- **Componentes**: índice por categoria e uma página por componente (abaixo).
+- **Receitas** (`site/recipes/*.ts`): telas pequenas e completas. Cada arquivo exporta uma função que monta a tela num host e devolve a limpeza; o site roda essa função e mostra **o próprio arquivo** como código (o `site.json` leva o texto). Metadados bilíngues em `site/recipes/index.ts`; teste em `site/recipes/recipes.test.ts`.
+- **Demos**: galeria com prévia ao vivo (iframe reduzido) de cada app de `demos/`. No build estático as demos são publicadas em `site-dist/demos/<nome>/` (sem a moldura de dev, caminhos relativos, chunks partilhados com o site).
+- **Guias** (Começar, Tematização, ui, Motion, Catálogo, Desempenho, Arquitetura), **Tokens e temas** (amostras com o valor vivo do tema atual) e **Servidor MCP**.
+- Busca Ctrl+K: páginas, componentes, receitas, guias, demos e tokens.
+
 ## Página de um componente
 
-1. **Exemplos ao vivo.** Cada exemplo mostra o componente funcionando e, embaixo, a config em JSON **editável**: *Apply* (ou Ctrl+Enter) recria o componente; *Reset* volta ao original; *Copy code* copia o `create({...})`.
+1. **Exemplos ao vivo**, cada um com as abas *Resultado* e *Código*: a config em JSON é **editável**; *Aplicar* (ou Ctrl+Enter) recria o componente e volta ao resultado; *Restaurar* volta ao original; *Copiar código* copia o `create({...})`. Um índice "Nesta página" acompanha ao lado, e o tamanho (kB gzip) do componente aparece no topo.
    Coisas que flutuam (Window, Menu, Dropdown, Toast, MessageBox, CommandPalette, Widget) ganham um botão "Open".
-2. **Ficha**: as seções da ficha (`docs/components/<nome>.md`): config, API, eventos, estados, teclado/ARIA, tokens.
+2. **Ficha**, em abas: Uso (config, API, eventos, estados), Anatomia e tokens, Acessibilidade, Escopo.
 3. Link para a página da categoria na sandbox.
 
 ## Fonte única

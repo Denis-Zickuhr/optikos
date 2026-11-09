@@ -1,64 +1,41 @@
-// Optikos living docs: every component with its spec sheet and live, editable examples, plus guides, tokens and the MCP server.
-// Built with Optikos itself. Data comes from site.json next to optikos.css (scripts/docs-data.mjs), the same source the MCP server reads.
-// `npm run site` serves it from the repo; `npm run site:build` writes the static copy published on GitHub Pages.
-import { create, NavMenu, CommandPalette, type NavItem } from 'optikos';
+// Optikos docs site: a landing page, every component with live examples and its spec sheet, recipes, the demos,
+// guides, tokens and the MCP server. Built with Optikos itself, in English and Portuguese.
+// Data comes from site.json next to optikos.css (scripts/site.mjs): `npm run site` serves it, `npm run site:build` writes
+// the static copy published on GitHub Pages.
+import { create, ui, toast, stagger, iconEl, Container, type NavItem, type NavMenu, type CommandPalette, type Select, type Form, type Component } from 'optikos';
 import { THEMES, initialState, applyThemeState, assetBase, type DevTheme } from '../dev/themes';
 import { run, snippet, type Example } from './render';
-import { lang, LANGS, setLang, t, tx, type Lang, type Key } from './i18n';
 import { markdown, inline } from './markdown';
+import { lang, LANGS, setLang, t, tx, type Lang, type Key } from './i18n';
+import { css } from './style';
+import { codeBlock, copy } from './code';
+import { recipes, type Recipe } from './recipes/index';
+import { DEMOS } from './demos';
 
 interface Sheet { title: string; summary: string; fields: Record<string, string> }
 interface Comp { name: string; type: string | null; category: string; docs: Partial<Record<Lang, Sheet>>; examples: Example[] }
 interface Guide { name: string; i18n: Partial<Record<Lang, { title: string; markdown: string }>> }
-interface Data { components: Comp[]; guides: Guide[]; tokens: Record<string, string>; themes: string[]; repo: string; static?: boolean }
+interface Data {
+  components: Comp[]; guides: Guide[]; tokens: Record<string, string>; themes: string[]; repo: string; version: string;
+  recipes: Record<string, string>; demos: string[]; sizes: { core: number; full: number; components: Record<string, number> }; static?: boolean;
+}
 
-const css = `
-body{margin:0;background:var(--op-color-bg);color:var(--op-color-fg);font:var(--op-font-size)/var(--op-line-height) var(--op-font-family)}
-.site{display:grid;grid-template-columns:17rem minmax(0,1fr);grid-template-rows:auto 1fr;min-block-size:100vh}
-.site__top{grid-column:1/-1;position:sticky;inset-block-start:0;z-index:5;display:flex;align-items:center;gap:.75rem;padding:.5rem 1rem;background:var(--op-color-surface);border-block-end:1px solid var(--op-color-border)}
-.site__brand{font-weight:700;font-size:1.1rem;margin-inline-end:auto}
-.site__theme{inline-size:9rem}.site__lang{inline-size:8.5rem}.site__menu{display:none}
-.site__nav{min-block-size:calc(100vh - 3.25rem);box-sizing:border-box;position:sticky;inset-block-start:3.25rem;align-self:start;max-block-size:calc(100vh - 3.25rem);overflow:auto;padding:.5rem;border-inline-end:1px solid var(--op-color-border);background:var(--op-color-surface)}
-.site__nav .op-textfield{margin-block-end:.5rem}
-.site__main{padding:1.5rem;max-inline-size:62rem;inline-size:100%;box-sizing:border-box;min-inline-size:0}
-.site__main h1{margin:0 0 .25rem}.site__main h2{margin:1.5rem 0 .5rem}.site__lead{color:var(--op-color-fg-muted);margin:0 0 1rem}
-.site__chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-block-end:1rem}
-.site__chip{padding:.1rem .6rem;border-radius:var(--op-radius-pill);background:var(--op-color-surface-2);border:1px solid var(--op-color-border);font-size:var(--op-font-size-sm)}
-.site__ex{border:1px solid var(--op-color-border);border-radius:var(--op-radius);background:var(--op-color-surface);margin-block-end:1rem;overflow:hidden}
-.site__ex>header{padding:.6rem 1rem;border-block-end:1px solid var(--op-color-border)}.site__ex h3{margin:0;font-size:1rem}.site__ex p{margin:.15rem 0 0;color:var(--op-color-fg-muted)}
-.site__stage{padding:1rem;display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-start;min-block-size:4rem;overflow:auto}
-.site__code{display:grid;gap:.5rem;padding:.75rem 1rem;border-block-start:1px solid var(--op-color-border);background:var(--op-color-surface-2)}
-.site__code textarea,.site__code pre{margin:0;box-sizing:border-box;inline-size:100%;min-block-size:7rem;max-block-size:20rem;overflow:auto;padding:.5rem;border:1px solid var(--op-color-border);border-radius:var(--op-radius-sm);background:var(--op-color-bg);color:var(--op-color-fg);font:.8rem/1.45 var(--op-font-mono);resize:vertical}
-.site__bar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}.site__err{color:var(--op-color-danger);font-size:var(--op-font-size-sm)}
-.site__fields{display:grid;grid-template-columns:9rem minmax(0,1fr);gap:.4rem 1rem}.site__fields dt{font-weight:600;color:var(--op-color-fg-muted)}.site__fields dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
-.site code:not([class]){font-family:var(--op-font-mono);font-size:.88em;background:var(--op-color-surface-2);padding:.05em .3em;border-radius:var(--op-radius-sm)}
-.site pre code{background:none;padding:0}
-.site__main table{border-collapse:collapse;inline-size:100%;margin-block:.5rem}.site__main th,.site__main td{text-align:start;padding:.3rem .6rem;border:1px solid var(--op-color-border);vertical-align:top}
-.site__tokens td:first-child{font-family:var(--op-font-mono);font-size:.85em}.site__sw{display:inline-block;inline-size:1em;block-size:1em;border-radius:3px;border:1px solid var(--op-color-border);vertical-align:-.15em;margin-inline-end:.4em}
-.site__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.75rem}
-.site__card{padding:.75rem;border:1px solid var(--op-color-border);border-radius:var(--op-radius);background:var(--op-color-surface);cursor:pointer;text-align:start;font:inherit;color:inherit}
-.site__card:hover{border-color:var(--op-color-primary)}.site__card b{display:block}.site__card span{color:var(--op-color-fg-muted);font-size:var(--op-font-size-sm)}
-@media (max-width:50rem){.site{grid-template-columns:minmax(0,1fr)}.site__menu{display:inline-flex}.site__nav{position:fixed;inset-block:3.25rem 0;inset-inline-start:0;z-index:4;inline-size:17rem;max-block-size:none;transform:translateX(-100%);transition:transform var(--op-motion-dropdown, .2s)}
-.site.is-nav-open .site__nav{transform:none}.site__main{padding:1rem}.site__fields{grid-template-columns:1fr}}
-`;
 document.head.append(Object.assign(document.createElement('style'), { textContent: css }));
-document.title = 'Optikos docs';
+const data: Data = await (await fetch(`${assetBase()}site.json`)).json();
+const comps = new Map(data.components.map((c) => [c.name, c]));
+const documented = data.components.filter((c) => c.examples.length);
 
 // the reader's language, or the other one when a page only exists there
 const sheet = (c: Comp): Sheet => (c.docs[lang] ?? c.docs.en ?? Object.values(c.docs)[0])!;
 const guideText = (g: Guide) => g.i18n[lang] ?? g.i18n.en ?? Object.values(g.i18n)[0]!;
 const langName = (l: string) => LANGS.find((x) => x.value === l)?.label ?? l;
+const label = (cat: string) => t(`cat_${cat}` as Key);
+// sandboxes and demos come from the dev server; the static site has the demos built in and links sandboxes to GitHub
+const sandboxLink = (cat: string) => (data.static ? `${data.repo}/tree/main/sandbox/${cat}` : `/sandbox/${cat}/`);
+const demoUrl = (name: string) => (data.static ? `demos/${name}/` : `/demos/${name}/`);
+const exampleLink = (path: string) => (data.static ? demoUrl(path.replace(/^\/demos\/|\/$/g, '')) : path);
 
-const data: Data = await (await fetch(`${assetBase()}site.json`)).json();
-// Sandboxes and demos only exist on the dev server; the static site points to their source instead.
-const devLink = (path: string) => (data.static ? `${data.repo}/tree/main${path.replace(/\/$/, '')}` : path);
-const comps = new Map(data.components.map((c) => [c.name, c]));
-const root = document.body.appendChild(Object.assign(document.createElement('div'), { className: 'site' }));
-const top = root.appendChild(Object.assign(document.createElement('header'), { className: 'site__top' }));
-const nav = root.appendChild(Object.assign(document.createElement('aside'), { className: 'site__nav' }));
-const main = root.appendChild(Object.assign(document.createElement('main'), { className: 'site__main' }));
-
-const h = <K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = '', parent?: HTMLElement) => {
+const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = '', parent?: HTMLElement) => {
   const e = Object.assign(document.createElement(tag), { className: cls });
   if (text) e.textContent = text;
   parent?.append(e);
@@ -66,186 +43,399 @@ const h = <K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = '', p
 };
 
 // ---- chrome -------------------------------------------------------------------------------------
+const root = document.body.appendChild(el('div', 'site'));
+const top = root.appendChild(el('header', 'site__top'));
+const nav = root.appendChild(el('aside', 'site__nav'));
+const main = root.appendChild(el('main', 'site__main'));
+main.id = 'main';
+
 create({ type: 'button', icon: 'menu', variant: 'ghost', ariaLabel: t('navigation'), cls: 'site__menu', renderTo: top, handler: () => root.classList.toggle('is-nav-open') } as never);
-h('div', 'site__brand', 'Optikos', top);
-create({ type: 'button', icon: 'search', text: `${t('search')}  Ctrl K`, variant: 'ghost', renderTo: top, handler: () => palette.open() } as never);
-const state = initialState();
+const brand = el('a', 'site__brand', '', top);
+brand.href = '#/';
+brand.append(el('span', 'site__logo'), 'Optikos');
+const links = el('nav', 'site__links', '', top);
+links.setAttribute('aria-label', t('navigation'));
+const LINKS: [string, Key][] = [['components', 'components'], ['recipes', 'recipes'], ['demos', 'demos'], ['g/getting-started', 'getStarted']];
+for (const [id, key] of LINKS) Object.assign(el('a', '', t(key), links), { href: `#/${id}` }).dataset.route = id;
+create({ type: 'button', icon: 'search', text: `${t('search')} Ctrl K`, ariaLabel: `${t('search')} Ctrl K`, cls: 'site__search', variant: 'ghost', renderTo: top, handler: () => palette.open() } as never);
 create({ type: 'select', cls: 'site__lang', ariaLabel: t('language'), options: LANGS, value: lang, stableSize: false, renderTo: top, listeners: { change: (v: Lang) => v && v !== lang && setLang(v) } } as never);
-create({ type: 'select', cls: 'site__theme', ariaLabel: t('theme'), options: [...THEMES], value: state.theme, stableSize: false, renderTo: top, listeners: { change: (v: string) => v && applyThemeState({ ...state, theme: v as DevTheme }) } } as never);
+const state = initialState();
+const themeListeners = new Set<(theme: string) => void>();
+const themeSelect = create<Select>({
+  type: 'select', cls: 'site__theme', ariaLabel: t('theme'), options: [...THEMES], value: state.theme, stableSize: false, renderTo: top,
+  listeners: { change: (v: string) => { if (!v) return; applyThemeState({ ...state, theme: v as DevTheme }); themeListeners.forEach((fn) => fn(v)); } },
+} as never);
 applyThemeState(state);
 
 const ORDER = ['base', 'layout', 'fields', 'form', 'data', 'dates', 'overlays', 'navigation', 'feedback', 'chat'];
 const byCategory = new Map<string, Comp[]>();
-for (const c of data.components) if (c.examples.length) byCategory.set(c.category, [...(byCategory.get(c.category) ?? []), c]);
+for (const c of documented) byCategory.set(c.category, [...(byCategory.get(c.category) ?? []), c]);
 const sorted = [...byCategory].sort(([a], [b]) => ORDER.indexOf(a) - ORDER.indexOf(b));
-const label = (s: string) => t(`cat_${s}` as Key) || s;
+
 const items: NavItem[] = [
   { id: 'home', text: t('start'), icon: 'home' },
-  { id: 'cat', text: t('components'), icon: 'menu', expanded: true, items: sorted.map(([cat, list]) => ({ id: `cat-${cat}`, text: label(cat), items: list.map((c) => ({ id: `c/${c.name}`, text: sheet(c).title })) })) },
-  { id: 'gd', text: t('guides'), icon: 'edit', items: data.guides.map((g) => ({ id: `g/${g.name}`, text: guideText(g).title })) },
-  { id: 'tokens', text: t('tokens'), icon: 'star' },
-  { id: 'mcp', text: t('mcp'), icon: 'user' },
+  { id: 'g/getting-started', text: t('getStarted'), icon: 'chevron-right' },
+  { id: 'components', text: t('components'), icon: 'columns', expanded: true, items: sorted.map(([cat, list]) => ({ id: `cat-${cat}`, text: label(cat), items: list.map((c) => ({ id: `c/${c.name}`, text: sheet(c).title })) })) },
+  { id: 'recipes', text: t('recipes'), icon: 'list', items: recipes.map((r) => ({ id: `r/${r.id}`, text: tx(r.title) })) },
+  { id: 'demos', text: t('demos'), icon: 'image' },
+  { id: 'gd', text: t('guides'), icon: 'edit', items: data.guides.filter((g) => g.name !== 'getting-started').map((g) => ({ id: `g/${g.name}`, text: guideText(g).title })) },
+  { id: 'tokens', text: t('tokens'), icon: 'sun' },
+  { id: 'mcp', text: t('mcp'), icon: 'settings' },
 ];
 create({ type: 'textfield', placeholder: t('filterComponents'), clearable: true, ariaLabel: t('filterComponents'), renderTo: nav, listeners: { change: (v: string) => menu.filter(v) } } as never);
 const menu = create<NavMenu>({ type: 'navmenu', items, ariaLabel: t('documentation'), renderTo: nav, listeners: { select: (i: NavItem) => go(i.id) } } as never);
 
 const palette = create<CommandPalette>({
   type: 'commandpalette',
+  categories: [t('goTo'), t('components'), t('recipes'), t('guides'), t('demos'), 'Tokens'],
   commands: [
-    { id: 'home', title: t('start'), category: t('goTo'), handler: () => go('home') },
-    { id: 'tokens', title: t('tokens'), category: t('goTo'), handler: () => go('tokens') },
-    { id: 'mcp', title: t('mcp'), category: t('goTo'), handler: () => go('mcp') },
+    ...([['home', 'start'], ['components', 'components'], ['recipes', 'recipes'], ['demos', 'demos'], ['tokens', 'tokens'], ['mcp', 'mcp']] as [string, Key][]).map(([id, key]) => ({ id, title: t(key), category: t('goTo'), handler: () => go(id) })),
+    ...documented.map((c) => ({ id: `c/${c.name}`, title: sheet(c).title, category: t('components'), description: sheet(c).summary.slice(0, 80), keywords: [c.type ?? '', c.category], handler: () => go(`c/${c.name}`) })),
+    ...recipes.map((r) => ({ id: `r/${r.id}`, title: tx(r.title), category: t('recipes'), icon: r.icon, handler: () => go(`r/${r.id}`) })),
     ...data.guides.map((g) => ({ id: `g/${g.name}`, title: guideText(g).title, category: t('guides'), handler: () => go(`g/${g.name}`) })),
-    ...data.components.filter((c) => c.examples.length).map((c) => ({ id: `c/${c.name}`, title: sheet(c).title, category: t('components'), description: sheet(c).summary.slice(0, 80), keywords: [c.type ?? '', c.category], handler: () => go(`c/${c.name}`) })),
+    ...DEMOS.map((d) => ({ id: `d/${d.name}`, title: tx(d.title), category: t('demos'), icon: d.icon, description: tx(d.text).slice(0, 80), handler: () => void open(demoUrl(d.name), '_blank') })),
+    ...Object.keys(data.tokens).map((k) => ({ id: `t/${k}`, title: k, category: 'Tokens', handler: () => go(`tokens/${k}`) })),
   ],
 } as never);
 
 // ---- routing ------------------------------------------------------------------------------------
 let cleanups: (() => void)[] = [];
-function go(id: string) {
-  location.hash = `#/${id}`;
-}
+const go = (id: string) => (location.hash = `#/${id}`);
 function route() {
   const id = decodeURIComponent(location.hash.replace(/^#\/?/, '')) || 'home';
   for (const c of cleanups.splice(0)) c();
   main.replaceChildren();
   root.classList.remove('is-nav-open');
+  root.classList.toggle('is-home', id === 'home');
   if (id.startsWith('c/') && comps.has(id.slice(2))) component(comps.get(id.slice(2))!);
+  else if (id.startsWith('r/') && recipes.some((r) => r.id === id.slice(2))) recipe(recipes.find((r) => r.id === id.slice(2))!);
   else if (id.startsWith('g/')) guide(id.slice(2));
-  else if (id === 'tokens') tokens();
+  else if (id.startsWith('tokens')) tokens(id.slice(7));
+  else if (id === 'components') componentsIndex();
+  else if (id === 'recipes') recipesIndex();
+  else if (id === 'demos') demosPage();
   else if (id === 'mcp') mcp();
   else home();
   menu.setActive(id);
+  for (const a of links.querySelectorAll('a')) a.classList.toggle('is-on', id === a.dataset.route || id.startsWith(`${a.dataset.route?.[0]}/`) && a.dataset.route !== 'g/getting-started');
   scrollTo(0, 0);
+  void stagger(main.querySelectorAll('.site__card, .home__stat, .home__pillar, .demo, .example'), { max: 16 } as never);
 }
 addEventListener('hashchange', route);
 
-// ---- pages --------------------------------------------------------------------------------------
+/** A component this page created: destroyed when the route changes. */
+function own<T extends Component>(c: T): T {
+  cleanups.push(() => c.destroy());
+  return c;
+}
+const head = (title: string, lead?: string) => {
+  el('h1', '', title, main);
+  if (lead) inline(lead, el('p', 'site__lead', '', main));
+  document.title = `${title} · Optikos`;
+};
+const card = (parent: HTMLElement, title: string, text: string, icon: string | undefined, onClick: () => void) => {
+  const b = el('button', 'site__card', '', parent);
+  if (icon) b.append(iconEl(icon));
+  el('b', '', title, b);
+  el('span', '', text, b);
+  b.addEventListener('click', onClick);
+  return b;
+};
+
+// ---- home ---------------------------------------------------------------------------------------
 function home() {
-  h('h1', '', 'Optikos', main);
-  h('p', 'site__lead', t('lead'), main);
-  const chips = h('div', 'site__chips', '', main);
-  for (const chip of [t('nComponents', { n: data.components.filter((c) => c.examples.length).length }), t('nThemes', { n: data.themes.length }), t('nTokens', { n: Object.keys(data.tokens).length })]) h('span', 'site__chip', chip, chips);
+  document.title = 'Optikos';
+  const hero = el('section', 'home__hero', '', main);
+  const inner = el('div', 'home__heroInner', '', hero);
+  const copyCol = el('div', '', '', inner);
+  el('span', 'site__chip site__chip--accent', t('heroEyebrow', { version: data.version }), copyCol);
+  el('h1', '', t('heroTitle'), copyCol);
+  el('p', '', t('heroLead'), copyCol);
+  const actions = el('div', 'home__actions', '', copyCol);
+  own(create({ type: 'button', text: t('getStarted'), variant: 'primary', icon: 'chevron-right', iconPos: 'right', renderTo: actions, handler: () => go('g/getting-started') } as never));
+  own(create({ type: 'button', text: t('browseComponents'), renderTo: actions, handler: () => go('components') } as never));
+  const install = el('div', 'home__install', '', actions);
+  install.append('npm i ', Object.assign(document.createElement('b'), { textContent: 'optikos' }));
+  own(create({ type: 'button', icon: 'file', variant: 'ghost', ariaLabel: t('copyInstall'), tooltip: t('copyInstall'), renderTo: install, handler: () => void copy('npm i optikos') } as never));
+
+  // a real form, not a picture of one
+  const live = el('div', 'home__live', '', inner);
+  el('span', 'site__chip site__chip--accent home__liveTag', t('tryIt'), live);
+  const form: Form = ui.form([
+    ui.text('name', 'Name', { required: true, minLength: 3 }),
+    ui.email('email', 'Email', { required: true }),
+    ui.grid(2, ui.select('plan', 'Plan', ['Free', 'Team', 'Business'], { value: 'Team' }), ui.date('since', 'Since')),
+    ui.slider('seats', 'Seats', { min: 1, max: 50, value: 12, showValue: 'always' }),
+  ]);
+  own(create({ type: 'panel', title: t('newCustomer'), icon: 'user', renderTo: live, items: [form], buttons: [{ text: t('save'), variant: 'primary', handler: () => form.validate() && toast({ type: 'success', text: t('saved', { name: String(form.getValues().name) }) }) }] } as never));
+
+  const stats = el('section', 'home__stats', '', main);
+  for (const [n, key] of [['0', 'statDeps'], [String(documented.length), 'statComponents'], [String(data.sizes.core), 'statCore'], [String(data.themes.length), 'statThemes'], [String(Object.keys(data.tokens).length), 'statTokens']] as [string, Key][]) {
+    const s = el('div', 'home__stat', '', stats);
+    el('b', '', n, s);
+    el('span', '', t(key), s);
+  }
+
+  const section = (title: Key, text?: Key) => {
+    const s = el('section', 'home__section', '', main);
+    el('h2', '', t(title), s);
+    if (text) el('p', '', t(text), s);
+    return s;
+  };
+  const pillars = el('div', 'site__grid', '', section('pillarsTitle'));
+  for (const [icon, key] of [['sparkles', 'fast'], ['box', 'light'], ['columns', 'complete'], ['sun', 'theme'], ['user', 'a11y'], ['plus', 'ext']]) {
+    const p = el('div', 'home__pillar', '', pillars);
+    p.append(iconEl(icon));
+    const txt = el('div', '', '', p);
+    el('b', '', t(`p_${key}` as Key), txt);
+    el('span', '', t(`p_${key}Text` as Key), txt);
+  }
+
+  const themes = section('themesTitle', 'themesText');
+  const chips = el('div', 'home__themes', '', themes);
+  const mark = (theme: string) => chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.theme === theme)));
+  for (const theme of THEMES) {
+    const b = el('button', 'home__theme', theme, chips);
+    b.type = 'button';
+    b.dataset.theme = theme;
+    b.addEventListener('click', () => themeSelect.setValue(theme));
+  }
+  mark(String(themeSelect.getValue()));
+  themeListeners.add(mark);
+  cleanups.push(() => themeListeners.delete(mark));
+
+  const split = el('div', 'home__split', '', section('codeTitle', 'codeText'));
+  const people = [['Ada Lovelace', 'Engineer', 1280.5], ['Grace Hopper', 'Admiral', 9400], ['Alan Turing', 'Researcher', 780], ['Katherine Johnson', 'Mathematician', 640], ['Linus Torvalds', 'Maintainer', 310.25], ['Margaret Hamilton', 'Director', 5120], ['Hedy Lamarr', 'Inventor', 2210]];
+  const code = `create({
+  type: 'grid', paging: true, pageSize: 5, height: 300,
+  renderTo: document.body,
+  columns: [
+    { field: 'name', header: 'Name', flex: 1, sortable: true },
+    { field: 'role', header: 'Role' },
+    { field: 'total', header: 'Total', format: 'money', align: 'right', sortable: true },
+  ],
+  data: people, // [{ name: 'Ada Lovelace', role: 'Engineer', total: 1280.5 }, ...]
+});`;
+  split.append(codeBlock(code));
+  const result = el('div', '', '', split);
+  own(create({
+    type: 'grid', paging: true, pageSize: 5, height: 300, renderTo: result, ariaLabel: 'People',
+    columns: [{ field: 'name', header: 'Name', flex: 1, sortable: true }, { field: 'role', header: 'Role' }, { field: 'total', header: 'Total', format: 'money', align: 'right', sortable: true }],
+    data: people.map(([name, role, total]) => ({ name, role, total })),
+  } as never));
+
+  const rs = section('recipesTitle', 'recipesText');
+  const rGrid = el('div', 'site__grid', '', rs);
+  for (const r of recipes.slice(0, 6)) card(rGrid, tx(r.title), tx(r.intro).replace(/`/g, ''), r.icon, () => go(`r/${r.id}`));
+
+  const ds = section('demosTitle', 'demosText');
+  const dGrid = el('div', 'site__grid', '', ds);
+  for (const d of DEMOS.slice(0, 6)) card(dGrid, tx(d.title), tx(d.text), d.icon, () => void open(demoUrl(d.name), '_blank'));
+  const more = el('p', '', '', ds);
+  own(create({ type: 'button', text: t('seeAll'), icon: 'chevron-right', iconPos: 'right', variant: 'ghost', renderTo: more, handler: () => go('demos') } as never));
+
+  const foot = el('footer', 'home__footer', '', main);
+  el('span', '', t('footer'), foot);
+  Object.assign(el('a', '', 'GitHub', foot), { href: data.repo });
+  Object.assign(el('a', '', 'npm', foot), { href: 'https://www.npmjs.com/package/optikos' });
+}
+
+// ---- components ---------------------------------------------------------------------------------
+function componentsIndex() {
+  head(t('components'), t('componentsLead'));
   for (const [cat, list] of sorted) {
-    h('h2', '', label(cat), main);
-    const grid = h('div', 'site__grid', '', main);
-    for (const c of list) {
-      const card = h('button', 'site__card', '', grid);
-      h('b', '', sheet(c).title, card);
-      h('span', '', sheet(c).summary.slice(0, 110), card);
-      card.addEventListener('click', () => go(`c/${c.name}`));
-    }
+    el('h2', '', label(cat), main);
+    const grid = el('div', 'site__grid', '', main);
+    for (const c of list) card(grid, sheet(c).title, sheet(c).summary.replace(/[`*]/g, '').slice(0, 120), undefined, () => go(`c/${c.name}`));
   }
 }
+
+// spec sheet sections grouped in tabs (keys are per language; CANON maps the Portuguese ones)
+const CANON: Record<string, string> = { 'Propósito': 'Purpose', Anatomia: 'Anatomy', Eventos: 'Events', Estados: 'States', 'Teclado/ARIA': 'Keyboard/ARIA', 'Casos sandbox': 'Sandbox cases', 'Fora do escopo': 'Out of scope' };
+const GROUP: Record<string, Key> = { Anatomy: 'anatomy', Tokens: 'anatomy', 'Keyboard/ARIA': 'accessibility', 'Sandbox cases': 'scope', 'Out of scope': 'scope' };
 
 function component(c: Comp) {
   const doc = sheet(c);
-  h('h1', '', doc.title, main);
-  const chips = h('div', 'site__chips', '', main);
-  if (c.type) h('span', 'site__chip', `type: '${c.type}'`, chips);
-  h('span', 'site__chip', label(c.category), chips);
-  if (!c.docs[lang]) h('p', 'site__lead', t('onlyIn', { lang: langName(Object.keys(c.docs)[0]) }), main);
-  inline(doc.summary, h('p', 'site__lead', '', main));
-  h('h2', '', t('examples'), main);
-  c.examples.forEach((ex) => example(ex));
-  h('h2', '', t('sheet'), main);
-  const dl = h('dl', 'site__fields', '', main);
+  const layout = el('div', 'page__layout', '', main);
+  const body = el('div', '', '', layout);
+  const toc = el('nav', 'page__toc', '', layout);
+  toc.setAttribute('aria-label', t('onThisPage'));
+  el('b', '', t('onThisPage'), toc);
+  const tocLink = (text: string, target: HTMLElement) => {
+    const a = Object.assign(el('a', '', text, toc), { href: '#' });
+    a.addEventListener('click', (e) => (e.preventDefault(), target.scrollIntoView({ behavior: 'smooth', block: 'start' })));
+  };
+
+  el('h1', '', doc.title, body);
+  document.title = `${doc.title} · Optikos`;
+  const chips = el('div', 'site__chips', '', body);
+  if (c.type) el('span', 'site__chip site__chip--accent', `type: '${c.type}'`, chips);
+  el('span', 'site__chip', label(c.category), chips);
+  if (data.sizes.components[c.name]) el('span', 'site__chip', t('size', { kb: data.sizes.components[c.name] }), chips);
+  if (!c.docs[lang]) el('p', 'site__lead', t('onlyIn', { lang: langName(Object.keys(c.docs)[0]) }), body);
+  inline(doc.summary, el('p', 'site__lead', '', body));
+
+  const exHead = el('h2', '', t('examples'), body);
+  tocLink(t('examples'), exHead);
+  c.examples.forEach((ex) => {
+    const box = example(ex, body);
+    tocLink(`· ${tx(ex.title)}`, box);
+  });
+
+  const sheetHead = el('h2', '', t('sheet'), body);
+  tocLink(t('sheet'), sheetHead);
+  const groups = new Map<Key, [string, string][]>();
   for (const [k, v] of Object.entries(doc.fields)) {
-    h('dt', '', k, dl);
-    inline(v, h('dd', '', '', dl));
+    const g = GROUP[CANON[k] ?? k] ?? 'usage';
+    groups.set(g, [...(groups.get(g) ?? []), [k, v]]);
   }
-  const links = h('p', '', '', main);
-  inline(`${t('moreSandbox')} [sandbox/${c.category}](${devLink(`/sandbox/${c.category}/`)})`, links);
+  const panels = (['usage', 'anatomy', 'accessibility', 'scope'] as Key[]).filter((g) => groups.has(g)).map((g) => {
+    const panel = new Container({ title: t(g) } as never);
+    const dl = el('dl', 'sheet', '', panel.el);
+    for (const [k, v] of groups.get(g)!) {
+      el('dt', '', k, dl);
+      inline(v, el('dd', '', '', dl));
+    }
+    return panel;
+  });
+  own(create({ type: 'tabs', renderTo: body, cls: 'example', items: panels, lazy: false } as never));
+  const more = el('p', '', '', body);
+  inline(`${t('moreSandbox')} [sandbox/${c.category}](${sandboxLink(c.category)})`, more);
 }
 
-function example(ex: Example) {
-  const box = h('section', 'site__ex', '', main);
-  const head = h('header', '', '', box);
-  h('h3', '', tx(ex.title), head);
-  if (ex.description) h('p', '', tx(ex.description), head);
-  const stage = h('div', 'site__stage', '', box);
-  const code = h('div', 'site__code', '', box);
+function example(ex: Example, parent: HTMLElement): HTMLElement {
+  const box = el('section', 'example', '', parent);
+  const header = el('header', '', '', box);
+  el('h3', '', tx(ex.title), header);
+  if (ex.description) el('p', '', tx(ex.description), header);
   if (!ex.config) {
-    h('pre', '', ex.code ?? '', code);
-    if (ex.demo) inline(`${t('runningExample')} [${ex.demo}](${devLink(ex.demo)})`, h('p', '', '', code));
-    stage.remove();
-    return;
+    const pad = el('div', 'example__code', '', box);
+    pad.append(codeBlock(ex.code ?? ''));
+    if (ex.demo) inline(`${t('runningExample')} [${ex.demo}](${exampleLink(ex.demo)})`, el('p', '', '', pad));
+    return box;
   }
+  const result = new Container({ title: t('result'), cls: 'example__stage' } as never);
+  const codePanel = new Container({ title: t('code'), cls: 'example__code' } as never);
   const original = JSON.stringify(ex.config, null, 2);
-  const area = h('textarea', '', '', code);
+  const area = el('textarea', '', '', codePanel.el);
   area.value = original;
   area.spellcheck = false;
   area.setAttribute('aria-label', `${t('configOf')} ${tx(ex.title)}`);
-  const bar = h('div', 'site__bar', '', code);
-  const err = h('span', 'site__err', '', bar);
+  const bar = el('div', 'example__bar', '', codePanel.el);
+  const err = el('span', 'example__err', '', bar);
   let stop = () => {};
-  const apply = () => {
+  const tabs = own(create({ type: 'tabs', renderTo: box, items: [result, codePanel], lazy: false } as never)) as unknown as { setActive(i: number): void };
+  const apply = (show = true) => {
     stop();
     stop = () => {};
     err.textContent = '';
     try {
-      stop = run(ex, JSON.parse(area.value), stage);
+      stop = run(ex, JSON.parse(area.value), result.el);
+      if (show) tabs.setActive(0);
     } catch (e) {
       err.textContent = String((e as Error).message);
     }
   };
-  create({ type: 'button', text: t('apply'), variant: 'primary', renderTo: bar, handler: apply } as never);
+  create({ type: 'button', text: t('apply'), variant: 'primary', renderTo: bar, handler: () => apply() } as never);
   create({ type: 'button', text: t('reset'), renderTo: bar, handler: () => { area.value = original; apply(); } } as never);
-  create({ type: 'button', text: t('copy'), icon: 'plus', variant: 'ghost', renderTo: bar, handler: () => void navigator.clipboard?.writeText(snippet(ex, JSON.parse(area.value))) } as never);
-  area.addEventListener('keydown', (e) => e.ctrlKey && e.key === 'Enter' && apply());
-  apply();
+  create({ type: 'button', text: t('copy'), icon: 'file', variant: 'ghost', renderTo: bar, handler: () => void copy(snippet(ex, JSON.parse(area.value))) } as never);
+  area.addEventListener('keydown', (e) => (e.ctrlKey || e.metaKey) && e.key === 'Enter' && apply());
+  apply(false);
   cleanups.push(() => stop());
+  return box;
 }
 
+// ---- recipes and demos --------------------------------------------------------------------------
+function recipesIndex() {
+  head(t('recipes'), t('recipesLead'));
+  const grid = el('div', 'site__grid', '', main);
+  for (const r of recipes) card(grid, tx(r.title), tx(r.intro).replace(/`/g, ''), r.icon, () => go(`r/${r.id}`));
+}
+
+function recipe(r: Recipe) {
+  head(tx(r.title), tx(r.intro));
+  const stage = el('div', 'recipe__stage', '', main);
+  cleanups.push(r.mount(stage));
+  el('h2', '', t('whatToNotice'), main);
+  const notes = el('ul', 'recipe__notes', '', main);
+  for (const n of r.notes) {
+    const li = el('li', '', '', notes);
+    li.append(iconEl('check'));
+    inline(tx(n), el('span', '', '', li));
+  }
+  el('h2', '', t('code'), main);
+  main.append(codeBlock(data.recipes[r.id] ?? '', `site/recipes/${r.id}.ts`));
+}
+
+function demosPage() {
+  head(t('demos'), t('demosLead'));
+  const grid = el('div', 'site__grid', '', main);
+  grid.style.gridTemplateColumns = 'repeat(auto-fill,minmax(19rem,1fr))';
+  for (const d of DEMOS.filter((x) => data.demos.includes(x.name))) {
+    const box = el('article', 'demo', '', grid);
+    const shot = el('div', 'demo__shot', '', box);
+    const frame = Object.assign(el('iframe', '', '', shot), { src: demoUrl(d.name), title: tx(d.title), loading: 'lazy', tabIndex: -1 });
+    frame.setAttribute('aria-hidden', 'true');
+    const body = el('div', 'demo__body', '', box);
+    el('b', '', tx(d.title), body);
+    el('p', '', tx(d.text), body);
+    const actions = el('div', 'demo__actions', '', body);
+    own(create({ type: 'button', text: t('openDemo'), variant: 'primary', icon: 'chevron-right', iconPos: 'right', renderTo: actions, handler: () => void open(demoUrl(d.name), '_blank') } as never));
+    own(create({ type: 'button', text: t('viewCode'), variant: 'ghost', renderTo: actions, handler: () => void open(`${data.repo}/tree/main/demos/${d.name}`, '_blank') } as never));
+  }
+}
+
+// ---- guides, tokens, MCP ------------------------------------------------------------------------
 function guide(name: string) {
   const g = data.guides.find((x) => x.name === name);
-  if (!g) return void h('p', '', t('guideMissing'), main);
-  if (!g.i18n[lang]) h('p', 'site__lead', t('onlyIn', { lang: langName(Object.keys(g.i18n)[0]) }), main);
+  if (!g) return void el('p', '', t('guideMissing'), main);
+  document.title = `${guideText(g).title} · Optikos`;
+  if (!g.i18n[lang]) el('p', 'site__lead', t('onlyIn', { lang: langName(Object.keys(g.i18n)[0]) }), main);
   main.append(markdown(guideText(g).markdown));
 }
 
-function tokens() {
-  h('h1', '', t('tokens'), main);
-  h('p', 'site__lead', t('tokensLead'), main);
-  h('h2', '', t('themes'), main);
-  inline(data.themes.map((x) => `\`${x}\``).join(' · ') + ' ' + t('themesCombine'), h('p', '', '', main));
-  h('h2', '', 'Tokens', main);
-  const find = create({ type: 'textfield', placeholder: t('filterTokens'), clearable: true, ariaLabel: t('filterTokens'), renderTo: main } as never);
-  const table = h('table', 'site__tokens', '', main);
+function tokens(query = '') {
+  head(t('tokens'), t('tokensLead'));
+  el('h2', '', t('themes'), main);
+  inline(data.themes.map((x) => `\`${x}\``).join(' · ') + ' ' + t('themesCombine'), el('p', '', '', main));
+  el('h2', '', 'Tokens', main);
+  const find = own(create({ type: 'textfield', placeholder: t('filterTokens'), clearable: true, ariaLabel: t('filterTokens'), value: query, renderTo: main } as never));
+  const table = el('table', 'site__tokens', '', main);
   const rows = Object.entries(data.tokens).map(([k, v]) => {
-    const tr = h('tr', '', '', table);
-    h('td', '', k, tr);
-    const td = h('td', '', '', tr);
-    if (/^(#|rgb|hsl|var\(--op-(color|[a-z]+-\d))/.test(v)) h('span', 'site__sw', '', td).style.background = v;
+    const tr = el('tr', '', '', table);
+    Object.assign(el('td', '', k, tr).style, { fontFamily: 'var(--op-font-mono)', fontSize: '.85em' });
+    const td = el('td', '', '', tr);
+    // the swatch shows the live value in the current theme, not the base default
+    if (/^(#|rgb|hsl|var\(--op-(color|[a-z]+-\d))/.test(v)) Object.assign(el('span', '', '', td).style, { display: 'inline-block', inlineSize: '1em', blockSize: '1em', borderRadius: '3px', border: '1px solid var(--op-color-border)', verticalAlign: '-.15em', marginInlineEnd: '.4em', background: `var(${k})` });
     td.append(v);
     return { tr, k };
   });
-  (find as unknown as { on(e: string, fn: (v: string) => void): void }).on('change', (q) => rows.forEach(({ tr, k }) => (tr.hidden = !k.includes(q.trim()))));
+  const apply = (q: string) => rows.forEach(({ tr, k }) => (tr.hidden = !k.includes(q.trim())));
+  (find as unknown as { on(e: string, fn: (v: string) => void): void }).on('change', (q) => apply(q ?? ''));
+  apply(query);
 }
 
 function mcp() {
-  h('h1', '', t('mcp'), main);
-  h('p', 'site__lead', t('mcpLead'), main);
-  h('h2', '', t('connect'), main);
-  inline(t('mcpConnect'), h('p', '', '', main));
-  h('pre', '', JSON.stringify({ mcpServers: { optikos: { command: 'node', args: ['scripts/mcp.mjs'], cwd: '<path to the optikos repo>' } } }, null, 2), main);
-  inline(t('mcpRun'), h('p', '', '', main));
-  h('h2', '', t('tools'), main);
-  const table = h('table', '', '', main);
+  head(t('mcp'), t('mcpLead'));
+  el('h2', '', t('connect'), main);
+  inline(t('mcpConnect'), el('p', '', '', main));
+  main.append(codeBlock(JSON.stringify({ mcpServers: { optikos: { command: 'node', args: ['scripts/mcp.mjs'], cwd: '<path to the optikos repo>' } } }, null, 2), 'JSON'));
+  inline(t('mcpRun'), el('p', '', '', main));
+  el('h2', '', t('tools'), main);
+  const table = el('table', '', '', main);
   for (const [n, d] of [
-    ['list_components', 'Every component: name, type, category, purpose.'],
-    ['get_component', 'The full spec sheet of one component.'],
-    ['get_examples', 'Runnable example configs (the ones on this site).'],
-    ['search_docs', 'Search over spec sheets and guides.'],
-    ['get_guide', 'architecture, theming, motion or catalog, in full.'],
-    ['get_tokens', 'Design tokens with defaults, filtered by prefix.'],
-    ['list_themes', 'The shipped themes.'],
+    ['list_components', 'name, type, category, purpose'],
+    ['get_component', 'the full spec sheet'],
+    ['get_examples', 'runnable example configs'],
+    ['search_docs', 'spec sheets and guides'],
+    ['get_guide', 'theming, ui, motion, catalog, performance, architecture'],
+    ['get_tokens', '--op-* tokens with defaults'],
+    ['list_themes', 'the shipped themes'],
   ]) {
-    const tr = h('tr', '', '', table);
-    h('td', '', n, tr).style.fontFamily = 'var(--op-font-mono)';
-    h('td', '', d, tr);
+    const tr = el('tr', '', '', table);
+    el('td', '', n, tr).style.fontFamily = 'var(--op-font-mono)';
+    el('td', '', `${d} · lang: en | pt-BR`, tr);
   }
 }
 
 route();
-document.addEventListener('keydown', (e) => (e.ctrlKey || e.metaKey) && e.key === 'k' && (e.preventDefault(), void 0));

@@ -300,3 +300,15 @@ describe('SuggestField', () => {
     expect(query).not.toHaveBeenCalled();
   });
 });
+
+describe('ariaLabel on a field without a visible label', () => {
+  it('names the control itself, not the wrapper', () => {
+    for (const type of ['textfield', 'select', 'numberfield']) {
+      const f = create({ type, ariaLabel: 'Theme', renderTo: document.body } as never) as unknown as { el: HTMLElement; destroy(): void };
+      const input = f.el.querySelector('input')!;
+      expect(input.getAttribute('aria-label'), type).toBe('Theme');
+      expect(f.el.hasAttribute('aria-label'), type).toBe(false);
+      f.destroy();
+    }
+  });
+});

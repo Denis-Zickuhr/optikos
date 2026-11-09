@@ -70,7 +70,7 @@ export function listPages() {
         name,
         href: `/${folder}/${name}/`,
         sections: [...src.matchAll(/\.section\(\s*(['"`])(.+?)\1/g)].map((m) => m[2]),
-        description: (src.match(/^\/\/\s*(.+)$/m) ?? [])[1] ?? '',
+        description: (src.match(/^\/\/\s*(.+)/) ?? [])[1] ?? '', // the file's first line, when it is a comment
       });
     }
   }

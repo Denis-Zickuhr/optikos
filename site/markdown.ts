@@ -27,7 +27,7 @@ export function markdown(src: string): HTMLElement {
       const code: string[] = [];
       while (++i < lines.length && !lines[i].startsWith('```')) code.push(lines[i]);
       el('pre').append(Object.assign(document.createElement('code'), { textContent: code.join('\n') }));
-    } else if ((m = /^(#{1,4})\s+(.*)/.exec(line))) el(`h${Math.min(m[1].length + 1, 5)}` as 'h2', m[2]);
+    } else if ((m = /^(#{1,4})\s+(.*)/.exec(line))) el(`h${Math.min(m[1].length, 5)}` as 'h2', m[2]);
     else if (line.startsWith('|') && lines[i + 1]?.includes('---')) {
       const table = el('table');
       const rows: string[][] = [];

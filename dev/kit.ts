@@ -7,7 +7,7 @@ import { THEMES, initialState, applyThemeState, type DevTheme } from './themes';
 export const customTheme = defineTheme(
   {
     color: { primary: '#7c3aed', primaryHover: '#6d28d9', primarySoft: '#f5f3ff', focus: '#a78bfa', selected: '#ede9fe' },
-    radius: { DEFAULT: '0.75rem' },
+    radius: '0.75rem',
     button: { radius: '62.5rem', fontWeight: 700 },
     panel: { radius: '1rem' },
   },
@@ -33,6 +33,11 @@ body{margin:0;padding-top:3.25rem;overflow-x:hidden;background:var(--op-color-bg
 .kit-host{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-start}
 .kit-log{margin:.75rem 0 0;padding:.5rem;max-height:7rem;overflow:auto;background:var(--op-color-surface-2);border-radius:var(--op-radius-sm);font:.75rem/1.4 var(--op-font-mono);color:var(--op-color-fg-muted)}
 .kit-log:empty{display:none}
+.dev-hero{display:flex;align-items:center;gap:1rem;padding:1.5rem 1.25rem;border-radius:var(--op-radius-lg);border:1px solid var(--op-color-border);
+  background:radial-gradient(40rem 16rem at 0% 0%,color-mix(in srgb,var(--op-color-primary) 16%,transparent),transparent 70%),var(--op-color-surface)}
+.dev-hero h1{margin:0;font-size:1.6rem;letter-spacing:-.02em}.dev-hero p{margin:.15rem 0 0;color:var(--op-color-fg-muted)}
+.dev-logo{flex:none;inline-size:2.4rem;block-size:2.4rem;border-radius:50%;background:conic-gradient(from 210deg,var(--op-color-primary),var(--op-color-info),var(--op-color-success),var(--op-color-primary));box-shadow:inset 0 0 0 .45rem var(--op-color-surface)}
+.dev-hero a{margin-inline-start:auto;color:var(--op-color-primary);font-weight:600}
 `;
 
 export function page(title: string) {

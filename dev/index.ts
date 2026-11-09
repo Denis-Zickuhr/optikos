@@ -6,6 +6,13 @@ import { loadPages, type DevPage } from './nav';
 const p = page('index');
 const pages = await loadPages();
 
+// the same identity as the docs site: logo mark, title, and a way over there
+const hero = p.main.appendChild(Object.assign(document.createElement('header'), { className: 'dev-hero' }));
+hero.append(Object.assign(document.createElement('span'), { className: 'dev-logo' }));
+const title = hero.appendChild(document.createElement('div'));
+title.append(Object.assign(document.createElement('h1'), { textContent: 'Optikos dev' }), Object.assign(document.createElement('p'), { textContent: `${pages.filter((x) => x.kind === 'sandbox').length} sandboxes and ${pages.filter((x) => x.kind === 'demo').length} demos, with live reload. Docs site: npm run site.` }));
+hero.append(Object.assign(document.createElement('a'), { href: 'http://localhost:5180/site/', textContent: 'Docs site →' }));
+
 const card = (pg: DevPage) => ({
   type: 'panel',
   title: pg.name,

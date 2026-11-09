@@ -17,6 +17,11 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 - Documentation in English with a Portuguese translation (`docs/pt-BR/`); the docs site has a language picker
   (English/Português) that also switches the components' own messages, and the MCP server takes a `lang` argument.
 
+- `defineTheme`: a plain value sets the group's own token (`radius: '0.75rem'` → `--op-radius`).
+- Docs site redesigned as a showcase: a landing page with a live form and measured sizes, recipes (complete small
+  screens whose shown code is the code that runs), a gallery of the demos (published with the site) and tabbed
+  component pages.
+
 ### Changed
 
 - Grid: `role="grid"` (with focus, `aria-activedescendant`, row and column counts) moved from the root element to an inner
@@ -30,6 +35,9 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
   Custom locales passed to `setLocale({...})` keep working; missing keys still fall back to English.
 
 ### Fixed
+
+- `ariaLabel` on a field without a visible label now names its input (it used to land on the wrapper).
+- Grid: the row-actions column header has a (visually hidden) name.
 
 - `ui.grid(2, ...)` keeps the column count numeric, so the grid collapses to one column on narrow containers like
   `layout: { type: 'grid', columns: 2 }` does.

@@ -308,7 +308,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
         const label = c.header ?? c.field;
         const cell = h('div', `op-grid__cell op-grid__hcell${c.align ? ` op-grid__cell--${c.align}` : ''}${c.sortable ? ' is-sortable' : ''}`, { role: 'columnheader', 'aria-colindex': i + 1, 'data-field': c.field });
         if (c.field === SEL) cell.append((this.selAll = h('input', 'op-grid__check', { type: 'checkbox', 'aria-label': t('gridSelectPage') })));
-        else if (c.field === ACT) cell.setAttribute('aria-label', t('gridRowActions'));
+        else if (c.field === ACT) cell.append(h('span', 'op-sr-only', {}, t('gridRowActions')));
         else if (c.sortable) cell.append(h('button', 'op-grid__sort', { type: 'button' }, h('span', 'op-grid__label', {}, label), h('span', 'op-grid__arrow', { 'aria-hidden': 'true' }, iconEl('arrow-up'))));
         else cell.append(h('span', 'op-grid__label', {}, label));
         const user = c.field !== SEL && c.field !== ACT;

@@ -191,8 +191,8 @@ Current evergreen browsers. The JavaScript targets ES2022, and the CSS uses casc
   [motion](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/motion.md),
   [`ui` shortcuts](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/ui.md) and
   [architecture decisions](https://github.com/Denis-Zickuhr/optikos/blob/main/docs/architecture.md) (in Portuguese).
-- [Demos](https://github.com/Denis-Zickuhr/optikos/tree/main/demos): CRM, admin dashboard, ERP, chat, photo gallery,
-  shop, event landing page, workbench, motion lab and customization. Run them with `npm run dev`.
+- [Recipes and live demos](https://denis-zickuhr.github.io/optikos/#/demos) on the docs site: CRM, admin dashboard, ERP,
+  chat, photo gallery, shop, event landing page, workbench, motion lab and customization ([source](https://github.com/Denis-Zickuhr/optikos/tree/main/demos)).
 
 ## Contributing / Development
 

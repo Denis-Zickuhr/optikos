@@ -29,6 +29,7 @@ export function parseFicha(md) {
 
 // Guides with their file per language. The architecture log is a contributor document, kept in Portuguese only.
 const GUIDES = [
+  { name: 'getting-started', title: { en: 'Getting started', 'pt-BR': 'Começar' } },
   { name: 'theming', title: { en: 'Theming', 'pt-BR': 'Tematização' } },
   { name: 'ui', title: { en: 'Short writing (ui and enums)', 'pt-BR': 'Escrita enxuta (ui e enums)' } },
   { name: 'motion', title: { en: 'Motion', 'pt-BR': 'Motion' } },

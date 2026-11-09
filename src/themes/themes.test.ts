@@ -17,6 +17,12 @@ describe('defineTheme', () => {
     expect(t.css).toContain('--op-button-font-weight: 700;');
   });
 
+  it('a plain value sets the group token itself (radius → --op-radius)', () => {
+    const th = defineTheme({ radius: '0.75rem', space: { 3: '1rem' } }, 'plain-group');
+    expect(th.css).toContain('--op-radius: 0.75rem;');
+    expect(th.css).toContain('--op-space-3: 1rem;');
+  });
+
   it('inject adds one style tag (idempotent) without activating; apply activates and keeps other themes', () => {
     const t = defineTheme({ color: { primary: 'red' } }, 'x');
     t.inject();
