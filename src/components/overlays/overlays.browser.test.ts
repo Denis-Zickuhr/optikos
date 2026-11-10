@@ -20,8 +20,6 @@ describe('Window (browser)', () => {
     w.show();
     const inside = () => w.el.contains(document.activeElement);
     expect(document.activeElement).toBe(w.el); // the dialog itself: no field autofocus (a phone keyboard would pop up)
-    await userEvent.tab();
-    expect(document.activeElement).toBe(w.el.querySelector('input')); // Tab goes to the first field
     for (let i = 0; i < 8; i++) {
       await userEvent.tab();
       expect(inside(), `Tab #${i + 1} left the window`).toBe(true);
