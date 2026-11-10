@@ -272,6 +272,23 @@ p.section('StepForm: free navigation and a custom review', 'linear: false (click
   wizard.on('finish', () => toast({ type: 'success', text: 'Created' }));
 });
 
+// ---- 6b. async step check ------------------------------------------------------------------------------------------------------------------------
+p.section('StepForm: a step check on the server', 'the first step has a `validate` that takes 1.2 s (a simulated server): Next shows loading, a second click does nothing, Back aborts it. Try the slug "admin" (taken: error on the field), "down" (a message for the whole step) or anything else.', (host, { log }) => {
+  const server = (slug: string, signal: AbortSignal) =>
+    new Promise<true | string | Record<string, string>>((ok) => {
+      const t = setTimeout(() => ok(slug === 'admin' ? { slug: `"${slug}" is already taken` } : slug === 'down' ? 'The server did not answer. Try again.' : true), 1200);
+      signal.addEventListener('abort', () => (clearTimeout(t), log('check aborted')));
+    });
+  const wizard = create<StepForm>({
+    type: 'stepform', width: '100%', review: true, renderTo: host,
+    steps: [
+      { title: 'Event', description: 'Name and address', items: [{ type: 'textfield', name: 'name', label: 'Name', required: true }, { type: 'textfield', name: 'slug', label: 'Slug', required: true, help: 'admin = taken, down = server error' }], validate: (v: Record<string, any>, _f: unknown, signal: AbortSignal) => server(v.slug, signal) },
+      { title: 'Dates', items: [{ type: 'datefield', name: 'start', label: 'Starts' }, { type: 'datefield', name: 'end', label: 'Ends' }] },
+    ],
+  } as any);
+  wizard.on('finish', (v: unknown) => log('finish', v));
+});
+
 // ---- secret fields: create vs edit ------------------------------------------------------------------------------------------------------------
 p.section('SecretField: create and edit', 'creating: type the secret, the eye lets you check what you typed. Editing a saved secret: it is NEVER shown again (mask only, no eye); to change it you press Replace (or click the field), read the warning, and type a new one. "Keep current" undoes the replacement; the form sends null for an untouched secret.', (host, { log }) => {
   const make = (stored: boolean) => {

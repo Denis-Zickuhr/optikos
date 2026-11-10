@@ -33,7 +33,15 @@ export interface FormStep {
   items: ContainerConfig['items'];
   /** Default: two columns (one on a phone). */
   layout?: LayoutSpec;
+  /**
+   * A check that may ask the server (an email already taken, a free slug), run when leaving the step forward and on Finish.
+   * Return `true`, a message for the whole step, or `{ field: message }`. The signal aborts when the user goes elsewhere.
+   */
+  validate?: (values: Record<string, any>, form: StepForm, signal: AbortSignal) => StepCheck | Promise<StepCheck>;
 }
+
+/** The result of a step's `validate`: ok, a message for the whole step, or messages per field name. */
+export type StepCheck = true | string | Record<string, string>;
 
 export interface StepFormConfig extends FormConfig {
   steps: FormStep[];
@@ -69,6 +77,11 @@ export class StepForm extends Form {
   private nextBtn!: Button;
   private finishBtn!: Button;
   private index = 0;
+  /** The step check in flight (Next waits for it; going elsewhere aborts it). */
+  private pending?: AbortController;
+  /** Each step's general message (from its `validate`), shown in one alert line above the steps. */
+  private notes: string[] = [];
+  private noteEl?: HTMLElement;
 
   constructor(config: StepFormConfig) {
     let me!: StepForm;
@@ -90,6 +103,7 @@ export class StepForm extends Form {
     Object.assign(this, { stepper, body, pane: review, backBtn, nextBtn, finishBtn });
     stepper.on('before-select', (i: number) => (me.goTo(i), false));
     body.on('activate', () => me.onActivate());
+    this.own(() => this.stop());
   }
 
   private cfg(): StepFormConfig {
@@ -126,27 +140,89 @@ export class StepForm extends Form {
     return !bad.length;
   }
 
-  /** Moves to a step. Forward with `linear` validates the steps on the way and stops at the first invalid one. Returns whether it got there. */
-  goTo(j: number): boolean {
-    if (j < 0 || j >= this.count() || j === this.index) return false;
-    if (this.emit('before-step-change', this.index, j) === false) return false;
-    let target = j;
-    if (this.cfg().linear !== false && j > this.index) {
-      for (let k = this.index; k < j; k++) {
-        if (!this.validateStep(k)) {
-          target = k;
-          break;
-        }
-      }
-    }
-    if (target !== this.index) this.body.setActiveItem(target);
-    if (target !== j) this.stepFields(target).find((f) => f.getError())?.focus();
-    return target === j;
+  /** Sets step `i`'s general message ('' clears it); it shows while that step is the current one. */
+  private note(i: number, text: string): void {
+    this.notes[i] = text;
+    if (i === this.index) this.showNote();
   }
-  next(): boolean {
+  private showNote(): void {
+    if (!this.rendered) return;
+    const text = this.notes[this.index] ?? '';
+    if (!this.noteEl) {
+      if (!text) return;
+      this.body.el.before((this.noteEl = h('div', 'op-stepform__note', { role: 'alert' })));
+    }
+    this.noteEl.textContent = text;
+    this.noteEl.hidden = !text;
+  }
+
+  /** Busy while a step check runs: Next and Finish show their loading state. */
+  private busy(on: boolean): void {
+    this.el.classList.toggle('is-validating', on);
+    this.nextBtn.setLoading(on);
+    this.finishBtn.setLoading(on);
+  }
+  /** Cancels the step check in flight, if any. */
+  private stop(): void {
+    if (!this.pending) return;
+    this.pending.abort();
+    this.pending = undefined;
+    this.busy(false);
+  }
+
+  /** Runs step `k`'s `validate`. A failure marks the fields or shows the step's message. Resolves false when aborted too. */
+  private async check(k: number): Promise<boolean> {
+    const fn = this.cfg().steps[k]?.validate;
+    if (!fn) return true;
+    this.stop();
+    const ctl = (this.pending = new AbortController());
+    this.busy(true);
+    let res: StepCheck;
+    try {
+      res = await fn(this.getValues(), this, ctl.signal);
+    } catch (e) {
+      res = String((e as Error)?.message ?? e); // a failing check is a message, not a broken wizard
+    }
+    if (ctl.signal.aborted) return false; // gone elsewhere (or destroyed) meanwhile
+    this.pending = undefined;
+    this.busy(false);
+    const ok = res === true || res == null;
+    this.note(k, typeof res === 'string' ? res : '');
+    if (!ok && typeof res === 'object') for (const [name, msg] of Object.entries(res)) this.getField(name)?.setError(msg);
+    if (!ok) this.stepper.setStepState(k, 'error');
+    return ok;
+  }
+
+  /**
+   * Moves to a step. Forward with `linear` validates the steps on the way (their fields, then their `validate`) and stops
+   * at the first invalid one. Resolves with whether it got there; without a step `validate` on the way it moves at once.
+   */
+  goTo(j: number): Promise<boolean> {
+    if (j < 0 || j >= this.count() || j === this.index) return Promise.resolve(false);
+    if (this.pending && j > this.index) return Promise.resolve(false); // a check is running: a second Next does nothing
+    this.stop(); // going back cancels it
+    if (this.emit('before-step-change', this.index, j) === false) return Promise.resolve(false);
+    const from = this.index;
+    const land = (target: number) => {
+      if (this.index !== from) return false; // the user moved on while a check was running
+      if (target !== this.index) this.body.setActiveItem(target);
+      if (target !== j) this.stepFields(target).find((f) => f.getError())?.focus();
+      return target === j;
+    };
+    if (this.cfg().linear === false || j < from) return Promise.resolve(land(j));
+    const walk = (k: number): boolean | Promise<boolean> => {
+      for (; k < j; k++) {
+        if (!this.validateStep(k)) return land(k);
+        if (this.cfg().steps[k]?.validate) return this.check(k).then((ok) => (ok ? walk(k + 1) : land(k)));
+      }
+      return land(j);
+    };
+    return Promise.resolve(walk(from));
+  }
+  next(): Promise<boolean> {
     return this.goTo(this.index + 1);
   }
-  back(): boolean {
+  back(): Promise<boolean> {
     return this.goTo(this.index - 1);
   }
 
@@ -163,6 +239,7 @@ export class StepForm extends Form {
     this.finishBtn.config.hidden = i !== last;
     for (const [b, hide] of [[this.backBtn, i === 0], [this.nextBtn, i === last], [this.finishBtn, i !== last]] as const) if (b.rendered) b.el.hidden = hide;
     if (this.pane && i === last) this.refreshReview();
+    this.showNote();
     if (i !== from) {
       this.emit('step-change', i, from);
       if (this.rendered && this.el.isConnected && !this.stepFields(i).some((f) => f.getError())) {
@@ -200,21 +277,47 @@ export class StepForm extends Form {
   /** Enter and the Finish button: Next on every step but the last; on the last, validate everything and `finish`. */
   override submit(): boolean {
     if (this.index < this.count() - 1) {
-      this.next();
+      void this.next();
+      return false;
+    }
+    const states = () => {
+      for (let i = 0; i < this.real(); i++) this.stepper.setStepState(i, this.stepFields(i).some((f) => f.getError()) ? 'error' : 'done');
+    };
+    // with step checks, Finish waits for them (it returns false now; `finish` fires when they pass)
+    if (this.cfg().steps.some((s) => s.validate)) {
+      if (this.pending || this.emit('before-submit') === false || !this.validate()) return states(), false;
+      const at = this.index;
+      void (async () => {
+        for (let k = 0; k < this.real(); k++) {
+          if (!(await this.check(k))) {
+            if (this.index !== at || this.destroyed) return; // the user went back: the check was aborted
+            if (k !== at) this.body.setActiveItem(k);
+            this.stepFields(k).find((f) => f.getError())?.focus();
+            return;
+          }
+        }
+        states();
+        const values = this.getValues();
+        this.emit('submit', values);
+        this.emit('finish', values);
+      })();
       return false;
     }
     const ok = super.submit();
-    for (let i = 0; i < this.real(); i++) this.stepper.setStepState(i, this.stepFields(i).some((f) => f.getError()) ? 'error' : 'done');
+    states();
     if (ok) this.emit('finish', this.getValues());
     return ok;
   }
 
   /** Clears the values and goes back to the first step. */
   override reset(): void {
+    this.stop();
+    this.notes = [];
     super.reset();
     this.clearErrors();
     for (let i = 0; i < this.count(); i++) this.stepper.setStepState(i, 'pending');
     if (this.index !== 0) this.body.setActiveItem(0);
+    this.showNote();
   }
 }
 register('stepform', StepForm);

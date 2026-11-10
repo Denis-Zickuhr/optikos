@@ -43,4 +43,13 @@
     margin: 0;
     overflow-wrap: anywhere;
   }
+  /* a step's general message (its validate returned a string) */
+  .op-stepform__note {
+    margin-block-end: var(--op-space-3);
+    padding: var(--op-space-2) var(--op-space-3);
+    color: var(--op-color-danger);
+    background: var(--op-color-danger-soft);
+    border-radius: var(--op-radius);
+    font-size: var(--op-font-size-sm);
+  }
 }

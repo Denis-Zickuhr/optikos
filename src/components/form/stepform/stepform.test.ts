@@ -159,13 +159,13 @@ describe('StepForm', () => {
     expect(f.getStepper().getStepState(0)).toBe('done');
   });
 
-  it('Back always goes back and keeps the values; before-step-change can cancel', () => {
+  it('Back always goes back and keeps the values; before-step-change can cancel', async () => {
     const f = mk();
     f.getField('name')!.setValue('Ada');
     f.next();
     f.getField('address.city')!.setValue('Lisboa');
     f.on('before-step-change', (from: number, to: number) => !(from === 1 && to === 2));
-    expect(f.next()).toBe(false);
+    expect(await f.next()).toBe(false);
     expect(f.getStep()).toBe(1);
     f.off('before-step-change');
     f.back();
@@ -241,5 +241,93 @@ describe('StepForm', () => {
     expect(f.getStep()).toBe(0);
     expect(f.getField('name')!.getValue()).toBe('');
     expect(f.getStepper().getStepState(0)).toBe('pending');
+  });
+
+  describe('step validate (async)', () => {
+    /** A promise the test resolves by hand. */
+    const later = <T>() => {
+      let done!: (v: T) => void;
+      const p = new Promise<T>((r) => (done = r));
+      return { p, done };
+    };
+    const nextBtn = (f: StepForm) => f.el.querySelector<HTMLElement>('.op-stepform__footer .op-button--primary:not([hidden])')!;
+    const note = (f: StepForm) => f.el.querySelector<HTMLElement>('.op-stepform__note');
+
+    it('Next waits for it with Next loading; true moves on', async () => {
+      const d = later<true>();
+      const validate = vi.fn(() => d.p);
+      const f = mk({ steps: [{ title: 'A', validate, items: [{ type: 'textfield', name: 'slug' }] }, { title: 'B', items: [] }] });
+      f.getField('slug')!.setValue('ada');
+      const moved = f.next();
+      expect(validate).toHaveBeenCalledWith({ slug: 'ada' }, f, expect.any(AbortSignal));
+      expect(f.getStep()).toBe(0);
+      expect(f.el.classList.contains('is-validating')).toBe(true);
+      expect(nextBtn(f).classList.contains('is-loading')).toBe(true);
+      d.done(true);
+      expect(await moved).toBe(true);
+      expect(f.getStep()).toBe(1);
+      expect(f.el.classList.contains('is-validating')).toBe(false);
+    });
+
+    it('messages per field mark those fields and focus the first; a string shows on the step (and clears when it passes)', async () => {
+      let res: any = { email: 'Already taken' };
+      const f = mk({ steps: [{ title: 'A', validate: async () => res, items: [{ type: 'textfield', name: 'name' }, { type: 'textfield', name: 'email' }] }, { title: 'B', items: [] }] });
+      expect(await f.next()).toBe(false);
+      expect(f.getStep()).toBe(0);
+      expect(f.getField('email')!.getError()).toBe('Already taken');
+      expect(f.getStepper().getStepState(0)).toBe('error');
+      expect(document.activeElement).toBe((f.getField('email') as any).getInput());
+      res = 'The server is busy';
+      f.getField('email')!.setError('');
+      expect(await f.next()).toBe(false);
+      expect(note(f)!.textContent).toBe('The server is busy');
+      expect(note(f)!.getAttribute('role')).toBe('alert');
+      expect(note(f)!.hidden).toBe(false);
+      res = true;
+      expect(await f.next()).toBe(true);
+      expect(note(f)!.hidden).toBe(true);
+    });
+
+    it('a check that throws is a message for the step, not a broken wizard', async () => {
+      const f = mk({ steps: [{ title: 'A', validate: () => Promise.reject(new Error('Offline')), items: [] }, { title: 'B', items: [] }] });
+      expect(await f.next()).toBe(false);
+      expect(note(f)!.textContent).toBe('Offline');
+      expect(f.el.classList.contains('is-validating')).toBe(false);
+    });
+
+    it('a second Next while it runs does nothing; Back aborts it and nothing moves when it resolves', async () => {
+      const d = later<true>();
+      let signal!: AbortSignal;
+      const validate = vi.fn((_v: unknown, _f: unknown, s: AbortSignal) => ((signal = s), d.p));
+      const f = mk({ steps: [{ title: 'A', items: [] }, { title: 'B', validate, items: [] }, { title: 'C', items: [] }] });
+      await f.next();
+      const first = f.next();
+      expect(await f.next()).toBe(false);
+      expect(validate).toHaveBeenCalledTimes(1);
+      expect(await f.back()).toBe(true);
+      expect(signal.aborted).toBe(true);
+      expect(f.el.classList.contains('is-validating')).toBe(false);
+      d.done(true);
+      expect(await first).toBe(false);
+      expect(f.getStep()).toBe(0);
+    });
+
+    it('Finish runs every step check: a failure goes to its step; when all pass, `finish` fires', async () => {
+      let res: any = { name: 'Taken' };
+      const f = mk({ linear: false, review: false, steps: [{ title: 'A', validate: async () => res, items: [{ type: 'textfield', name: 'name' }] }, { title: 'B', items: [] }] });
+      const fin = vi.fn();
+      f.on('finish', fin);
+      await f.goTo(1);
+      expect(f.submit()).toBe(false); // the checks run after it returns
+      await vi.waitFor(() => expect(f.getStep()).toBe(0));
+      expect(f.getField('name')!.getError()).toBe('Taken');
+      expect(fin).not.toHaveBeenCalled();
+      res = true;
+      f.getField('name')!.setError('');
+      await f.goTo(1);
+      f.submit();
+      await vi.waitFor(() => expect(fin).toHaveBeenCalledTimes(1));
+      expect(fin.mock.calls[0][0]).toEqual({ name: '' });
+    });
   });
 });

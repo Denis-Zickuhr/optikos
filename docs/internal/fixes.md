@@ -297,7 +297,7 @@ são os mesmos citados no doc do app.
     e `getValues` ignoram oculta, `keepHiddenValues`, `linear` com etapa que aparece à frente, revisão); caso na sandbox
     `form` (formato muda as etapas); screenshot.
 
-- [ ] **OPK-04 · `StepForm`: validação assíncrona por etapa** (S)
+- [x] **OPK-04 · `StepForm`: validação assíncrona por etapa** (S) — feito (`validate(values, form, signal)` por etapa; `goTo`/`next`/`back` viram `Promise<boolean>`; decisão 61). **Não feito:** `asyncValidator` por campo (o `validate` da etapa cobre o caso).
   - **Problema:** checagens que dependem do servidor (e-mail/CPF já cadastrado, slug disponível, código de cupom único) só
     rodam no `finish`, depois que o usuário já passou da etapa.
   - **Esperado:** `validate?: (values, form) => Promise<true | Record<campo, mensagem> | string>` por etapa. Próximo mostra
@@ -319,7 +319,7 @@ são os mesmos citados no doc do app.
   - **Aceite:** decisão registrada em `architecture.md`; se for para a lib: ficha, testes (match, params, guarda,
     hash/history, lazy), demo admin usando, entrada própria no orçamento.
 
-- [ ] **OPK-06 · `NavMenu`: grupos em menu flutuante no modo trilho** (C)
+- [x] **OPK-06 · `NavMenu`: grupos em menu flutuante no modo trilho** (C) — feito (decisão 60)
   - **Problema:** com `collapsed: true` os grupos viram separadores e só os ícones aparecem; não dá para chegar aos filhos
     sem expandir o menu inteiro.
   - **Esperado:** no trilho, clicar ou passar o mouse no ícone de um grupo abre um `Menu` flutuante ao lado com o título do

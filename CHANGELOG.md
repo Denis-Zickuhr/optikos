@@ -10,6 +10,14 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 - NavMenu in rail mode (`collapsed`): a group shows its icon (or initial) and opens a floating Menu beside it with its
   title and children (badges included), by click, hover, → or Enter; the icon lights up when the active page is inside.
   `MenuItem.badge`.
+- StepForm: a step check per step, `validate(values, form, signal)`, that may ask the server. It runs when leaving the
+  step forward and on Finish, with Next/Finish loading; it returns `true`, a message for the step (an alert line above
+  it) or `{ field: message }`. A second click does nothing and going back aborts it.
+
+### Changed
+
+- StepForm: `goTo`, `next` and `back` return `Promise<boolean>` (they wait for the step checks on the way; without any,
+  the step still changes at once).
 
 ## [0.2.0] - 2026-11-10
 
