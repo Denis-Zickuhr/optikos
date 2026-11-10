@@ -20,9 +20,11 @@ export interface MessageBoxConfig {
   /** Resolved when closed with Esc or the close button. */
   cancelId?: string;
   /** Adds a text input; `show` then resolves with the button id and the input is read by `prompt`. */
-  input?: { value?: string; placeholder?: string; validators?: Validator<string>[] };
+  input?: { value?: string; placeholder?: string; validators?: Validator<string>[]; autoFocus?: boolean };
   /** Called with the pressed button id before closing; return `false` to keep the dialog open. */
   beforeClose?: (id: string, win: Window, input?: TextField) => boolean | void;
+  /** Dim the page behind. Default false: a message is still modal, but it does not darken the screen. */
+  mask?: boolean;
 }
 
 function open(cfg: MessageBoxConfig): Promise<string> {
@@ -39,6 +41,8 @@ function open(cfg: MessageBoxConfig): Promise<string> {
       title: cfg.title,
       cls: 'op-messagebox',
       closeAction: 'destroy',
+      mask: cfg.mask ?? false,
+      autoFocus: !!cfg.input?.autoFocus,
       items: [
         new Container({
           layout: { type: 'hbox', gap: 12, align: 'flex-start' },
@@ -68,11 +72,13 @@ function open(cfg: MessageBoxConfig): Promise<string> {
 
 export interface AlertOptions {
   title?: string;
+  mask?: boolean;
   okText?: string;
   icon?: string;
 }
 export interface ConfirmOptions {
   title?: string;
+  mask?: boolean;
   okText?: string;
   cancelText?: string;
   danger?: boolean;
@@ -80,24 +86,28 @@ export interface ConfirmOptions {
 }
 export interface PromptOptions {
   title?: string;
+  mask?: boolean;
   value?: string;
   placeholder?: string;
   okText?: string;
   cancelText?: string;
   validators?: Validator<string>[];
+  /** Focus the text field on open (a phone keyboard pops up). Default false: the dialog gets the focus. */
+  autoFocus?: boolean;
 }
 
 export const MessageBox = {
   show: open,
 
   async alert(text: string, o: AlertOptions = {}): Promise<void> {
-    await open({ text, title: o.title, icon: o.icon ?? 'info', buttons: [{ id: 'ok', text: o.okText ?? t('ok'), variant: 'primary' }], cancelId: 'ok' });
+    await open({ text, title: o.title, mask: o.mask, icon: o.icon ?? 'info', buttons: [{ id: 'ok', text: o.okText ?? t('ok'), variant: 'primary' }], cancelId: 'ok' });
   },
 
   async confirm(text: string, o: ConfirmOptions = {}): Promise<boolean> {
     const id = await open({
       text,
       title: o.title,
+      mask: o.mask,
       icon: o.icon ?? (o.danger ? 'alert' : 'info'),
       buttons: [
         { id: 'cancel', text: o.cancelText ?? t('cancel') },
@@ -114,7 +124,8 @@ export const MessageBox = {
     const id = await open({
       text,
       title: o.title,
-      input: { value: o.value, placeholder: o.placeholder, validators: o.validators },
+      mask: o.mask,
+      input: { value: o.value, placeholder: o.placeholder, validators: o.validators, autoFocus: o.autoFocus },
       buttons: [
         { id: 'cancel', text: o.cancelText ?? t('cancel') },
         { id: 'ok', text: o.okText ?? t('ok'), variant: 'primary' },

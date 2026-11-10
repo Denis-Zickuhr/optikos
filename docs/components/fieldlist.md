@@ -1,0 +1,11 @@
+# FieldList  (type: 'fieldlist')
+Purpose:       A repeating block of fields (contacts, order lines, addresses): the user adds, removes and reorders rows, and the form gets an array (`contacts: [{ name, email }, …]`).
+Anatomy:       `.op-field.op-fieldlist` (Field) > label + `.op-fieldlist__rows[role=group]` > `.op-fieldlist__row[role=group]` (named "Contacts 2") with the row fields and `.op-fieldlist__tools` (move up, move down, remove) + `.op-fieldlist__add` (the add button) + help + error. The labels show on the first row only (a column header); on the others they stay for screen readers.
+Config:        (Field) + `items` (the fields of one row; their `name`s are relative to the row, nested names allowed), `value` (an array of row objects), `min: 0`, `max`, `addText` (default "Add"), `reorderable: true`, `newRow` (values for a new row, or a function returning them), `rowLayout` (default `hbox`: the fields share the row).
+API:           (Field) `getValue()` (the array), `setValue(rows)`, `addRow(values?)`, `removeRow(index)`, `moveRow(from, to)`, `getRows()` (the row containers), `getRowFields(index)`, `setMin(n)`, `setMax(n)`. `validate()` validates every row and reports `min`/`max`; `focus()` goes to the first invalid field.
+Events:        `change(rows)`, `add(index)`, `remove(index)`, `move(from, to)`, `before-remove(index)` (cancelable), plus the Field ones.
+States:        `is-invalid`, `is-empty` (no rows: the list shows an empty line), add disabled at `max`, remove disabled at `min`.
+Keyboard/ARIA: The list is a group named by the label; each row is a group named "<label> <n>"; the row tools are buttons ("Remove Contacts 2", "Move Contacts 2 up"). Adding focuses the new row's first field; removing focuses the row that took its place (or the add button). Validation focuses the first invalid field inside.
+Tokens:        `--op-fieldlist-gap`, `--op-fieldlist-row-gap`.
+Sandbox cases: contacts (name + email, min 1, max 5), order lines with a number and a total, reordering, required, inside a Form with load/reset/dirty.
+Out of scope:  drag and drop reordering, virtualized very long lists (use a Grid with cell editing), nested FieldLists more than one level deep.

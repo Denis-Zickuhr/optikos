@@ -1,0 +1,40 @@
+@layer optikos {
+  .op-formactions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--op-space-2) var(--op-space-3);
+    padding: var(--op-formactions-padding, var(--op-space-3) 0 0);
+    border-block-start: var(--op-border-width) solid var(--op-formactions-border, var(--op-color-border));
+  }
+  .op-formactions__status {
+    flex: 1;
+    min-inline-size: 0;
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-formactions__status:not(:empty)::before {
+    content: '';
+    display: inline-block;
+    inline-size: var(--op-space-2);
+    block-size: var(--op-space-2);
+    margin-inline-end: var(--op-space-2);
+    background: var(--op-color-warning);
+    border-radius: 50%;
+  }
+  .op-formactions__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--op-space-2);
+    margin-inline-start: auto;
+  }
+  /* sticky: stays at the bottom of the scrolling area while the form scrolls under it */
+  .op-formactions.is-sticky {
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 1;
+    padding: var(--op-formactions-padding, var(--op-space-3));
+    background: var(--op-formactions-bg, var(--op-color-surface));
+    box-shadow: var(--op-shadow-sm);
+  }
+}

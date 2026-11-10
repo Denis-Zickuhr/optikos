@@ -36,7 +36,7 @@ body{margin:0;padding-top:3.25rem;overflow-x:hidden;background:var(--op-color-bg
 .dev-hero{display:flex;align-items:center;gap:1rem;padding:1.5rem 1.25rem;border-radius:var(--op-radius-lg);border:1px solid var(--op-color-border);
   background:radial-gradient(40rem 16rem at 0% 0%,color-mix(in srgb,var(--op-color-primary) 16%,transparent),transparent 70%),var(--op-color-surface)}
 .dev-hero h1{margin:0;font-size:1.6rem;letter-spacing:-.02em}.dev-hero p{margin:.15rem 0 0;color:var(--op-color-fg-muted)}
-.dev-logo{flex:none;inline-size:2.4rem;block-size:2.4rem;border-radius:50%;background:conic-gradient(from 210deg,var(--op-color-primary),var(--op-color-info),var(--op-color-success),var(--op-color-primary));box-shadow:inset 0 0 0 .45rem var(--op-color-surface)}
+.dev-logo{flex:none;inline-size:3rem;block-size:3rem}
 .dev-hero a{margin-inline-start:auto;color:var(--op-color-primary);font-weight:600}
 `;
 

@@ -47,6 +47,8 @@ export interface StepFormConfig extends FormConfig {
   finishText?: string;
   /** Shows a Cancel button (fires `cancel`). */
   cancelText?: string;
+  /** On a new step, focus its first field (a phone keyboard pops up). Default false: the step panel gets the focus. */
+  autoFocus?: boolean;
 }
 
 /** The summary pane of the review step. */
@@ -163,7 +165,11 @@ export class StepForm extends Form {
     if (this.pane && i === last) this.refreshReview();
     if (i !== from) {
       this.emit('step-change', i, from);
-      if (this.rendered && this.el.isConnected && !this.stepFields(i).some((f) => f.getError())) this.stepFields(i)[0]?.focus();
+      if (this.rendered && this.el.isConnected && !this.stepFields(i).some((f) => f.getError())) {
+        const panel = this.body.items[i]?.el;
+        if ((this.config as StepFormConfig).autoFocus) this.stepFields(i)[0]?.focus();
+        else if (panel) ((panel.tabIndex = -1), panel.focus());
+      }
     }
   }
 

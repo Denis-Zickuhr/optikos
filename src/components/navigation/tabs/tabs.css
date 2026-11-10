@@ -57,12 +57,21 @@
     color: var(--op-color-disabled-fg);
     cursor: not-allowed;
   }
-  .op-tabs__close {
+  .op-tabs__close,
+  .op-tabs__reload {
     display: inline-flex;
     border-radius: var(--op-radius-sm);
   }
-  .op-tabs__close:hover {
+  .op-tabs__close:hover,
+  .op-tabs__reload:hover {
     background: var(--op-color-hover);
+  }
+  /* the ↻ turns while the tab reloads */
+  .op-tabs__tab.is-reloading .op-tabs__reload svg {
+    animation: op-spin 700ms linear infinite;
+  }
+  .op-motion-off .op-tabs__tab.is-reloading .op-tabs__reload svg {
+    animation: none;
   }
   .op-tabs__panels {
     flex: 1;

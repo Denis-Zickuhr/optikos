@@ -5,7 +5,46 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-10
+
 ### Added
+
+- Form utils: `showIf`/`enableIf` on any item of a form (a field hidden by its rule does not validate and is left out
+  of `getValues`), `Form.focusField(field)`, the form-level `dirty-change` event, and two components: `FormErrors`
+  (`type: 'formerrors'`, an error summary whose links reveal and focus each field) and `FormActions`
+  (`type: 'formactions'`, Cancel / Save with an "Unsaved changes" status, `requireChanges`, `sticky`).
+
+- `FieldList` component (`type: 'fieldlist'`): a repeating block of fields (add, remove, reorder rows, by mouse or
+  keyboard); it is one form field whose value is an array of row objects, with `min`/`max`, and validating the form
+  validates every row.
+
+- Compound fields: `FieldGroup` (`type: 'fieldgroup'`): several inputs under one label, one help line and one error
+  line (`role=group`); and `InputGroup` (`type: 'inputgroup'`): text (`R$`, `.com`) or buttons joined to any field's box,
+  the text read as part of the input's description.
+
+- Form layouts: `columns` on Form, FieldSet and FormSection (a responsive grid), `colspan: 'full'`, `labelWidth` (left
+  labels in a column), FieldSet `variant` (`box`, `line`, `plain`) and `description`, and the `FormSection` component
+  (`type: 'formsection'`): title and description beside the fields, stacked when the section is narrow.
+
+- Reload buttons: `reloadable` on Panel (so Window and Widget too) and on Tabs adds a ↻ that calls `onReload(panel)`; a
+  returned Promise shows the loading mask until it settles. `Panel.reload()`, `Tabs.reloadTab()`, `before-reload`/`reload`
+  events; R reloads a focused reloadable tab. New `refresh` icon.
+
+- Widget: `resizable` (the inner edge while docked, a corner grip once moved; a focusable splitter with arrow keys) and
+  the `resize({ width, height })` event.
+
+- `CodeViewer` component (`type: 'codeviewer'`): read-only code with syntax colors (ts/js, json, css, html, sh), line
+  numbers that a selection never copies, marked lines, `startLine`, wrap or scroll, and a copy button. The docs site
+  uses it for every code block, which also fixes the code fences of the guides (they were styled as inline code).
+
+- Menu: `group` on items (named `role=group` sections, ungrouped first) and `search: true` (a search field that filters
+  the items; a search that matches a group name shows the whole group). FilterBuilder fields take a `group` too, like
+  `Column.group`: the `pick` menu is grouped and searchable past 6 fields, and the field select uses `<optgroup>`s.
+
+- `Dial` component (`type: 'dial'`, `ui.dial`): picks one value from a range (an age, a year) or a list (the months) on
+  a flat ruler that slides under a fixed needle, with a large readout whose digits roll like an odometer. Snap points
+  (decades by default) get the labels, Page Up/Down jump between them, and a flick glides on to the nearest one ahead.
+  `shape: 'circle'` turns it into a clock face.
 
 - `addMessages(lang, messages)` (from `optikos` and `optikos/core`): adds translation keys to a locale without overwriting
   keys the app already set.
@@ -37,6 +76,13 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ### Changed
 
+- No automatic focus on fields: on a phone it pops up the keyboard over the page. Window, Widget, `MessageBox.prompt`
+  and StepForm (on a new step) now focus the dialog, widget or step panel itself; `autoFocus: true` focuses the first
+  field as before. A Menu with `search` and the Grid's column menu open on their first item (typing a letter goes to
+  the search field), and LookupField's search window opens on the dialog. Focus that answers an explicit action stays:
+  adding a row, editing a cell, a failed validation jumping to the field.
+- MessageBox (`alert`, `confirm`, `prompt`) no longer dims the page: it is still modal, over a clear backdrop. Pass
+  `mask: true` to dim it. Window has the same `mask` option (default `true`) and `setMask`.
 - **Themes (breaking):** the package now ships only `light` (default), `dark` and `compact`. The default look is the
   former `corporate` theme (steel blue on cool gray, small radii, hairline borders, a navy sidebar, 2.375rem controls,
   2.75rem rows, 15px text) and `dark` is its night version. `optikos/themes/{corporate,brutal,soft,terminal,editorial,brand}.css`
@@ -55,6 +101,9 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
   Custom locales passed to `setLocale({...})` keep working; missing keys still fall back to English.
 
 ### Fixed
+
+- Floating elements (menus, dropdowns) taller than the room on both sides of their anchor are capped to the larger side
+  and scroll, instead of running off the window (long menus in big themes).
 
 - Tabs: each panel has `tabindex="0"` (WAI-ARIA tabs pattern), so a panel with nothing focusable inside, or one that
   scrolls, can be reached with the keyboard.
@@ -92,4 +141,6 @@ First public release.
   `corporate`, `soft`, `brutal`, `terminal`, `editorial` and `brand`.
 - Per-component entry points (`optikos/components/<name>`) and stylesheets (`optikos/css/<name>.css`).
 
+[Unreleased]: https://github.com/Denis-Zickuhr/optikos/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Denis-Zickuhr/optikos/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Denis-Zickuhr/optikos/releases/tag/v0.1.0

@@ -37,7 +37,7 @@ const addNote = () => {
   toast({ type: 'success', text: 'Note saved' });
 };
 const notesW = create<Widget>({
-  type: 'widget', title: 'Notes', icon: 'edit', side: 'right', draggable: true, sideSwitcher: true, sides: ['left', 'right'], width: 360, layout: { type: 'vbox', gap: 8 }, bodyCls: 'wb-pad',
+  type: 'widget', title: 'Notes', icon: 'edit', side: 'right', draggable: true, resizable: true, sideSwitcher: true, sides: ['left', 'right'], width: 360, layout: { type: 'vbox', gap: 8 }, bodyCls: 'wb-pad',
   items: [noteField, { type: 'toolbar', items: [{ type: 'button', text: 'Save note', variant: 'primary', icon: 'check', handler: addNote }, '->', { type: 'button', text: 'Clear all', variant: 'ghost', icon: 'trash', handler: () => { notes = []; localStorage.removeItem(NOTES_KEY); notesTable.setData([]); } }] }, notesTable],
 });
 
@@ -69,7 +69,7 @@ const toggle = (b?: Button) => {
 const setMode = (m: keyof typeof MODES) => { stop(); mode = m; left = MODES[m]; startBtn.setText('Start'); paint(); };
 const startBtn = create<Button>({ type: 'button', text: 'Start', variant: 'primary', handler: (b: Button) => toggle(b) });
 const timerW = create<Widget>({
-  type: 'widget', title: '⏸ Focus timer', icon: 'bell', side: 'bottom', draggable: true, size: '13rem', width: 400, layout: { type: 'vbox', gap: 8, align: 'center' }, bodyCls: 'wb-pad',
+  type: 'widget', title: '⏸ Focus timer', icon: 'bell', side: 'bottom', draggable: true, resizable: true, size: '13rem', width: 400, layout: { type: 'vbox', gap: 8, align: 'center' }, bodyCls: 'wb-pad',
   items: [clock],
 });
 // the progress bar is plain DOM inside the widget body, next to the Optikos controls
@@ -90,7 +90,7 @@ settings.on('change', () => {
   grid.el.classList.toggle('op-grid--striped', !!v.striped);
   (grid.el.querySelector('.op-grid__pager') as HTMLElement | null)?.toggleAttribute('hidden', !v.toolbar);
 });
-const settingsW = create<Widget>({ type: 'widget', title: 'View settings', icon: 'settings', side: 'left', draggable: true, sideSwitcher: true, width: 300, layout: 'fit', bodyCls: 'wb-pad', items: [settings] });
+const settingsW = create<Widget>({ type: 'widget', title: 'View settings', icon: 'settings', side: 'left', draggable: true, resizable: true, sideSwitcher: true, width: 300, layout: 'fit', bodyCls: 'wb-pad', items: [settings] });
 
 // ---- page ---------------------------------------------------------------------------------------------------------------------
 const css = document.createElement('style');

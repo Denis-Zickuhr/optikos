@@ -4,6 +4,7 @@ import { register } from '../../../core/registry';
 import type { Model } from '../../../data/model';
 import type { Component } from '../../../core/component';
 import type { LayoutSpec } from '../../../layout/layout';
+import { px } from '../../../core/dom';
 
 export interface FormTab {
   title: string;
@@ -18,6 +19,10 @@ export interface FormConfig extends ContainerConfig {
   tabs?: FormTab[];
   /** Default `labelPos` for fields that do not set their own. */
   labelPos?: 'top' | 'left';
+  /** Width of the labels on the left (`labelPos: 'left'`), so they line up in a column. Number = px. */
+  labelWidth?: number | string;
+  /** Shortcut for a responsive grid layout (one column on narrow screens); items take `colspan` (a number or `'full'`). */
+  columns?: number;
   readonly?: boolean;
 }
 
@@ -32,6 +37,9 @@ function setPath(o: any, path: string, value: unknown) {
 export class Form extends Container<FormConfig> {
   protected override baseCls = 'op-form';
   protected override tag = 'form' as const;
+  /** Components hidden by their `showIf` rule: their fields do not count (no validation, not in `getValues`). */
+  private ruledOut = new Set<Component>();
+  private dirty = false;
 
   constructor(config: FormConfig = {}) {
     const items = [...(config.items ?? [])];
@@ -52,11 +60,15 @@ export class Form extends Container<FormConfig> {
   }
 
   protected override onRender() {
-    this.config.layout ??= { type: 'vbox' };
+    this.config.layout ??= this.config.columns ? { type: 'grid', columns: this.config.columns } : { type: 'vbox' };
+    if (this.config.labelWidth != null) this.setLabelWidth(this.config.labelWidth);
     if (this.config.labelPos) for (const f of this.getFields()) f.config.labelPos ??= this.config.labelPos;
     super.onRender();
     if (this.config.readonly) this.setReadonly(true);
     for (const f of this.getFields()) for (const ev of ['invalid', 'valid', 'dirty-change', 'change']) f.on(ev, () => this.syncTabs());
+    for (const f of this.getFields()) f.on('change', () => this.changed());
+    for (const f of this.getFields()) f.on('dirty-change', () => this.changed());
+    this.applyRules();
     // Native submit (a `type=submit` button) and Enter inside a single-line field both go through submit().
     this.listen(this.el, 'submit', (e: Event) => {
       e.preventDefault();
@@ -79,11 +91,54 @@ export class Form extends Container<FormConfig> {
     return this.getFields().find((f) => f.name === name);
   }
 
-  /** Nested object built from field names (`address.city` → `{ address: { city } }`). */
+  /** Nested object built from field names (`address.city` → `{ address: { city } }`). Fields hidden by `showIf` are left out. */
   getValues(opts: { dirtyOnly?: boolean } = {}): Record<string, any> {
     const out: Record<string, any> = {};
-    for (const f of this.getFields()) if (f.name && (!opts.dirtyOnly || f.isDirty())) setPath(out, f.name, f.getValue());
+    for (const f of this.counted()) if (f.name && (!opts.dirtyOnly || f.isDirty())) setPath(out, f.name, f.getValue());
     return out;
+  }
+
+  /** The fields that count: not inside something its `showIf` rule hid. */
+  private counted(): Field<any>[] {
+    return this.getFields().filter((f) => {
+      for (let c: Component | undefined = f; c && c !== this; c = c.parent as Component | undefined) if (this.ruledOut.has(c)) return false;
+      return true;
+    });
+  }
+
+  /** A field changed: rerun the `showIf`/`enableIf` rules and say when the form as a whole became (un)changed. */
+  private changed(): void {
+    this.applyRules();
+    const d = this.isDirty();
+    if (d !== this.dirty) this.emit('dirty-change', (this.dirty = d));
+  }
+
+  /** Shows/hides and enables/disables every item that has a rule, from the current values (hidden fields included). */
+  applyRules(): void {
+    const values: Record<string, any> = {};
+    for (const f of this.getFields()) if (f.name) setPath(values, f.name, f.getValue());
+    for (const c of this.query((x) => !!(x.config.showIf || x.config.enableIf))) {
+      const { showIf, enableIf } = c.config;
+      if (showIf) {
+        const show = !!showIf(values);
+        if (show === this.ruledOut.has(c)) {
+          if (show) (this.ruledOut.delete(c), c.show());
+          else {
+            this.ruledOut.add(c);
+            c.hide();
+            // what nobody can see has nothing to fix: its errors go with it
+            for (const f of c instanceof Field ? [c] : c instanceof Container ? (c.query((x) => x instanceof Field) as Field<any>[]) : []) f.clearError();
+          }
+        }
+      }
+      if (enableIf) c.setDisabled(!enableIf(values));
+    }
+  }
+
+  /** Brings a field into view (opening its tab or step) and focuses it. */
+  focusField(field: Field<any>): void {
+    this.reveal(field);
+    field.focus();
   }
 
   /** Sets the fields present in `values` (silently). */
@@ -144,16 +199,19 @@ export class Form extends Container<FormConfig> {
     return this.getFields().some((f) => f.isDirty());
   }
   isValid(): boolean {
-    return this.getFields().every((f) => f.isValid());
+    return this.counted().every((f) => f.config.disabled || f.isValid());
   }
   clearErrors(): void {
     this.getFields().forEach((f) => f.clearError());
     this.syncTabs();
   }
 
-  /** Validates every field (marks errors) and focuses the first invalid one. */
+  /** Validates every field that counts (marks errors) and focuses the first invalid one. */
   validate(): boolean {
-    const bad = this.getFields().filter((f) => !f.validate());
+    // a hidden or disabled field is not validated: the user could not fix it
+    const counted = this.counted().filter((f) => !f.config.disabled);
+    for (const f of this.getFields()) if (!counted.includes(f)) f.clearError();
+    const bad = counted.filter((f) => !f.validate());
     this.syncTabs();
     if (bad.length) {
       this.reveal(bad[0]); // the tab / step that holds it comes forward first
@@ -169,6 +227,12 @@ export class Form extends Container<FormConfig> {
     if (!this.validate()) return false;
     this.emit('submit', this.getValues());
     return true;
+  }
+
+  /** Width of the labels on the left (number = px); they line up in a column. */
+  setLabelWidth(width: number | string): void {
+    this.config.labelWidth = width;
+    if (this.rendered) this.el.style.setProperty('--op-field-label-width', px(width));
   }
 
   setReadonly(readonly: boolean): void {

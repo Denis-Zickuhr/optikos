@@ -1,0 +1,26 @@
+@layer optikos {
+  .op-fieldgroup__body {
+    --op-layout-gap: var(--op-fieldgroup-gap, var(--op-space-2));
+  }
+  /* the fields share the row; each still has its label for screen readers, but only the group's label shows */
+  .op-fieldgroup__body > .op-field {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+  .op-fieldgroup__body .op-field__label {
+    position: absolute;
+    inline-size: 0;
+    block-size: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .op-fieldgroup__body .op-field__help,
+  .op-fieldgroup__body .op-field__error,
+  .op-fieldgroup__body .op-field.op-stable > .op-field__error:empty {
+    display: none; /* the group has the one error line (and beats the reserved line of stableSize) */
+  }
+  .op-fieldgroup > .op-field__label {
+    cursor: default;
+  }
+}

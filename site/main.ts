@@ -52,7 +52,7 @@ main.id = 'main';
 create({ type: 'button', icon: 'menu', variant: 'ghost', ariaLabel: t('navigation'), cls: 'site__menu', renderTo: top, handler: () => root.classList.toggle('is-nav-open') } as never);
 const brand = el('a', 'site__brand', '', top);
 brand.href = '#/';
-brand.append(el('span', 'site__logo'), 'Optikos');
+brand.append(Object.assign(el('img', 'site__logo'), { src: 'logo.svg', alt: '' }), 'Optikos');
 const links = el('nav', 'site__links', '', top);
 links.setAttribute('aria-label', t('navigation'));
 const LINKS: [string, Key][] = [['components', 'components'], ['recipes', 'recipes'], ['demos', 'demos'], ['g/getting-started', 'getStarted']];
@@ -148,6 +148,9 @@ function home() {
   const hero = el('section', 'home__hero', '', main);
   const inner = el('div', 'home__heroInner', '', hero);
   const copyCol = el('div', '', '', inner);
+  const lockup = el('div', 'home__brand', '', copyCol);
+  lockup.append(Object.assign(el('img', 'home__seal'), { src: 'seal.svg', alt: '' }));
+  el('span', 'home__wordmark', 'Optikos', lockup).setAttribute('aria-hidden', 'true'); // decorative: the h1 names it
   el('span', 'site__chip site__chip--accent', t('heroEyebrow', { version: data.version }), copyCol);
   el('h1', '', t('heroTitle'), copyCol);
   el('p', '', t('heroLead'), copyCol);
@@ -155,7 +158,7 @@ function home() {
   own(create({ type: 'button', text: t('getStarted'), variant: 'primary', icon: 'chevron-right', iconPos: 'right', renderTo: actions, handler: () => go('g/getting-started') } as never));
   own(create({ type: 'button', text: t('browseComponents'), renderTo: actions, handler: () => go('components') } as never));
   const install = el('div', 'home__install', '', actions);
-  install.append('npm i ', Object.assign(document.createElement('b'), { textContent: 'optikos' }));
+  el('code', '', '', install).append('npm i ', Object.assign(document.createElement('b'), { textContent: 'optikos' }));
   own(create({ type: 'button', icon: 'file', variant: 'ghost', ariaLabel: t('copyInstall'), tooltip: t('copyInstall'), renderTo: install, handler: () => void copy('npm i optikos') } as never));
 
   // a real form, not a picture of one

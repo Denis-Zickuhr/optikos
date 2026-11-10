@@ -19,7 +19,7 @@ They return real instances, so they work in any `items: [...]`, mixed with decla
 
 | Shortcut | Builds |
 |---|---|
-| `ui.text/email/password/area/number/date/dateRange/secret/slider(name, label?, cfg?)` | the field of the same name (`email`/`password` set the `inputType`) |
+| `ui.text/email/password/area/number/date/dateRange/secret/slider/dial(name, label?, cfg?)` | the field of the same name (`email`/`password` set the `inputType`) |
 | `ui.check(name, boxLabel?, cfg?)` · `ui.toggle(name, boxLabel?, cfg?)` | `Checkbox`, `Toggle` |
 | `ui.radio(name, label, options, cfg?)` · `ui.checkGroup` · `ui.select` · `ui.combo` | option fields |
 | `ui.suggest(name, label, query, cfg?)` · `ui.lookup(name, label, lookup, cfg?)` | search as you type / search window |

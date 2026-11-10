@@ -1,4 +1,5 @@
 import { Container, type ContainerConfig } from '../../../core/container';
+import '../../layout/panel/reload';
 import { Component } from '../../../core/component';
 import { register, type AnyConfig } from '../../../core/registry';
 import { h } from '../../../core/dom';
@@ -21,6 +22,8 @@ export interface TabsConfig extends ContainerConfig {
   lazy?: boolean;
   /** Default `closable` for tabs. */
   closable?: boolean;
+  /** Default `reloadable` for tabs: a ↻ in the tab that calls the panel's `onReload`. */
+  reloadable?: boolean;
 }
 
 /**
@@ -69,11 +72,13 @@ export class Tabs extends Container<TabsConfig> {
       const panel = this.items.find((p) => this.tabs.get(p) === tab);
       if (!panel) return;
       if (target.closest('.op-tabs__close')) this.closeTab(panel);
+      else if (target.closest('.op-tabs__reload')) (this.setActive(panel), void this.reloadTab(panel));
       else this.setActive(panel);
     });
     this.listen(this.barEl, 'keydown', (e: KeyboardEvent) => {
       const panel = this.items.find((p) => this.tabs.get(p) === (e.target as HTMLElement).closest('[role=tab]'));
       if (e.key === 'Delete' && panel) this.closeTab(panel);
+      else if (panel && (e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey && !e.altKey && this.tabConfig(panel).reloadable) void this.reloadTab(panel);
     });
     super.onRender();
   }
@@ -106,13 +111,14 @@ export class Tabs extends Container<TabsConfig> {
 
   private tabConfig(p: Component) {
     const c = p.config as AnyConfig;
-    return { title: (c.title as string) ?? '', icon: c.icon as string | undefined, closable: (c.closable as boolean) ?? this.config.closable ?? false, disabled: !!c.disabled };
+    return { title: (c.title as string) ?? '', icon: c.icon as string | undefined, closable: (c.closable as boolean) ?? this.config.closable ?? false, reloadable: (c.reloadable as boolean) ?? this.config.reloadable ?? false, disabled: !!c.disabled };
   }
 
   private addHeader(p: Component) {
-    const { title, icon, closable, disabled } = this.tabConfig(p);
+    const { title, icon, closable, reloadable, disabled } = this.tabConfig(p);
     const tab = h('div', 'op-tabs__tab', { role: 'tab', id: `${p.id}-tab`, tabindex: -1, 'aria-selected': 'false', 'aria-disabled': disabled ? 'true' : null });
     tab.append(icon ? iconEl(icon) : '', h('span', 'op-tabs__title', {}, title));
+    if (reloadable) tab.append(h('span', 'op-tabs__reload', { 'aria-hidden': 'true', 'data-op-tip': t('reload') }, iconEl('refresh')));
     if (closable) tab.append(h('span', 'op-tabs__close', { 'aria-hidden': 'true', 'data-op-tip': t('close') }, iconEl('x')));
     this.tabs.set(p, tab);
     this.barEl.append(...[...this.items].filter((x) => this.tabs.has(x)).map((x) => this.tabs.get(x)!));
@@ -153,6 +159,26 @@ export class Tabs extends Container<TabsConfig> {
       this.setActive(p);
     }
     return p;
+  }
+
+  /**
+   * Reloads a tab: calls its panel's `onReload` (`before-reload` can cancel). While a returned Promise is pending the panel
+   * shows its loading mask and the tab's ↻ spins; `reload(panel)` fires when it is done.
+   */
+  async reloadTab(tab: Component | string | number): Promise<boolean> {
+    const p = typeof tab === 'number' ? this.items[tab] : typeof tab === 'string' ? this.items.find((x) => x.id === tab) : tab;
+    const head = p && this.tabs.get(p);
+    if (!p || head?.classList.contains('is-reloading') || this.emit('before-reload', p) === false) return false;
+    head?.classList.add('is-reloading');
+    const busy = (p.config as AnyConfig).onReload?.(p) as unknown;
+    if (busy instanceof Promise) {
+      p.setLoading(true);
+      await busy.catch(() => undefined);
+      p.setLoading(false);
+    }
+    head?.classList.remove('is-reloading');
+    this.emit('reload', p);
+    return true;
   }
 
   /** Closes a tab (`before-close` can cancel). The neighbor becomes active. */

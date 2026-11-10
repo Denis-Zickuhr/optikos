@@ -1,6 +1,8 @@
 @layer optikos {
   :root {
     --op-menu-min-width: 10rem;
+    --op-menu-max-height: 22rem;
+    --op-menu-group-tracking: 0.04em;
   }
   .op-menu {
     box-sizing: border-box;
@@ -43,5 +45,48 @@
     margin-block: var(--op-space-1);
     block-size: var(--op-border-width);
     background: var(--op-menu-sep, var(--op-color-border));
+  }
+  /* with search: the field on top, the items scroll under it */
+  .op-menu__search {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: var(--op-control-height);
+    margin-block-end: var(--op-space-1);
+    padding: 0 var(--op-space-2);
+    color: var(--op-color-fg);
+    background: var(--op-color-surface);
+    border: var(--op-border-width) solid var(--op-color-border-strong);
+    border-radius: var(--op-radius-sm);
+    font: inherit;
+  }
+  .op-menu__search:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: calc(var(--op-focus-width) * -1);
+  }
+  .op-menu__list {
+    max-block-size: var(--op-menu-max-height);
+    overflow: auto;
+  }
+  .op-menu__empty {
+    padding: var(--op-space-2) var(--op-space-3);
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-menu.is-searching .op-menu__sep,
+  .op-menu__group:not(:has(.op-menu__item:not([hidden]))) {
+    display: none;
+  }
+  /* groups: a quiet header over the items that share it */
+  .op-menu__group + .op-menu__group,
+  .op-menu__item + .op-menu__group {
+    margin-block-start: var(--op-space-1);
+  }
+  .op-menu__group-label {
+    padding: var(--op-space-2) var(--op-space-3) var(--op-space-1) var(--op-space-2);
+    color: var(--op-menu-group-fg, var(--op-color-fg-muted));
+    font-size: var(--op-font-size-sm);
+    font-weight: var(--op-font-weight-bold);
+    letter-spacing: var(--op-menu-group-tracking);
+    text-transform: uppercase;
   }
 }

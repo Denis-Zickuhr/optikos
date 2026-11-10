@@ -96,9 +96,9 @@ p.section('CommandPalette', 'Ctrl/⌘+K anywhere (or the button). Type to search
 p.section('Widget', 'floats over the page (nothing is pushed), attached to an edge; not modal, so the page stays usable. Pick the side by config, by `setSide`, or let the user choose with `sideSwitcher`. `floating: false` is an ordinary panel.', (host, { watch }) => {
   const chatItems = () => [{ type: 'chat', me: 'me', flex: 1, users: { bot: { name: 'Helper' } }, messages: [{ from: 'bot', text: 'Hi! I float above the page. Try the arrows in the header to dock me elsewhere.', time: Date.now() }] }];
   const make = (extra: object) => create<Widget>({ type: 'widget', title: 'Assistant', icon: 'info', items: chatItems(), ...extra } as any);
-  const user = make({ sideSwitcher: true, draggable: true, sides: ['left', 'right', 'top', 'bottom'] });
+  const user = make({ sideSwitcher: true, draggable: true, resizable: true, sides: ['left', 'right', 'top', 'bottom'] });
   watch(user, ['show', 'hide', 'side-change', 'move']);
-  create({ type: 'button', text: 'Open (user picks the side, draggable)', variant: 'primary', renderTo: host, handler: () => user.setOpen() });
+  create({ type: 'button', text: 'Open (user picks the side, draggable, resizable)', variant: 'primary', renderTo: host, handler: () => user.setOpen() });
   for (const side of ['right', 'left', 'bottom', 'top'] as const) {
     const w = make({ side, title: `Docked ${side}` });
     create({ type: 'button', text: `Open ${side}`, renderTo: host, handler: () => w.setOpen() });

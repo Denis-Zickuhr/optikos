@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Optikos">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6e7bf"/>
+      <stop offset=".5" stop-color="#d9bf8c"/>
+      <stop offset="1" stop-color="#a8823f"/>
+    </linearGradient>
+    <mask id="counter">
+      <rect width="64" height="64" fill="#fff"/>
+      <ellipse cx="32" cy="32" rx="5.4" ry="8.4" transform="rotate(-12 32 32)" fill="#000"/>
+    </mask>
+  </defs>
+  <path d="M32 32L27.4 15L32 0.4ZM32 32L49 27.4L62.4 32ZM32 32L36.6 49L32 62.4ZM32 32L15 36.6L1.6 32ZM32 32L40.2 18.99L50.74 13.26ZM32 32L45.01 40.2L50.74 50.74ZM32 32L23.8 45.01L13.26 50.74ZM32 32L18.99 23.8L13.26 13.26Z" fill="#ecd7a3"/>
+  <path d="M32 32L32 0.4L36.6 15ZM32 32L62.4 32L49 36.6ZM32 32L32 62.4L27.4 49ZM32 32L1.6 32L15 27.4ZM32 32L50.74 13.26L45.01 23.8ZM32 32L50.74 50.74L40.2 45.01ZM32 32L13.26 50.74L18.99 40.2ZM32 32L13.26 13.26L23.8 18.99Z" fill="#b08a48"/>
+  <circle cx="32" cy="32" r="19.5" fill="#173764" stroke="#d9bf8c" stroke-width="1.2"/>
+  <ellipse cx="32" cy="32" rx="9.4" ry="11.4" fill="url(#gold)" mask="url(#counter)"/>
+</svg>

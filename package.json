@@ -1,6 +1,6 @@
 {
   "name": "optikos",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Declarative UI components in plain TypeScript: forms, grids, windows and themes. No runtime dependencies.",
   "keywords": [
     "ui",

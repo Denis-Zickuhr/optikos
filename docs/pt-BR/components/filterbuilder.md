@@ -2,7 +2,7 @@
 Propósito:     O usuário monta filtros em runtime: linhas `campo · operador · valor`, que se acumulam, com grupos AND/OR aninháveis.
 Anatomia:      `.op-filterbuilder` > `.op-filterbuilder__group` (`is-nested`; `__head`: conector, "Adicionar filtro", "Adicionar grupo", "Limpar tudo"/remover) >
                `.op-filterbuilder__row` (select de campo, select de operador, editor(es) de valor `__value`, `__to`, `__remove`); `__foot` com Aplicar quando `live: false`.
-Config:        `fields: [{ name, label, type: 'text'|'number'|'date'|'select', options }]`, `value: FilterGroup` (filtro inicial; com `store`, é aplicado já ao montar),
+Config:        `fields: [{ name, label, type: 'text'|'number'|'date'|'select', options, group }]` (`group`, como `Column.group` no Grid: agrupa no seletor de campo (`<optgroup>`) e no menu do modo `pick`, que também ganha um campo de busca a partir de 7 campos), `value: FilterGroup` (filtro inicial; com `store`, é aplicado já ao montar),
                `store` (aplica `store.filter(...)` / `clearFilter()`), `addMode: 'row'|'pick'` (`row`: "Adicionar filtro" cria uma linha com o 1º campo; `pick`: abre antes um menu com os campos e cria a linha para o escolhido, com foco no valor), `live: true` (aplica a cada edição, com debounce de 250 ms; `false` mostra o botão Aplicar), `maxDepth: 3`.
 Operadores:    texto: contém, não contém, igual, diferente, começa com, termina com, é um de, não é nenhum de, vazio, não vazio.
                número/data: igual, diferente, >, >=, <, <=, entre, fora do intervalo, vazio, não vazio. select: igual, diferente, é um de (multiseleção nativa), não é nenhum de, vazio, não vazio.

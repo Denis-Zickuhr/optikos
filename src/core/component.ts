@@ -13,6 +13,10 @@ export interface ComponentConfig {
   height?: number | string;
   flex?: number | string;
   tooltip?: string;
+  /** Inside a Form: shown only while this returns true (given the form values). A field hidden this way neither validates nor goes into `getValues`. */
+  showIf?: (values: Record<string, any>) => boolean;
+  /** Inside a Form: enabled only while this returns true (given the form values). */
+  enableIf?: (values: Record<string, any>) => boolean;
   /** Component-scoped tokens: `{ radius: '0' }` on a button sets `--op-button-radius`. Keys starting with `--` are used as is. */
   theme?: Record<string, string | number>;
   /**
@@ -26,8 +30,8 @@ export interface ComponentConfig {
   ariaLabel?: string;
   /** Layout `border`: where the item goes. */
   region?: 'north' | 'south' | 'west' | 'east' | 'center';
-  /** Layout `grid`: columns spanned. */
-  colspan?: number;
+  /** Layout `grid`: columns spanned; `'full'` takes the whole row. */
+  colspan?: number | 'full';
   listeners?: Record<string, Handler>;
   renderTo?: string | HTMLElement;
   /** Free slot for application data. */

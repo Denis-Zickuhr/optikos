@@ -109,7 +109,7 @@ registerLayout('grid', (cfg) => {
     },
     add(_c, cmp) {
       const span = cmp.config.colspan;
-      if (span) cmp.el.style.gridColumn = `span ${span}`;
+      if (span) cmp.el.style.gridColumn = span === 'full' ? '1 / -1' : `span ${span}`;
     },
     isNarrow: () => !!w?.isNarrow(),
     setNarrow: (n) => w?.setNarrow(n),

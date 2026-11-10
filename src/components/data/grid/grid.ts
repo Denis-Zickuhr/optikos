@@ -885,7 +885,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
       this.colGroup = '';
       this.paintColumnList();
       this.colDd!.open();
-      this.colSearch!.focus();
+      this.colList!.querySelector<HTMLElement>('input')?.focus(); // not the search field: a phone keyboard would cover the list
     });
     this.listen(this.colList, 'change', (e: Event) => {
       const input = e.target as HTMLInputElement;

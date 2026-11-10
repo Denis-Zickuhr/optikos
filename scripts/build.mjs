@@ -13,7 +13,7 @@ genIndex();
 const CORE_BUDGET = 9 * 1024;
 const DATA_BUDGET = 4.25 * 1024;
 // Composites carry their whole dependency chain (Field → TextField → PickerField → Dropdown + ListBox...), hence the higher caps.
-const COMPONENT_BUDGET = { default: 7 * 1024, breadcrumb: 8 * 1024, window: 8.5 * 1024, widget: 9.5 * 1024, dataview: 8 * 1024, pickerfield: 9.5 * 1024, select: 9.5 * 1024, combobox: 10 * 1024, datefield: 9.5 * 1024, daterangefield: 10 * 1024, suggestfield: 10 * 1024, messagebox: 11 * 1024, grid: 19 * 1024, filterbuilder: 15 * 1024, searchgrid: 20 * 1024, stepform: 11 * 1024, secretfield: 13 * 1024, lookupfield: 27 * 1024, viewmanager: 15 * 1024 };
+const COMPONENT_BUDGET = { default: 7 * 1024, panel: 7.5 * 1024, breadcrumb: 8 * 1024, window: 9 * 1024, widget: 9.5 * 1024, dataview: 8 * 1024, pickerfield: 9.5 * 1024, select: 9.5 * 1024, combobox: 10 * 1024, datefield: 10 * 1024, daterangefield: 10 * 1024, suggestfield: 10 * 1024, messagebox: 11 * 1024, grid: 19.5 * 1024, filterbuilder: 15.5 * 1024, searchgrid: 20.5 * 1024, stepform: 11 * 1024, secretfield: 13 * 1024, lookupfield: 27.5 * 1024, viewmanager: 15.5 * 1024 };
 
 const dist = join(root, 'dist');
 rmSync(dist, { recursive: true, force: true });

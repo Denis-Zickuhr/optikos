@@ -1,0 +1,109 @@
+@layer optikos {
+  :root {
+    --op-codeviewer-font-size: 0.8125rem;
+    --op-codeviewer-line-height: 1.6;
+    --op-codeviewer-tab-size: 2;
+    --op-codeviewer-gutter-gap: 1.25rem;
+    --op-codeviewer-max-height: 32rem;
+  }
+  .op-codeviewer {
+    overflow: hidden;
+    color: var(--op-codeviewer-fg, var(--op-color-fg));
+    background: var(--op-codeviewer-bg, var(--op-color-surface-2));
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-radius-lg);
+  }
+  .op-codeviewer__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--op-space-2);
+    min-block-size: var(--op-control-height);
+    padding-inline: var(--op-space-3) var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    border-block-end: var(--op-border-width) solid var(--op-color-border);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-codeviewer__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-codeviewer__pre {
+    margin: 0;
+    padding: var(--op-space-3) var(--op-space-4);
+    max-block-size: var(--op-codeviewer-max-height);
+    overflow: auto;
+    font-family: var(--op-font-mono);
+    font-size: var(--op-codeviewer-font-size);
+    line-height: var(--op-codeviewer-line-height);
+    tab-size: var(--op-codeviewer-tab-size);
+  }
+  .op-codeviewer__pre:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: calc(var(--op-focus-width) * -1);
+  }
+  /* the global op-* rule would give lines and tokens the base font: everything inside the code keeps the mono one */
+  .op-codeviewer__pre * {
+    font-family: inherit;
+    font-size: inherit;
+  }
+  /* lines stretch to the widest one, so a marked line is marked across the whole scroll width */
+  .op-codeviewer__code {
+    display: block;
+    min-inline-size: 100%;
+    inline-size: max-content;
+    font: inherit;
+  }
+  .op-codeviewer.is-wrapped .op-codeviewer__code {
+    inline-size: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .op-codeviewer__line {
+    position: relative;
+    display: block;
+    margin-inline: calc(var(--op-space-4) * -1);
+    padding-inline: var(--op-space-4);
+  }
+  .op-codeviewer__line.is-marked {
+    background: var(--op-codeviewer-mark-bg, var(--op-color-selected));
+    box-shadow: inset calc(var(--op-border-width) * 3) 0 0 var(--op-color-primary);
+  }
+  /* line numbers: a CSS counter in the gutter, never part of the text (selection and screen readers skip it) */
+  .op-codeviewer.has-numbers .op-codeviewer__line {
+    padding-inline-start: calc(var(--op-space-4) + var(--op-codeviewer-gutter, 2ch) + var(--op-codeviewer-gutter-gap));
+  }
+  .op-codeviewer.has-numbers .op-codeviewer__line::before {
+    counter-increment: op-codeline;
+    content: counter(op-codeline);
+    position: absolute;
+    inset-inline-start: var(--op-space-4);
+    inline-size: var(--op-codeviewer-gutter, 2ch);
+    color: var(--op-codeviewer-gutter-fg, var(--op-color-fg-muted));
+    text-align: end;
+    user-select: none;
+  }
+  /* syntax colors are pulled towards the text color, so they keep their contrast in every theme */
+  .op-codeviewer__tok--keyword {
+    color: var(--op-codeviewer-keyword, color-mix(in srgb, var(--op-color-primary) 80%, var(--op-color-fg)));
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-codeviewer__tok--string {
+    color: var(--op-codeviewer-string, color-mix(in srgb, var(--op-color-success) 70%, var(--op-color-fg)));
+  }
+  .op-codeviewer__tok--comment {
+    color: var(--op-codeviewer-comment, var(--op-color-fg-muted));
+    font-style: italic;
+  }
+  .op-codeviewer__tok--number {
+    color: var(--op-codeviewer-number, color-mix(in srgb, var(--op-color-warning) 65%, var(--op-color-fg)));
+  }
+  .op-codeviewer__tok--property,
+  .op-codeviewer__tok--attr {
+    color: var(--op-codeviewer-property, color-mix(in srgb, var(--op-color-info) 70%, var(--op-color-fg)));
+  }
+  .op-codeviewer__tok--tag {
+    color: var(--op-codeviewer-tag, color-mix(in srgb, var(--op-color-danger) 70%, var(--op-color-fg)));
+  }
+}

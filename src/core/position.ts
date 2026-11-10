@@ -11,7 +11,10 @@ export interface PlaceOptions {
 
 const opposite: Record<Side, Side> = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
 
-/** Positions a floating element (`position: fixed`) next to an anchor element or a point, flipping and clamping to the viewport. */
+/**
+ * Positions a floating element (`position: fixed`) next to an anchor element or a point, flipping and clamping to the viewport.
+ * Taller than the room on either side (a long menu, a big theme): it goes where there is more room, capped to it, and scrolls.
+ */
 export function place(el: HTMLElement, anchor: Element | { x: number; y: number }, o: PlaceOptions = {}): void {
   const { offset = 4, flip = true, margin = 8 } = o;
   const [side0, align = 'center'] = (o.placement ?? 'bottom-start').split('-') as [Side, string?];
@@ -19,13 +22,24 @@ export function place(el: HTMLElement, anchor: Element | { x: number; y: number 
   if (o.matchWidth) el.style.minWidth = `${a.width}px`;
   const vw = document.documentElement.clientWidth || window.innerWidth;
   const vh = document.documentElement.clientHeight || window.innerHeight;
+  const scrolled = el.scrollTop; // repositioning runs on every scroll, the element's own included: keep its place
+  el.style.maxHeight = el.style.overflowY = ''; // measure the natural size again (the room may have grown)
   const w = el.offsetWidth;
-  const hgt = el.offsetHeight;
+  let hgt = el.offsetHeight;
 
   const fits = (s: Side) =>
     s === 'bottom' ? a.bottom + offset + hgt <= vh - margin : s === 'top' ? a.top - offset - hgt >= margin : s === 'right' ? a.right + offset + w <= vw - margin : a.left - offset - w >= margin;
   let side = side0;
   if (flip && !fits(side) && fits(opposite[side])) side = opposite[side];
+  if ((side === 'bottom' || side === 'top') && !fits(side)) {
+    const below = vh - margin - a.bottom - offset;
+    const above = a.top - offset - margin;
+    if (flip) side = below >= above ? 'bottom' : 'top';
+    hgt = Math.max(0, Math.floor(side === 'bottom' ? below : above));
+    el.style.maxHeight = `${hgt}px`;
+    el.style.overflowY = 'auto';
+    el.scrollTop = scrolled;
+  }
 
   let left: number;
   let top: number;

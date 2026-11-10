@@ -1,4 +1,8 @@
 // Tiny Markdown → DOM for the guides (headings, paragraphs, lists, code fences, tables, **bold**, `code`, links). Never uses innerHTML.
+// Code fences are CodeViewers (the language comes from the info string: ```ts, ```sh...).
+import { codeBlock, languageOf } from './code';
+
+const NAMES: Record<string, string> = { ts: 'TypeScript', js: 'JavaScript', json: 'JSON', css: 'CSS', html: 'HTML', sh: 'Shell', text: 'Text' };
 const inline = (text: string, into: HTMLElement) => {
   for (const part of text.split(/(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/)) {
     if (!part) continue;
@@ -24,9 +28,11 @@ export function markdown(src: string): HTMLElement {
     const line = lines[i];
     let m: RegExpExecArray | null;
     if (line.startsWith('```')) {
+      const info = line.slice(3).trim();
       const code: string[] = [];
       while (++i < lines.length && !lines[i].startsWith('```')) code.push(lines[i]);
-      el('pre').append(Object.assign(document.createElement('code'), { textContent: code.join('\n') }));
+      const lang = info ? languageOf(info) : 'text';
+      root.append(codeBlock(code.join('\n'), NAMES[lang], lang));
     } else if ((m = /^(#{1,4})\s+(.*)/.exec(line))) el(`h${Math.min(m[1].length, 5)}` as 'h2', m[2]);
     else if (line.startsWith('|') && lines[i + 1]?.includes('---')) {
       const table = el('table');

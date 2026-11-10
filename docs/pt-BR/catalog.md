@@ -12,6 +12,7 @@ Prioridade: **P0** = necessário para os demos; **P1** = completa a lib; **P2** 
 | SplitButton | `splitbutton` | P1 |
 | Link | `link` | P1 |
 | Badge | `badge` | P1 ✔ |
+| CodeViewer (código só leitura: cores, números de linha, linhas destacadas, copiar) | `codeviewer` | P1 ✔ |
 | Chip | `chip` | P1 ✔ |
 | Avatar | `avatar` | P2 |
 
@@ -49,6 +50,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
 | DateRangeField | `daterangefield` | P1 ✔ |
 | CheckboxGroup | `checkboxgroup` | P1 ✔ |
 | Slider (barra com bolinha, simples ou intervalo) | `slider` | P1 ✔ |
+| Dial (régua plana ou mostrador de relógio, intervalo ou lista, mostrador que rola) | `dial` | P1 ✔ |
 | Toggle | `toggle` | P1 ✔ |
 | TagField | `tagfield` | P1 |
 | MaskField, CurrencyField | `maskfield`, `currencyfield` | P1 |
@@ -61,10 +63,17 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
 |---|---|---|
 | Form | `form` | P0 |
 | Validadores | (funções) | P0 |
-| FieldContainer | `fieldcontainer` | P1 |
+| FieldGroup (vários inputs sob um rótulo e uma linha de erro) | `fieldgroup` | P1 ✔ |
+| InputGroup (texto ou botões junto à caixa de um campo: `R$`, `.com`, Copiar) | `inputgroup` | P1 ✔ |
 | Binding de dados | `form.load / getValues` | P0 (decisão na ficha) |
 | Form em abas (`Form` com `tabs`) | `form` + `tabs` | P1 ✔ |
 | StepForm (formulário em etapas) | `stepform` | P1 ✔ |
+| Layouts de formulário (`columns`, `colspan: 'full'`, `labelWidth`) e variantes de FieldSet | `form`, `fieldset` | P1 ✔ |
+| FormSection (seções de página de configurações: título e descrição ao lado dos campos) | `formsection` | P1 ✔ |
+| FieldList (um bloco de campos que se repete: adicionar, remover, reordenar; o valor é um array) | `fieldlist` | P1 ✔ |
+| Campos condicionais (`showIf`, `enableIf` em qualquer item de um formulário) | `form` | P1 ✔ |
+| FormErrors (um resumo de erros com links para os campos) | `formerrors` | P1 ✔ |
+| FormActions (barra Cancelar / Salvar com status de "alterações não salvas", opcionalmente fixa) | `formactions` | P1 ✔ |
 
 ## Dados
 

@@ -84,9 +84,11 @@
     border-color: transparent;
     background: var(--op-color-surface-2);
   }
+  /* an even ring: a thick outline on big radii looks uneven at fractional pixel positions */
   [data-op-theme~='soft'] .op-textfield__input:focus {
     background: var(--op-color-surface);
-    box-shadow: var(--op-shadow-sm);
+    outline: none;
+    box-shadow: 0 0 0 var(--op-focus-width) var(--op-color-focus);
   }
   [data-op-theme~='soft'] .op-panel__header {
     border-block-end: 0;

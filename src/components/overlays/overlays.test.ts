@@ -10,7 +10,7 @@ afterEach(() => {
 describe('Window', () => {
   const mk = (cfg: object = {}) => create<Window>({ type: 'window', title: 'Edit', items: [{ type: 'textfield', label: 'Name' }], buttons: [{ text: 'Save', variant: 'primary' }], ...cfg });
 
-  it('shows modal in the layer: backdrop, dialog role, inert page, focus in the first field, restores focus', () => {
+  it('shows modal in the layer: backdrop, dialog role, inert page, focus on the dialog (not a field), restores focus', () => {
     const opener = document.createElement('button');
     document.body.append(opener);
     opener.focus();
@@ -27,7 +27,7 @@ describe('Window', () => {
     expect(w.el.getAttribute('aria-labelledby')).toBe(w.el.querySelector('.op-panel__title')!.id);
     expect(page.hasAttribute('inert')).toBe(true);
     expect(opener.hasAttribute('inert')).toBe(true);
-    expect(document.activeElement).toBe(w.el.querySelector('input'));
+    expect(document.activeElement).toBe(w.el); // inside the modal, but no phone keyboard popping up
     w.hide();
     expect(page.hasAttribute('inert')).toBe(false);
     expect(document.querySelector('.op-window')).toBeNull();
@@ -37,6 +37,10 @@ describe('Window', () => {
     expect(w.isVisible()).toBe(true);
     w.destroy();
     expect(page.hasAttribute('inert')).toBe(false);
+    const asked = mk({ autoFocus: true });
+    asked.show();
+    expect(document.activeElement).toBe(asked.el.querySelector('input')); // only when asked
+    asked.destroy();
   });
 
   it('Esc and the close button close it (destroy by default, hide with closeAction)', () => {
@@ -86,6 +90,20 @@ describe('Window', () => {
     w.destroy();
   });
 
+  it('mask: false keeps it modal (inert page, backdrop) but clear; setMask toggles it while open', () => {
+    const page = document.createElement('main');
+    document.body.append(page);
+    const w = mk({ mask: false });
+    w.show();
+    const backdrop = w.el.parentElement!;
+    expect(backdrop.classList.contains('op-window-backdrop')).toBe(true);
+    expect(backdrop.classList.contains('is-clear')).toBe(true);
+    expect(page.hasAttribute('inert')).toBe(true);
+    w.setMask(true);
+    expect(backdrop.classList.contains('is-clear')).toBe(false);
+    w.destroy();
+  });
+
   it('dragging the header moves the window', () => {
     const w = mk();
     w.show();
@@ -109,6 +127,18 @@ describe('MessageBox', () => {
     (dlg.querySelector('.op-button--primary') as HTMLElement).click();
     await p;
     expect(document.querySelector('.op-window')).toBeNull();
+  });
+
+  it('does not dim the page by default (still modal: the backdrop takes the clicks); mask: true dims it', async () => {
+    const plain = MessageBox.confirm('Replace?');
+    const backdrop = document.querySelector('.op-window-backdrop')!;
+    expect(backdrop.classList.contains('is-clear')).toBe(true);
+    key(document.querySelector('.op-window')!, 'Escape');
+    await plain;
+    const dimmed = MessageBox.confirm('Delete everything?', { mask: true });
+    expect(document.querySelector('.op-window-backdrop')!.classList.contains('is-clear')).toBe(false);
+    key(document.querySelector('.op-window')!, 'Escape');
+    await dimmed;
   });
 
   it('confirm resolves true/false; primary has focus; danger variant', async () => {
@@ -217,6 +247,51 @@ describe('Menu', () => {
     expect(document.activeElement?.textContent).toBe('More');
     key(document.activeElement!, 'ArrowDown');
     expect(document.activeElement?.textContent).toBe('Open');
+    m.destroy();
+  });
+
+  it('groups items under named role=group headers (ungrouped first) and searches them, group names included', () => {
+    const btn = document.createElement('button');
+    document.body.append(btn);
+    const picked = vi.fn();
+    const m = create<Menu>({ type: 'menu', search: true, items: [
+      { text: 'All fields' },
+      { text: 'Invoice', group: 'Identification', handler: picked },
+      { text: 'Amount', group: 'Values' },
+      { text: 'Paid', group: 'Values' },
+      { text: 'Customer', group: 'Identification' },
+    ] });
+    m.showBy(btn);
+    const root = document.querySelector<HTMLElement>('.op-layer .op-menu')!;
+    const search = root.querySelector<HTMLInputElement>('.op-menu__search')!;
+    expect(root.getAttribute('role')).toBe('none'); // the field is not a menu child: the menu is the list under it
+    expect(root.querySelector('.op-menu__list')!.getAttribute('role')).toBe('menu');
+    expect(document.activeElement?.textContent).toBe('All fields'); // the first item, never the field: no phone keyboard on open
+    key(document.activeElement!, 'v'); // type to search: the letter goes to the field
+    expect(document.activeElement).toBe(search);
+    expect(search.value).toBe('v');
+    const groups = Array.from(root.querySelectorAll<HTMLElement>('.op-menu__group'));
+    expect(groups.map((g) => g.getAttribute('role'))).toEqual(['group', 'group']);
+    expect(groups.map((g) => g.getAttribute('aria-label'))).toEqual(['Identification', 'Values']);
+    expect(groups[0].querySelector('.op-menu__group-label')!.getAttribute('aria-hidden')).toBe('true');
+    expect(groups[0].querySelectorAll('.op-menu__item')).toHaveLength(2); // Invoice and Customer, together
+    const visible = () => Array.from(root.querySelectorAll<HTMLElement>('.op-menu__item')).filter((r) => !r.hidden).map((r) => r.textContent);
+    const type = (q: string) => ((search.value = q), search.dispatchEvent(new Event('input')));
+    type('pai');
+    expect(visible()).toEqual(['Paid']); // the Identification group has nothing left: CSS hides it
+    type('values'); // a group name shows the whole group
+    expect(visible()).toEqual(['Amount', 'Paid']);
+    type('zzz');
+    expect(root.querySelector<HTMLElement>('.op-menu__empty')!.hidden).toBe(false);
+    type('inv');
+    key(search, 'Enter'); // the first match
+    expect(picked).toHaveBeenCalled();
+    expect(m.isOpen()).toBe(false);
+    m.showBy(btn); // opening again clears the search
+    expect(search.value).toBe('');
+    expect(visible()).toHaveLength(5);
+    key(search, 'ArrowDown');
+    expect(document.activeElement?.textContent).toBe('All fields');
     m.destroy();
   });
 
@@ -335,6 +410,30 @@ describe('Tabs', () => {
       ...cfg,
     });
   const tabs = (t: Tabs) => Array.from(t.el.querySelectorAll<HTMLElement>('[role=tab]'));
+
+  it('reloadable tabs: the ↻ (or R on the tab) runs the panel onReload, with the loading mask while its Promise is pending', async () => {
+    let done!: () => void;
+    const onReload = vi.fn(() => new Promise<void>((r) => (done = r)));
+    const t = create<Tabs>({ type: 'tabs', items: [{ title: 'One' }, { title: 'Two', reloadable: true, onReload, items: [{ type: 'label', text: 'second' }] }] } as any);
+    document.body.append(t.el);
+    const reloaded = vi.fn();
+    t.on('reload', reloaded);
+    expect(tabs(t)[0].querySelector('.op-tabs__reload')).toBeNull();
+    (tabs(t)[1].querySelector('.op-tabs__reload') as HTMLElement).click();
+    expect(t.getActive()).toBe(t.items[1]); // reloading a tab shows it
+    expect(onReload).toHaveBeenCalledWith(t.items[1]);
+    expect(tabs(t)[1].classList.contains('is-reloading')).toBe(true);
+    expect(t.items[1].el.getAttribute('aria-busy')).toBe('true');
+    done();
+    await new Promise((r) => setTimeout(r));
+    expect(tabs(t)[1].classList.contains('is-reloading')).toBe(false);
+    expect(reloaded).toHaveBeenCalledWith(t.items[1]);
+    key(tabs(t)[1], 'r');
+    expect(onReload).toHaveBeenCalledTimes(2);
+    key(tabs(t)[0], 'r'); // not reloadable: nothing
+    expect(onReload).toHaveBeenCalledTimes(2);
+    t.destroy();
+  });
 
   it('renders tablist/tabs/tabpanel with aria links; only the active panel is built (lazy)', () => {
     const t = mk();

@@ -34,6 +34,7 @@ if (process.argv[2] === 'build') {
   mkdirSync(out, { recursive: true });
   buildCss(out);
   writeFileSync(join(out, 'site.json'), JSON.stringify({ ...siteData(), version: version(), recipes: recipeSources(), demos: demos(), sizes: await sizes(), static: true }));
+  for (const f of ['logo.svg', 'seal.svg']) copyFileSync(join(root, 'site', f), join(out, f));
   writeFileSync(join(out, 'index.html'), readFileSync(join(root, 'site/index.html'), 'utf8').replaceAll('/.dev/site/main.js', './main.js').replaceAll('/.dev/', './'));
 
   // The demos, without the dev frame: their own index.html with relative paths, their local files, shared chunks.

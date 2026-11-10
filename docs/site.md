@@ -7,6 +7,9 @@ Feito com o próprio Optikos, sem dependências novas.
 
 - kai: pasta **Docs → Docs site** (abre `http://localhost:5180/site/`); no terminal, `npm run site`.
 - Conteúdo: página inicial por categoria, uma página por componente, guias (arquitetura, tematização, motion, catálogo), tokens e temas, e a página do MCP.
+- Identidade: `site/logo.svg` é a marca (rosa dos ventos com o O; cabeçalho do site, favicon do site, do índice de dev e
+  das sandboxes) e `site/seal.svg` é o selo completo (ὀπτικός / VISIO, louros, graduação), usado só onde há espaço: o
+  topo da página inicial e o README.
 - `Ctrl+K` busca qualquer componente (é o `CommandPalette` da lib). O seletor do topo troca o tema do site inteiro; o site
   oferece só os temas publicados (`light` e `dark`, `PUBLIC_THEMES` em `dev/themes.ts`).
 

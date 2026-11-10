@@ -359,6 +359,18 @@
      }
     ]
    }
+  },
+  {
+   "title": { "en": "Variants and a description", "pt-BR": "Variantes e uma descrição" },
+   "config": {
+    "type": "container",
+    "layout": { "type": "hbox", "gap": 16, "wrap": "wrap", "align": "flex-start" },
+    "items": [
+     { "type": "fieldset", "title": "variant: 'box'", "description": "Fields that belong together.", "width": 230, "items": [{ "type": "textfield", "label": "Name" }] },
+     { "type": "fieldset", "title": "variant: 'line'", "variant": "line", "description": "A rule instead of a frame.", "width": 230, "items": [{ "type": "textfield", "label": "Name" }] },
+     { "type": "fieldset", "title": "variant: 'plain'", "variant": "plain", "description": "Just the legend.", "width": 230, "items": [{ "type": "textfield", "label": "Name" }] }
+    ]
+   }
   }
  ],
  "textfield": [
@@ -725,6 +737,26 @@
    }
   }
  ],
+ "codeviewer": [
+  {
+   "title": { "en": "TypeScript with marked lines", "pt-BR": "TypeScript com linhas destacadas" },
+   "config": { "type": "codeviewer", "width": 560, "highlight": "4-7", "code": "import { create } from 'optikos';\n\n// a panel with a form inside\nconst panel = create({\n  type: 'panel',\n  title: 'New customer',\n  items: [{ type: 'textfield', name: 'name', label: 'Name', required: true }],\n});\npanel.show();" }
+  },
+  {
+   "title": { "en": "JSON, a shell command, and an excerpt", "pt-BR": "JSON, um comando de shell e um trecho" },
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 16,
+    "width": 560,
+    "items": [
+     { "type": "codeviewer", "language": "json", "title": "package.json", "code": "{\n  \"name\": \"my-app\",\n  \"dependencies\": { \"optikos\": \"^0.1.0\" }\n}" },
+     { "type": "codeviewer", "language": "sh", "bar": false, "lineNumbers": false, "code": "npm i optikos" },
+     { "type": "codeviewer", "language": "css", "title": "theme.css (lines 12–14)", "startLine": 12, "code": "[data-op-theme~='ocean'] {\n  --op-color-primary: #0e7490;\n}" }
+    ]
+   }
+  }
+ ],
  "slider": [
   {
    "title": { "en": "Single, range and marks", "pt-BR": "Simples, intervalo e marcas" },
@@ -760,6 +792,35 @@
       "marks": true,
       "value": 3
      }
+    ]
+   }
+  }
+ ],
+ "dial": [
+  {
+   "title": { "en": "Age, year and month", "pt-BR": "Idade, ano e mês" },
+   "description": { "en": "Drag the ruler, flick it, click a tick or use the arrows and Page Up/Down (snap points).", "pt-BR": "Arraste a régua, arremesse, clique numa marca ou use as setas e Page Up/Down (pontos de snap)." },
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 24,
+    "width": 360,
+    "items": [
+     { "type": "dial", "label": "Age", "min": 0, "max": 120, "value": 34 },
+     { "type": "dial", "label": "Birth year", "min": 1920, "max": 2026, "value": 1990 },
+     { "type": "dial", "label": "Month", "options": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "value": "May" }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Clock face", "pt-BR": "Mostrador de relógio" },
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 24,
+    "items": [
+     { "type": "dial", "label": "Month", "shape": "circle", "options": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "value": "Mar" },
+     { "type": "dial", "label": "Minutes", "shape": "circle", "min": 0, "max": 59, "snap": 5, "value": 15 }
     ]
    }
   }
@@ -882,6 +943,138 @@
        }
       ]
      }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Columns and aligned labels", "pt-BR": "Colunas e rótulos alinhados" },
+   "description": { "en": "`columns: 2` is a responsive grid (one column when narrow); `colspan: 'full'` takes the row. `labelWidth` lines up left labels.", "pt-BR": "`columns: 2` é uma grade responsiva (uma coluna quando estreita); `colspan: 'full'` ocupa a linha. `labelWidth` alinha os rótulos à esquerda." },
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 28,
+    "width": 520,
+    "items": [
+     { "type": "form", "columns": 2, "items": [
+      { "type": "textfield", "name": "first", "label": "First name" },
+      { "type": "textfield", "name": "last", "label": "Last name" },
+      { "type": "textfield", "name": "email", "label": "Email", "inputType": "email", "colspan": "full" },
+      { "type": "textarea", "name": "notes", "label": "Notes", "colspan": "full" }
+     ] },
+     { "type": "form", "labelPos": "left", "labelWidth": 130, "items": [
+      { "type": "textfield", "name": "company", "label": "Company" },
+      { "type": "textfield", "name": "vat", "label": "VAT number" },
+      { "type": "textfield", "name": "billing", "label": "Billing email", "inputType": "email" }
+     ] }
+    ]
+   }
+  }
+ ],
+ "fieldgroup": [
+  {
+   "title": { "en": "Phone and date of birth", "pt-BR": "Telefone e data de nascimento" },
+   "description": { "en": "One label and one error line over several inputs; each input keeps its own name. Press Validate.", "pt-BR": "Um rótulo e uma linha de erro sobre vários inputs; cada input mantém o próprio nome. Clique em Validar." },
+   "config": {
+    "type": "form",
+    "width": 420,
+    "items": [
+     { "type": "fieldgroup", "label": "Phone", "help": "We only call about your orders.", "items": [
+      { "type": "select", "name": "phone.country", "label": "Country code", "options": ["+351", "+55", "+44"], "value": "+351", "width": 104 },
+      { "type": "textfield", "name": "phone.number", "label": "Number", "required": true }
+     ] },
+     { "type": "fieldgroup", "label": "Date of birth", "items": [
+      { "type": "numberfield", "name": "dob.day", "label": "Day", "min": 1, "max": 31, "required": true },
+      { "type": "select", "name": "dob.month", "label": "Month", "options": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "required": true },
+      { "type": "numberfield", "name": "dob.year", "label": "Year", "min": 1900, "max": 2026, "required": true }
+     ] },
+     { "type": "toolbar", "items": ["->", { "type": "button", "text": "Validate", "variant": "primary", "htmlType": "submit" }] }
+    ]
+   }
+  }
+ ],
+ "inputgroup": [
+  {
+   "title": { "en": "Text and buttons joined to a field", "pt-BR": "Texto e botões junto a um campo" },
+   "description": { "en": "The field keeps its label, value and validation; the text is read with the input.", "pt-BR": "O campo mantém rótulo, valor e validação; o texto é lido junto com o input." },
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 12,
+    "width": 340,
+    "items": [
+     { "type": "inputgroup", "prefix": "R$", "items": [{ "type": "numberfield", "label": "Price", "decimals": 2 }] },
+     { "type": "inputgroup", "prefix": "https://", "suffix": ".com", "items": [{ "type": "textfield", "label": "Website" }] },
+     { "type": "inputgroup", "suffix": { "icon": "search", "text": "Go" }, "items": [{ "type": "textfield", "label": "Search" }] },
+     { "type": "inputgroup", "suffix": "kg", "items": [{ "type": "select", "label": "Parcel weight", "options": ["1", "2", "5"], "value": "2" }] }
+    ]
+   }
+  }
+ ],
+ "fieldlist": [
+  {
+   "title": { "en": "Contacts", "pt-BR": "Contatos" },
+   "description": { "en": "One field with an array value: add, remove and reorder rows; min 1, max 4. Validate checks every row.", "pt-BR": "Um campo com valor em array: adicione, remova e reordene linhas; min 1, max 4. Validar confere todas as linhas." },
+   "config": {
+    "type": "form",
+    "width": 560,
+    "items": [
+     { "type": "fieldlist", "name": "contacts", "label": "Contacts", "min": 1, "max": 4, "addText": "Add a contact", "value": [{ "name": "Ada", "email": "ada@example.com" }], "items": [
+      { "type": "textfield", "name": "name", "label": "Name", "required": true },
+      { "type": "textfield", "name": "email", "label": "Email", "inputType": "email", "required": true }
+     ] },
+     { "type": "toolbar", "items": ["->", { "type": "button", "text": "Validate", "variant": "primary", "htmlType": "submit" }] }
+    ]
+   }
+  }
+ ],
+ "formerrors": [
+  {
+   "title": { "en": "An error summary", "pt-BR": "Um resumo de erros" },
+   "description": { "en": "Press Save with empty fields: the summary lists them, each link focuses its field, and it shrinks as you fix them.", "pt-BR": "Clique em Salvar com os campos vazios: o resumo os lista, cada link foca o campo, e ele diminui conforme você corrige." },
+   "config": {
+    "type": "form",
+    "width": 420,
+    "items": [
+     { "type": "formerrors" },
+     { "type": "textfield", "name": "name", "label": "Name", "required": true },
+     { "type": "textfield", "name": "email", "label": "Email", "inputType": "email", "required": true },
+     { "type": "formactions", "cancelText": false }
+    ]
+   }
+  }
+ ],
+ "formactions": [
+  {
+   "title": { "en": "Save, Cancel and unsaved changes", "pt-BR": "Salvar, Cancelar e alterações não salvas" },
+   "description": { "en": "Save waits for a change (requireChanges); Cancel puts the values back.", "pt-BR": "Salvar espera uma mudança (requireChanges); Cancelar volta os valores." },
+   "config": {
+    "type": "form",
+    "width": 420,
+    "items": [
+     { "type": "textfield", "name": "name", "label": "Name", "value": "Ada Lovelace" },
+     { "type": "textfield", "name": "role", "label": "Role", "value": "Engineer" },
+     { "type": "formactions", "requireChanges": true, "buttons": [{ "text": "Save as draft", "variant": "ghost" }] }
+    ]
+   }
+  }
+ ],
+ "formsection": [
+  {
+   "title": { "en": "A settings page", "pt-BR": "Uma página de configurações" },
+   "description": { "en": "Title and description beside the fields; the section stacks when it is narrow (try the Code tab and set a smaller width).", "pt-BR": "Título e descrição ao lado dos campos; a seção empilha quando fica estreita (experimente a aba Código e diminua a largura)." },
+   "config": {
+    "type": "form",
+    "width": 760,
+    "items": [
+     { "type": "formsection", "title": "Profile", "description": "How other people see you in the app.", "columns": 2, "items": [
+      { "type": "textfield", "name": "first", "label": "First name" },
+      { "type": "textfield", "name": "last", "label": "Last name" },
+      { "type": "textfield", "name": "email", "label": "Email", "colspan": "full" }
+     ] },
+     { "type": "formsection", "title": "Notifications", "description": "Pick what reaches your inbox.", "items": [
+      { "type": "checkbox", "name": "orders", "boxLabel": "New orders", "value": true },
+      { "type": "checkbox", "name": "digest", "boxLabel": "A weekly digest" }
+     ] }
     ]
    }
   }

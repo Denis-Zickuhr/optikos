@@ -29,4 +29,40 @@
   .op-fieldset.is-collapsed {
     padding-block-end: 0;
   }
+  .op-fieldset__desc {
+    margin: 0 0 var(--op-space-3);
+    padding-inline: var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-fieldset__body {
+    --op-layout-gap: var(--op-form-gap, var(--op-space-3));
+  }
+  /* line: no frame, a rule under the legend; plain: just the legend */
+  .op-fieldset--line,
+  .op-fieldset--plain {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+  .op-fieldset--line > .op-fieldset__legend,
+  .op-fieldset--plain > .op-fieldset__legend {
+    inline-size: 100%;
+    margin-block-end: var(--op-space-3);
+    padding: 0;
+  }
+  .op-fieldset--line > .op-fieldset__legend {
+    padding-block-end: var(--op-space-2);
+    border-block-end: var(--op-border-width) solid var(--op-fieldset-border, var(--op-color-border));
+  }
+  .op-fieldset--line > .op-fieldset__desc,
+  .op-fieldset--plain > .op-fieldset__desc {
+    margin-block-start: calc(var(--op-space-2) * -1);
+    padding: 0;
+  }
+  .op-fieldset--collapsible-title .op-fieldset__title,
+  .op-fieldset__toggle + .op-fieldset__title {
+    cursor: pointer;
+    user-select: none;
+  }
 }

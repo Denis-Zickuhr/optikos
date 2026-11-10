@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import { place } from './position';
 import { Emitter, Component, type ComponentConfig, Container, Field, register, create, h, validators, virtualize, setLocale, t, addMessages, locales, roving, trapFocus } from './index';
 
 class Box extends Component<ComponentConfig & { text?: string }> {
@@ -296,5 +297,41 @@ describe('focus helpers', () => {
     expect(document.activeElement).toBe(a);
     release();
     c.remove();
+  });
+});
+
+describe('place (floating elements)', () => {
+  const setup = (natural: number, anchorTop: number) => {
+    Object.defineProperty(document.documentElement, 'clientHeight', { value: 600, configurable: true });
+    Object.defineProperty(document.documentElement, 'clientWidth', { value: 800, configurable: true });
+    const el = document.createElement('div');
+    Object.defineProperty(el, 'offsetHeight', { get: () => natural });
+    Object.defineProperty(el, 'offsetWidth', { get: () => 200 });
+    const anchor = { getBoundingClientRect: () => ({ left: 50, right: 150, top: anchorTop, bottom: anchorTop + 30, width: 100, height: 30 }) } as unknown as Element;
+    place(el, anchor, { placement: 'bottom-start' });
+    return el;
+  };
+
+  it('fits: placed below the anchor at its natural size', () => {
+    const el = setup(50, 100);
+    expect(el.style.top).toBe('134px');
+    expect(el.style.maxHeight).toBe('');
+    expect(el.dataset.side).toBe('bottom');
+  });
+
+  it('taller than the room on both sides: goes where there is more room, capped to it, and scrolls', () => {
+    const below = setup(900, 100); // 458 px below, 88 above
+    expect(below.dataset.side).toBe('bottom');
+    expect(below.style.maxHeight).toBe('458px');
+    expect(below.style.overflowY).toBe('auto');
+    expect(below.style.top).toBe('134px');
+    // repositioning (it runs on every scroll, this element's too) keeps the scroll where the user left it
+    below.scrollTop = 120;
+    place(below, { getBoundingClientRect: () => ({ left: 50, right: 150, top: 100, bottom: 130, width: 100, height: 30 }) } as unknown as Element, { placement: 'bottom-start' });
+    expect(below.scrollTop).toBe(120);
+    const above = setup(900, 500); // 58 px below, 488 above
+    expect(above.dataset.side).toBe('top');
+    expect(above.style.maxHeight).toBe('488px');
+    expect(above.style.top).toBe('8px');
   });
 });

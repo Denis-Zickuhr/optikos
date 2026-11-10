@@ -1,3 +1,5 @@
+<p align="center"><img src="https://raw.githubusercontent.com/Denis-Zickuhr/optikos/main/site/seal.svg" alt="Optikos" width="150" /></p>
+
 # Optikos
 
 [![npm](https://img.shields.io/npm/v/optikos)](https://www.npmjs.com/package/optikos)

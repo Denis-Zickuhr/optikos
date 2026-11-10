@@ -10,7 +10,7 @@ Fluxo:         Próximo só avança se os campos da etapa atual validam (o 1º i
                Concluir valida **todas** as etapas; se alguma falha, vai até ela. Enter num campo de uma linha = Próximo (na última etapa = Concluir).
                Com `linear: true`, clicar numa etapa à frente valida as do caminho e para na primeira inválida.
 Estados:       etapas do Stepper: atual, feita (já validada), com erro (falhou ao validar). A etapa de revisão é remontada toda vez que se entra nela.
-Teclado/ARIA:  Enter avança; o stepper tem `aria-current="step"`; a mudança de etapa leva o foco ao 1º campo da nova etapa; botões nativos.
+Teclado/ARIA:  Enter avança; o stepper tem `aria-current="step"`; a mudança de etapa leva o foco ao painel da nova etapa (`autoFocus: true`: ao 1º campo dela, o que abre o teclado do celular); botões nativos.
 Tokens:        `--op-stepform-gap`, `--op-stepform-step-padding` (+ os do Stepper).
 Casos sandbox: `form`: cadastro em 4 etapas com revisão, dentro de uma `Window` (modal) e na página, etapa opcional, modo não linear.
 Fora do escopo: etapas condicionais/ramificadas, salvar rascunho entre etapas (use `getValues`/`load`), validação assíncrona por etapa.

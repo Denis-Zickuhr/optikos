@@ -80,6 +80,8 @@ export interface FilterField {
   name: string;
   label?: string;
   type?: 'text' | 'number' | 'date' | 'select';
+  /** Fields with the same group sit together in the field pickers (as columns do in the Grid's column menu). */
+  group?: string;
   /** For `select`: the choices. */
   options?: Array<string | number | { value: string | number; label: string }>;
 }
@@ -94,7 +96,7 @@ export interface FilterBuilderConfig extends ComponentConfig {
   live?: boolean;
   /**
    * What "Add filter" does: `'row'` (default) adds an empty row for the first field; `'pick'` first asks
-   * which field to filter by (a menu of the fields) and adds the row for it.
+   * which field to filter by (a menu of the fields, grouped by `group`, with a search field past 6 fields) and adds the row for it.
    */
   addMode?: 'row' | 'pick';
   /** Deepest group nesting allowed. Default 3. */
@@ -241,9 +243,18 @@ export class FilterBuilder extends Component<FilterBuilderConfig> {
     return b.el;
   }
 
-  private select(options: Array<[string, string]>, value: string, label: string, key: string, onChange: (v: string) => void): HTMLSelectElement {
+  private select(options: Array<[string, string, string?]>, value: string, label: string, key: string, onChange: (v: string) => void): HTMLSelectElement {
     const s = h('select', 'op-filterbuilder__select', { 'aria-label': label, 'data-fb': key });
-    for (const [v, text] of options) s.append(h('option', '', { value: v }, text));
+    const groups = new Map<string, HTMLElement>(); // a third value is the group: those options go in an <optgroup>
+    for (const [v, text, g] of options) {
+      const opt = h('option', '', { value: v }, text);
+      if (!g) s.append(opt);
+      else {
+        if (!groups.has(g)) groups.set(g, h('optgroup', '', { label: g }));
+        groups.get(g)!.append(opt);
+      }
+    }
+    s.append(...groups.values());
     s.value = value;
     this.listen(s, 'change', () => onChange(s.value));
     return s;
@@ -282,8 +293,10 @@ export class FilterBuilder extends Component<FilterBuilderConfig> {
 
   /** "Add filter" in `pick` mode: a menu of the fields; the chosen one gets the new row. */
   private pick(anchor: HTMLElement, add: (field: string) => void): void {
+    const fields = this.config.fields;
     this.pickMenu ??= new Menu({});
-    this.pickMenu.setItems(this.config.fields.map((f) => ({ text: f.label ?? f.name, handler: () => add(f.name) })));
+    this.pickMenu.setSearch(fields.length > 6);
+    this.pickMenu.setItems(fields.map((f) => ({ text: f.label ?? f.name, group: f.group, handler: () => add(f.name) })));
     this.pickMenu.showBy(anchor);
   }
 
@@ -297,7 +310,7 @@ export class FilterBuilder extends Component<FilterBuilderConfig> {
     const f = this.field(r.field);
     const type = f.type ?? 'text';
     const k = `r${r.id}`;
-    const fieldSel = this.select(this.config.fields.map((x) => [x.name, x.label ?? x.name]), r.field, t('fbField'), `${k}:field`, (v) => {
+    const fieldSel = this.select(this.config.fields.map((x) => [x.name, x.label ?? x.name, x.group]), r.field, t('fbField'), `${k}:field`, (v) => {
       r.field = v;
       const ops = OPS[this.field(v).type ?? 'text'];
       if (!ops.includes(r.op) || (this.field(v).type ?? 'text') !== type) r.op = ops[0];

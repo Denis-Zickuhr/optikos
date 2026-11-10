@@ -1,0 +1,11 @@
+# FieldList  (type: 'fieldlist')
+Propósito:     Um bloco de campos que se repete (contatos, itens de pedido, endereços): o usuário adiciona, remove e reordena linhas, e o formulário recebe um array (`contacts: [{ name, email }, …]`).
+Anatomia:      `.op-field.op-fieldlist` (Field) > rótulo + `.op-fieldlist__rows[role=group]` > `.op-fieldlist__row[role=group]` (nomeada "Contatos 2") com os campos da linha e `.op-fieldlist__tools` (subir, descer, remover) + `.op-fieldlist__add` (o botão de adicionar) + ajuda + erro. Os rótulos aparecem só na primeira linha (um cabeçalho de colunas); nas outras ficam para leitores de tela.
+Config:        (Field) + `items` (os campos de uma linha; os `name`s são relativos à linha, nomes aninhados valem), `value` (um array de objetos de linha), `min: 0`, `max`, `addText` (padrão "Adicionar"), `reorderable: true`, `newRow` (valores para uma linha nova, ou uma função que os devolve), `rowLayout` (padrão `hbox`: os campos dividem a linha).
+API:           (Field) `getValue()` (o array), `setValue(linhas)`, `addRow(valores?)`, `removeRow(índice)`, `moveRow(de, para)`, `getRows()` (os containers das linhas), `getRowFields(índice)`, `setMin(n)`, `setMax(n)`. `validate()` valida todas as linhas e informa `min`/`max`; `focus()` vai ao primeiro campo inválido.
+Eventos:       `change(linhas)`, `add(índice)`, `remove(índice)`, `move(de, para)`, `before-remove(índice)` (cancelável), mais os do Field.
+Estados:       `is-invalid`, `is-empty` (sem linhas: a lista mostra uma linha de vazio), adicionar desabilitado no `max`, remover desabilitado no `min`.
+Teclado/ARIA:  A lista é um grupo nomeado pelo rótulo; cada linha é um grupo nomeado "<rótulo> <n>"; as ferramentas da linha são botões ("Remover Contatos 2", "Subir Contatos 2"). Adicionar foca o primeiro campo da linha nova; remover foca a linha que ficou no lugar (ou o botão de adicionar). A validação foca o primeiro campo inválido dentro.
+Tokens:        `--op-fieldlist-gap`, `--op-fieldlist-row-gap`.
+Casos sandbox: contatos (nome + email, min 1, max 5), itens de pedido com quantidade e total, reordenar, obrigatório, dentro de um Form com load/reset/dirty.
+Fora do escopo: reordenar arrastando, listas muito longas virtualizadas (use um Grid com edição de célula), FieldLists aninhados em mais de um nível.

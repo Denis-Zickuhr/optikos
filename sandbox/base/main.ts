@@ -55,3 +55,14 @@ p.section('Badge and Chip', 'badges in every tone (with a dot, an icon, a count)
   }
   create({ type: 'chip', text: 'Disabled', disabled: true, renderTo: host } as never);
 });
+
+p.section('CodeViewer', 'read-only code: syntax colors per language, line numbers (CSS counters: a selection copies only the code), marked lines, startLine, wrap vs scroll, maxHeight, and a copy button that says "Copied".', (host, { watch }) => {
+  const ts = "import { create } from 'optikos';\n\n// one form, two fields\nconst form = create({\n  type: 'form',\n  items: [{ type: 'textfield', name: 'name', label: 'Name', required: true }, { type: 'textfield', name: 'email', label: 'Email', inputType: 'email' }],\n});";
+  watch(create({ type: 'codeviewer', code: ts, highlight: '4-7', width: 560, renderTo: host }), ['copy']);
+  create({ type: 'codeviewer', language: 'json', title: 'package.json', code: '{\n  "name": "my-app",\n  "private": true,\n  "dependencies": { "optikos": "^0.1.0" }\n}', width: 560, renderTo: host });
+  create({ type: 'codeviewer', language: 'css', title: 'theme.css (an excerpt)', startLine: 120, highlight: [121], code: "[data-op-theme~='ocean'] {\n  --op-color-primary: #0e7490;\n  --op-radius: 0.125rem;\n}", width: 560, renderTo: host });
+  create({ type: 'codeviewer', language: 'html', code: '<!-- the stylesheet, then a scoped theme -->\n<link rel="stylesheet" href="optikos/optikos.css" />\n<section data-op-theme="dark">…</section>', width: 560, renderTo: host });
+  create({ type: 'codeviewer', language: 'sh', bar: false, lineNumbers: false, code: 'npm i optikos   # no runtime dependencies', width: 560, renderTo: host });
+  create({ type: 'codeviewer', title: 'wrap: true', wrap: true, code: ts, width: 360, renderTo: host });
+  create({ type: 'codeviewer', title: 'maxHeight: 140', maxHeight: 140, code: Array.from({ length: 40 }, (_, i) => `console.log('line ${i + 1}');`).join('\n'), width: 560, renderTo: host });
+});

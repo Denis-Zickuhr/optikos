@@ -101,7 +101,6 @@ export class LookupField<V = unknown> extends SuggestField<V> {
     });
     win.show();
     if (text) void sg.search(text);
-    sg.focus();
   }
 
   private pickRecord(rec: Model): void {

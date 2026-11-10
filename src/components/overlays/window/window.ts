@@ -8,10 +8,15 @@ import { motion } from '../../../motion/config';
 
 export interface WindowConfig extends PanelConfig {
   modal?: boolean;
+  /** Dims the page behind a modal window. `false` keeps it modal (inert page, trapped focus) but clear. Default true. */
+  mask?: boolean;
   draggable?: boolean;
   closeOnEsc?: boolean;
   closeOnBackdrop?: boolean;
-  /** Move focus inside on show. Default true. */
+  /**
+   * On show the focus goes to the dialog itself (it is modal: the focus must be inside), so a phone keyboard does not
+   * pop up. `true` focuses its first field instead. Default false.
+   */
   autoFocus?: boolean;
 }
 
@@ -62,6 +67,12 @@ export class Window extends Panel<WindowConfig> {
     });
   }
 
+  /** Dims (true) or not (false) the page behind the modal window. */
+  setMask(mask: boolean): void {
+    this.config.mask = mask;
+    this.backdrop?.classList.toggle('is-clear', !mask);
+  }
+
   isVisible(): boolean {
     return this.visible;
   }
@@ -79,7 +90,7 @@ export class Window extends Panel<WindowConfig> {
     const el = this.el;
     this.opener = document.activeElement;
     if (c.modal !== false) {
-      this.backdrop = h('div', 'op-window-backdrop', {}, el);
+      this.backdrop = h('div', `op-window-backdrop${c.mask === false ? ' is-clear' : ''}`, {}, el);
       toLayer(this.backdrop, this.opener);
       this.cleanup.push(lockModal(this.backdrop));
       this.listen(this.backdrop, 'pointerdown', (e: Event) => {
@@ -106,7 +117,8 @@ export class Window extends Panel<WindowConfig> {
     const onResize = () => !this.moved && this.center();
     window.addEventListener('resize', onResize);
     this.cleanup.push(() => el.removeEventListener('keydown', onKey), () => window.removeEventListener('resize', onResize));
-    if (c.autoFocus !== false) this.focusFirst();
+    if (c.autoFocus) this.focusFirst();
+    else el.focus();
     this.emit('show');
   }
 

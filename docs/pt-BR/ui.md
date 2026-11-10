@@ -19,7 +19,7 @@ Devolvem instâncias reais, então valem em qualquer `items: [...]`, misturadas 
 
 | Atalho | Faz |
 |---|---|
-| `ui.text/email/password/area/number/date/dateRange/secret/slider(name, label?, cfg?)` | o campo do mesmo nome (`email`/`password` fixam o `inputType`) |
+| `ui.text/email/password/area/number/date/dateRange/secret/slider/dial(name, label?, cfg?)` | o campo do mesmo nome (`email`/`password` fixam o `inputType`) |
 | `ui.check(name, boxLabel?, cfg?)` · `ui.toggle(name, boxLabel?, cfg?)` | `Checkbox`, `Toggle` |
 | `ui.radio(name, label, options, cfg?)` · `ui.checkGroup` · `ui.select` · `ui.combo` | campos de opções |
 | `ui.suggest(name, label, query, cfg?)` · `ui.lookup(name, label, lookup, cfg?)` | busca por digitação / janela de pesquisa |

@@ -1,5 +1,5 @@
 // Navigation shared by the sandbox bar, the demo frame and the index: breadcrumb + "Go to…" menu + shortcuts.
-import { create, Breadcrumb, Button, Menu, type BreadcrumbItem, type MenuEntry } from 'optikos';
+import { create, registerIcons, Breadcrumb, Button, Menu, type BreadcrumbItem, type MenuEntry } from 'optikos';
 
 export interface DevPage {
   kind: 'sandbox' | 'demo';
@@ -11,6 +11,9 @@ export interface DevPage {
 
 export const INDEX = '/dev/';
 
+// the Optikos mark as an icon, for the breadcrumb root (the dev server serves the repo root, so site/logo.svg is there)
+registerIcons({ optikos: '<svg viewBox="0 0 24 24" aria-hidden="true"><image href="/site/logo.svg" width="24" height="24"/></svg>' });
+
 export async function loadPages(): Promise<DevPage[]> {
   try {
     return await (await fetch('/.dev/pages.json')).json();
@@ -21,8 +24,8 @@ export async function loadPages(): Promise<DevPage[]> {
 
 /** Optikos › Sandbox › fields   (each part but the last is a link). */
 export function crumbs(current?: { kind: 'sandbox' | 'demo'; name: string }): BreadcrumbItem[] {
-  const items: BreadcrumbItem[] = [{ text: 'Optikos', icon: 'home', href: INDEX }];
-  if (!current) return [{ text: 'Optikos', icon: 'home' }];
+  const items: BreadcrumbItem[] = [{ text: 'Optikos', icon: 'optikos', href: INDEX }];
+  if (!current) return [{ text: 'Optikos', icon: 'optikos' }];
   items.push({ text: current.kind === 'sandbox' ? 'Sandbox' : 'Demos', href: `${INDEX}#${current.kind === 'sandbox' ? 'sandboxes' : 'demos'}` });
   items.push({ text: current.name });
   return items;

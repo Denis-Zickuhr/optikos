@@ -504,6 +504,25 @@ describe('FilterBuilder', () => {
     expect(sel(f, 'r1:op').value).toBe('eq');
   });
 
+  it('fields with a group: grouped in the pick menu (searchable past 6 fields) and in <optgroup>s of the field select', () => {
+    const grouped = [
+      { name: 'id', label: 'Invoice', group: 'Identification' }, { name: 'who', label: 'Customer', group: 'Identification' },
+      { name: 'amount', label: 'Amount', type: 'number', group: 'Values' }, { name: 'paid', label: 'Paid', type: 'number', group: 'Values' },
+      { name: 'issued', label: 'Issued', type: 'date', group: 'Dates' }, { name: 'due', label: 'Due', type: 'date', group: 'Dates' }, { name: 'note', label: 'Note' },
+    ];
+    const f = mk<any>({ type: 'filterbuilder', fields: grouped, live: false, addMode: 'pick' });
+    document.body.append(f.el);
+    addBtn(f, 'Add filter').click();
+    const menu = document.querySelector<HTMLElement>('.op-layer .op-menu')!;
+    expect(menu.querySelector('.op-menu__search')).not.toBeNull();
+    expect(Array.from(menu.querySelectorAll('.op-menu__group-label')).map((g) => g.textContent)).toEqual(['Identification', 'Values', 'Dates']);
+    (menu.querySelectorAll<HTMLElement>('.op-menu__group')[1].querySelector('.op-menu__item') as HTMLElement).click();
+    const s = sel(f, 'r1:field');
+    expect(s.value).toBe('amount');
+    expect(Array.from(s.querySelectorAll('optgroup')).map((g) => g.label)).toEqual(['Identification', 'Values', 'Dates']);
+    expect(s.querySelector('option[value=note]')!.parentElement).toBe(s); // ungrouped stays at the top level
+  });
+
   it('value editors do not reserve an error line (rows stay aligned)', () => {
     const f = fb();
     addBtn(f, 'Add filter').click();

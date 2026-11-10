@@ -4,17 +4,17 @@ import { page } from '../../dev/kit';
 const p = page('navigation');
 const body = (text: string) => ({ type: 'label', text, style: 'display:block;padding:1rem' });
 
-p.section('Tabs', 'lazy panels (built on first visit), ←→ move and activate, Home/End, Delete closes closable tabs, cancelable before-change.', (host, { watch, log }) => {
+p.section('Tabs', 'lazy panels (built on first visit), ←→ move and activate, Home/End, Delete closes closable tabs, R (or the ↻) reloads reloadable tabs, cancelable before-change.', (host, { watch, log }) => {
   const t = create<Tabs>({
     type: 'tabs', width: '100%', height: 180, renderTo: host,
     items: [
       { title: 'Overview', icon: 'home', items: [body('Overview content')] },
       { title: 'Activity', closable: true, items: [body('Activity content (built when first opened)')] },
-      { title: 'Reports', closable: true, items: [body('Reports content')] },
+      { title: 'Reports', closable: true, reloadable: true, onReload: () => new Promise((r) => setTimeout(r, 1200)), items: [body('Reports content (↻ reloads it)')] },
       { title: 'Disabled', disabled: true },
     ],
   });
-  watch(t, ['change', 'close']);
+  watch(t, ['change', 'close', 'reload']);
   t.on('before-close', (tab: any) => (log('before-close', tab.config.title), true));
   let n = 1;
   create({ type: 'button', text: 'Add tab', renderTo: host, handler: () => t.add({ title: `New ${n}`, closable: true, items: [body(`Tab ${n++}`)] }) });

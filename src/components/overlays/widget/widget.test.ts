@@ -195,3 +195,62 @@ describe('Widget draggable', () => {
     expect(w.getPosition()).toBeUndefined();
   });
 });
+
+describe('Widget resizable', () => {
+  const rect = (w: Widget, width = 300, height = 400) => {
+    w.el.getBoundingClientRect = () => ({ left: 100, top: 50, width, height, right: 100 + width, bottom: 50 + height, x: 100, y: 50, toJSON() {} }) as DOMRect;
+    Object.defineProperty(w.el, 'offsetWidth', { value: width, configurable: true });
+    Object.defineProperty(w.el, 'offsetHeight', { value: height, configurable: true });
+  };
+  const grip = (w: Widget) => w.el.querySelector('.op-widget__resize') as HTMLElement;
+  const key = (el: Element, k: string, shiftKey = false) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey, bubbles: true, cancelable: true }));
+  const ptr = (el: EventTarget, type: string, x: number, y: number) => el.dispatchEvent(new MouseEvent(type, { clientX: x, clientY: y, bubbles: true, button: 0 }));
+
+  it('only when asked: a focusable splitter (role=separator) named "Resize"', () => {
+    const plain = mk();
+    plain.open();
+    expect(grip(plain)).toBeNull();
+    const w = mk({ resizable: true });
+    w.open();
+    expect(grip(w).getAttribute('role')).toBe('separator');
+    expect(grip(w).tabIndex).toBe(0);
+    expect(grip(w).getAttribute('aria-label')).toBe('Resize');
+    w.setResizable(false);
+    expect(grip(w)).toBeNull();
+  });
+
+  it('docked: the inner edge sets the size (pulling away from the edge grows it), never under the minimum; emits resize', () => {
+    const w = mk({ resizable: true, side: 'right' });
+    const resized = vi.fn();
+    w.on('resize', resized);
+    w.open();
+    rect(w);
+    expect(grip(w).getAttribute('aria-orientation')).toBe('vertical');
+    ptr(grip(w), 'pointerdown', 100, 200);
+    ptr(document, 'pointermove', 60, 200); // 40 px to the left, away from the right edge
+    expect(w.el.style.getPropertyValue('--op-widget-size')).toBe('340px');
+    expect(grip(w).getAttribute('aria-valuenow')).toBe('300'); // the size as laid out (the mocked rect)
+    ptr(document, 'pointermove', 1000, 200);
+    expect(w.el.style.getPropertyValue('--op-widget-size')).toBe('160px'); // the minimum
+    ptr(document, 'pointerup', 0, 0);
+    expect(resized).toHaveBeenCalled();
+    w.setSide('bottom');
+    expect(grip(w).getAttribute('aria-orientation')).toBe('horizontal');
+    key(grip(w), 'ArrowUp', true); // bottom: up is away from the edge
+    expect(w.el.style.getPropertyValue('--op-widget-size')).toBe('464px');
+  });
+
+  it('moved: a corner grip sets width and height', () => {
+    const w = mk({ resizable: true, draggable: true });
+    w.open();
+    rect(w);
+    const head = w.el.querySelector('.op-panel__header') as HTMLElement;
+    head.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', altKey: true, bubbles: true, cancelable: true }));
+    expect(w.el.classList.contains('is-moved')).toBe(true);
+    key(grip(w), 'ArrowRight');
+    key(grip(w), 'ArrowDown');
+    expect(w.el.style.width).toBe('316px');
+    expect(w.el.style.height).toBe('416px');
+  });
+});
+

@@ -1,0 +1,39 @@
+@layer optikos {
+  .op-formerrors {
+    padding: var(--op-space-3) var(--op-space-4);
+    color: var(--op-formerrors-fg, var(--op-color-fg));
+    background: var(--op-formerrors-bg, var(--op-color-danger-soft));
+    border: var(--op-border-width) solid var(--op-formerrors-border, var(--op-color-danger));
+    border-inline-start-width: calc(var(--op-border-width) * 4);
+    border-radius: var(--op-radius);
+  }
+  .op-formerrors:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-formerrors__title {
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-formerrors__list {
+    margin: var(--op-space-2) 0 0;
+    padding-inline-start: var(--op-space-4);
+  }
+  .op-formerrors__link {
+    padding: 0;
+    color: var(--op-color-danger);
+    background: none;
+    border: 0;
+    font: inherit;
+    text-align: start;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .op-formerrors__link:hover {
+    text-decoration-thickness: calc(var(--op-border-width) * 2);
+  }
+  .op-formerrors__link:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+    border-radius: var(--op-radius-sm);
+  }
+}

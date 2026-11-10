@@ -1,0 +1,84 @@
+@layer optikos {
+  .op-fieldlist__box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--op-fieldlist-gap, var(--op-space-2));
+  }
+  .op-fieldlist__rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-fieldlist-row-gap, var(--op-space-2));
+    align-self: stretch;
+  }
+  .op-fieldlist__row {
+    --op-layout-gap: var(--op-space-2);
+  }
+  .op-fieldlist__row > .op-field {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+  /* the labels read as a column header: shown on the first row, kept for screen readers on the others */
+  .op-fieldlist__row:not(.is-first) .op-field__label {
+    position: absolute;
+    inline-size: 0;
+    block-size: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .op-fieldlist__row:not(.is-first) .op-field__help {
+    display: none;
+  }
+  .op-fieldlist__tools {
+    display: flex;
+    flex: none;
+    gap: var(--op-space-1);
+    align-self: flex-start;
+    min-block-size: var(--op-control-height);
+    align-items: center;
+  }
+  /* on the first row the tools line up with the inputs, under the labels */
+  .op-fieldlist__row.is-first > .op-fieldlist__tools {
+    margin-block-start: calc(var(--op-font-size) * var(--op-line-height) + var(--op-field-gap, var(--op-space-1)));
+  }
+  .op-fieldlist__tool,
+  .op-fieldlist__add {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    background: transparent;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    font: inherit;
+    cursor: pointer;
+  }
+  .op-fieldlist__tool {
+    padding: var(--op-space-1);
+  }
+  .op-fieldlist__add {
+    padding: var(--op-space-1) var(--op-space-2);
+    color: var(--op-color-primary-text, var(--op-color-primary));
+    font-weight: var(--op-font-weight-medium);
+  }
+  .op-fieldlist__tool:hover:not(:disabled),
+  .op-fieldlist__add:hover:not(:disabled) {
+    color: var(--op-color-fg);
+    background: var(--op-color-hover);
+  }
+  .op-fieldlist__tool:disabled,
+  .op-fieldlist__add:disabled {
+    color: var(--op-color-disabled-fg);
+    cursor: not-allowed;
+  }
+  .op-fieldlist__tool:focus-visible,
+  .op-fieldlist__add:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-fieldlist__empty {
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+}

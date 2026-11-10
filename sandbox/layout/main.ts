@@ -29,11 +29,12 @@ p.section('fit + card', 'fit fills the parent; card shows one child, switched by
   create({ type: 'toolbar', renderTo: host, items: [0, 1, 2].map((i) => ({ type: 'button', text: `Show ${i + 1}`, handler: () => card.setActiveItem(i) })) });
 });
 
-p.section('Panel', 'title, tools, collapsible, closable, tbar/bbar/buttons, loading.', (host, { watch }) => {
+p.section('Panel', 'title, tools, collapsible, closable, reloadable (the ↻ runs onReload; a Promise shows the loading mask), tbar/bbar/buttons, loading.', (host, { watch }) => {
   const mk = (cfg: object) => create<Panel>({ type: 'panel', width: 280, renderTo: host, items: [box('Panel body')], ...cfg });
   mk({ title: 'Simple', icon: 'user' });
   watch(mk({ title: 'Collapsible', collapsible: true }), ['collapse', 'expand']);
   watch(mk({ title: 'Closable', closable: true, closeAction: 'hide' }), ['before-close', 'close']);
+  watch(mk({ title: 'Reloadable', reloadable: true, onReload: () => new Promise((r) => setTimeout(r, 1200)) }), ['before-reload', 'reload']);
   mk({ title: 'Bars', tbar: [{ type: 'button', text: 'New', icon: 'plus' }, '->', { type: 'button', icon: 'search', ariaLabel: 'Search', variant: 'ghost' }], bbar: [{ type: 'label', text: 'status', variant: 'muted' }], buttons: [{ text: 'Cancel' }, { text: 'Save', variant: 'primary' }] });
   const loading = mk({ title: 'Loading', loading: 'Please wait' });
   create({ type: 'button', text: 'Toggle loading', renderTo: host, handler: () => loading.setLoading(loading.config.loading ? false : 'Please wait') });

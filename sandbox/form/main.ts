@@ -1,4 +1,4 @@
-import { create, ui, Direction, Form, StepForm, Window, MessageBox, Store, registerLookup, toast, validators } from 'optikos';
+import { create, ui, Direction, Form, TextField, StepForm, Window, MessageBox, Store, registerLookup, toast, validators } from 'optikos';
 import { page } from '../../dev/kit';
 
 const p = page('form');
@@ -47,6 +47,135 @@ p.section('Form · the basics', 'nested names (address.city), load/reset/dirty, 
   watch(form, ['submit', 'invalid', 'load']);
   form.on('dirty-change', () => log('dirty', form.isDirty()));
   create({ type: 'button', text: 'Show values', renderTo: host, handler: () => log('values', form.getValues()) });
+});
+
+// ---- 1b. layouts: sections, columns, fieldset variants, aligned labels ----------------------------------------------------------------
+p.section('Form layouts · a settings page', 'FormSection puts the title and description beside the fields (it stacks when the section is narrow: resize the window); `columns` makes a responsive grid and `colspan: "full"` takes the row; FieldSet comes as box, line or plain, with a description.', (host, { log }) => {
+  const form: Form = create<Form>({
+    type: 'form', width: '100%', renderTo: host,
+    items: [
+      { type: 'formsection', title: 'Profile', description: 'How other people see you in the app.', columns: 2, items: [
+        ui.text('first', 'First name', { required: true }),
+        ui.text('last', 'Last name'),
+        ui.email('email', 'Email', { required: true, colspan: 'full' }),
+        ui.area('bio', 'Bio', { rows: 2, colspan: 'full', help: 'A sentence or two.' }),
+      ] },
+      { type: 'formsection', title: 'Address', description: 'Where invoices and orders are shipped.', items: [
+        { type: 'fieldset', title: 'Street address', variant: 'line', columns: 3, items: [
+          ui.text('address.street', 'Street', { colspan: 2 }),
+          ui.text('address.number', 'Number'),
+          ui.suggest('address.city', 'City', searchCity, { forceSelection: false }),
+          ui.text('address.state', 'State'),
+          ui.text('address.zip', 'Postal code'),
+        ] },
+      ] },
+      { type: 'formsection', title: 'Notifications', description: 'Pick what reaches your inbox.', items: [
+        { type: 'fieldset', title: 'Email me about', variant: 'plain', items: [ui.check('notify.orders', 'New orders', { value: true }), ui.check('notify.digest', 'A weekly digest')] },
+      ] },
+      ui.toolbar('->', ui.primary('Save', undefined, { htmlType: 'submit' })),
+    ],
+  });
+  form.on('submit', (v: Record<string, unknown>) => log('submit', v));
+});
+
+p.section('Form layouts · labels and fieldsets', 'labelPos: left with `labelWidth` lines the labels up in one column; the three FieldSet variants, each with a description (read as the group description) and collapsible (the chevron or the title; `collapsed`, `collapse()`, `expand()`, `toggle()`).', (host) => {
+  create({ type: 'form', width: 420, labelPos: 'left', labelWidth: 140, renderTo: host, items: [
+    ui.text('company', 'Company'), ui.text('vat', 'VAT number'), ui.email('billing', 'Billing email'), ui.select('terms', 'Payment terms', ['15 days', '30 days', '60 days'], { value: '30 days' }),
+  ] });
+  for (const variant of ['box', 'line', 'plain'] as const) {
+    create({ type: 'fieldset', title: `variant: '${variant}'`, description: 'Fields that belong together.', variant, collapsible: true, collapsed: variant === 'plain', width: 260, renderTo: host, items: [ui.text(`${variant}.a`, 'Name'), ui.text(`${variant}.b`, 'Role')] });
+  }
+});
+
+// ---- 1c. compound fields: one label over several inputs; text and buttons joined to an input ------------------------------------
+p.section('Compound fields · FieldGroup and InputGroup', 'FieldGroup: one label, one help line and one error line over several inputs (each keeps its own name: phone.country, phone.number). InputGroup joins text ("R$", ".com") or a button to the box of any field (the text is read with the input). Validate to see the shared error line.', (host, { log }) => {
+  const form: Form = create<Form>({
+    type: 'form', width: 460, renderTo: host,
+    items: [
+      { type: 'fieldgroup', label: 'Phone', help: 'We only call about your orders.', items: [
+        ui.select('phone.country', 'Country code', ['+351', '+55', '+44'], { value: '+351', width: 104 }),
+        ui.text('phone.number', 'Number', { required: true, pattern: /^[0-9 ]{6,}$/ }),
+      ] },
+      { type: 'fieldgroup', label: 'Date of birth', required: true, stackBelow: 320, items: [
+        ui.number('dob.day', 'Day', { min: 1, max: 31, required: true }),
+        ui.select('dob.month', 'Month', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], { required: true, flex: 2 }),
+        ui.number('dob.year', 'Year', { min: 1900, max: 2026, required: true }),
+      ] },
+      { type: 'inputgroup', prefix: 'R$', items: [ui.number('price', 'Price', { decimals: 2 })] },
+      { type: 'inputgroup', prefix: 'https://', suffix: '.com', items: [ui.text('site', 'Website')] },
+      { type: 'inputgroup', suffix: { icon: 'file', text: 'Copy', handler: (f: TextField) => void navigator.clipboard?.writeText(String(f.getValue())).then(() => toast({ type: 'success', text: 'Copied' })) }, items: [ui.text('token', 'API token', { value: 'tok_live_4f9a', readonly: true })] },
+      { type: 'inputgroup', suffix: { icon: 'search', text: 'Go', handler: (f: TextField) => log('search', f.getValue()) }, items: [ui.text('q', 'Search')] },
+      { type: 'inputgroup', suffix: 'kg', items: [ui.select('weight', 'Parcel weight', ['1', '2', '5', '10'], { value: '2' })] },
+      ui.toolbar('->', ui.primary('Validate', () => form.validate() && log('values', form.getValues()))),
+    ],
+  });
+});
+
+// ---- 1d. a repeating block ---------------------------------------------------------------------------------------------------------
+p.section('FieldList · repeating rows', 'one field whose value is an array: add, remove and reorder rows (buttons, all reachable with Tab), min 1 / max 5, labels shown once as a column header. Validate checks every row and focuses the first problem; Load / Reset / dirty work on the whole list.', (host, { log }) => {
+  const form: Form = create<Form>({
+    type: 'form', width: 620, renderTo: host,
+    items: [
+      ui.text('customer', 'Customer', { required: true, value: 'Ada Lovelace' }),
+      { type: 'fieldlist', name: 'contacts', label: 'Contacts', min: 1, max: 5, addText: 'Add a contact', value: [{ name: 'Ada', email: 'ada@example.com', role: 'Owner' }], items: [
+        ui.text('name', 'Name', { required: true }),
+        ui.email('email', 'Email', { required: true }),
+        ui.select('role', 'Role', ['Owner', 'Finance', 'Support'], { value: 'Support', width: 140 }),
+      ] },
+      { type: 'fieldlist', name: 'lines', label: 'Order lines', help: 'Quantity × unit price; the total updates as you type.', newRow: { qty: 1 }, items: [
+        ui.text('product', 'Product', { required: true }),
+        ui.number('qty', 'Qty', { min: 1, width: 90 }),
+        { type: 'inputgroup', width: 150, prefix: '$', items: [ui.number('price', 'Unit price', { decimals: 2, min: 0 })] },
+      ] },
+      ui.toolbar(
+        ui.button('Load an order', () => form.load({ customer: 'Grace Hopper', contacts: [{ name: 'Grace', email: 'grace@navy.mil', role: 'Owner' }, { name: 'Alan', email: 'alan@bletchley.uk', role: 'Finance' }], lines: [{ product: 'Compiler', qty: 2, price: 1200 }, { product: 'Manual', qty: 5, price: 19.9 }] })),
+        ui.button('Reset', () => form.reset()),
+        '->',
+        ui.primary('Save', undefined, { htmlType: 'submit' }),
+      ),
+    ],
+  });
+  const total = create({ type: 'label', text: 'Total: $0.00', renderTo: host, style: 'width:100%;font-weight:600' }) as any;
+  const sum = () => total.setText(`Total: $${(form.getValues().lines as { qty?: number; price?: number }[]).reduce((t, r) => t + (r.qty ?? 0) * (r.price ?? 0), 0).toFixed(2)}`);
+  form.getField('lines')!.on('change', sum);
+  form.on('load', sum); // load is silent (no change events): recount after it
+  form.on('submit', (v: Record<string, unknown>) => log('submit', v));
+  form.on('dirty-change', () => log('dirty', form.isDirty()));
+});
+
+// ---- 1e. rules, error summary, action bar ------------------------------------------------------------------------------------------
+p.section('Form utils · showIf, FormErrors and FormActions', 'pick "Company": the company fields appear (showIf) and count again; "Send invoices by email" enables the email field (enableIf). Save with errors: the summary at the top lists them, each link opens the right tab and focuses the field. The bar at the bottom shows "Unsaved changes" and Save waits for a change (requireChanges); Cancel asks first.', (host, { log }) => {
+  const form: Form = create<Form>({
+    type: 'form', width: 560, height: 520, style: 'overflow:auto', renderTo: host,
+    items: [
+      { type: 'formerrors' },
+      {
+        type: 'tabs', flex: 1, items: [
+          { title: 'Customer', layout: { type: 'vbox' }, items: [
+            ui.radio('kind', 'Customer type', ['person', 'company'], { value: 'person', direction: Direction.Horizontal }),
+            ui.text('name', 'Full name', { required: true, showIf: (v: any) => v.kind === 'person' }),
+            { type: 'fieldset', title: 'Company', variant: 'line', showIf: (v: any) => v.kind === 'company', columns: 2, items: [
+              ui.text('company', 'Company name', { required: true, colspan: 'full' }),
+              ui.text('vat', 'VAT number', { required: true }),
+              ui.text('contact', 'Contact person'),
+            ] },
+          ] },
+          { title: 'Billing', layout: { type: 'vbox' }, items: [
+            ui.check('byEmail', 'Send invoices by email'),
+            ui.email('billingEmail', 'Billing email', { required: true, enableIf: (v: any) => v.byEmail === true, help: 'Enabled when invoices go by email.' }),
+            ui.select('terms', 'Payment terms', ['15 days', '30 days', '60 days'], { required: true }),
+          ] },
+        ],
+      },
+      { type: 'formactions', sticky: true, requireChanges: true, buttons: [{ text: 'Save as draft', variant: 'ghost', handler: () => log('draft', form.getValues()) }] },
+    ],
+  });
+  const bar = form.items[2] as any;
+  bar.on('cancel', () => {
+    void MessageBox.confirm('Discard your changes?', { danger: true, okText: 'Discard' }).then((ok) => ok && form.reset());
+    return false; // the confirm decides
+  });
+  form.on('submit', (v: Record<string, unknown>) => log('submit', v));
 });
 
 // ---- 2. tabs -------------------------------------------------------------------------------------------------------------------------

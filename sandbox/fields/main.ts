@@ -29,7 +29,7 @@ p.section('TextField · other', 'clearable (Esc too), password, maxLength, selec
   mk({ label: 'Select on focus', selectOnFocus: true, value: 'selected on focus' });
 });
 
-import { create as c, Select, ComboBox, SuggestField, NumberField, Checkbox, RadioGroup, Store, LookupField, Slider } from 'optikos';
+import { create as c, Select, ComboBox, SuggestField, NumberField, Checkbox, RadioGroup, Store, LookupField, Slider, Dial } from 'optikos';
 
 const fruits = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Date', 'Fig', 'Grape', 'Kiwi', 'Lemon', 'Mango', 'Orange'];
 const objects: { value: string; label: string; disabled?: boolean }[] = [{ value: 'br', label: 'Brazil' }, { value: 'pt', label: 'Portugal' }, { value: 'us', label: 'United States', disabled: true }, { value: 'jp', label: 'Japan' }];
@@ -114,6 +114,21 @@ p.section('Slider', 'a bar with a ball to drag: click the track, drag the ball (
   c({ type: 'slider', label: 'Decimal step', min: 0, max: 1, step: 0.05, value: 0.35, width: 280, renderTo: host });
   c({ type: 'slider', label: 'Disabled', value: 60, disabled: true, width: 280, renderTo: host });
   c({ type: 'slider', label: 'Read-only', value: 60, readonly: true, width: 280, renderTo: host });
+});
+
+p.section('Dial', 'a flat ruler under a fixed needle: drag it (a slow drag rests on the nearest value, a flick glides on to the nearest snap point ahead), click a tick, arrows / Page (snap points) / Home / End. The readout digits roll; a text value slides in.', (host, { watch }) => {
+  watch(c<Dial>({ type: 'dial', label: 'Age', min: 0, max: 120, value: 34, width: 340, renderTo: host }), ['change', 'slide-end']);
+  c({ type: 'dial', label: 'Birth year', min: 1920, max: 2026, value: 1990, width: 340, renderTo: host });
+  c({ type: 'dial', label: 'Age (format)', max: 120, value: 27, format: (v: number) => `${v} years`, width: 340, renderTo: host });
+  c({ type: 'dial', label: 'Month', options: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], value: 'May', width: 340, renderTo: host });
+  c({ type: 'dial', label: 'Disabled', max: 120, value: 50, disabled: true, width: 340, renderTo: host });
+  c({ type: 'dial', label: 'Read-only', max: 120, value: 50, readonly: true, width: 340, renderTo: host });
+});
+
+p.section('Dial · circle', 'shape: circle, a clock face: drag the hand around (it turns the short way), click a tick, the same keys.', (host, { watch }) => {
+  watch(c<Dial>({ type: 'dial', label: 'Month', shape: 'circle', options: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], value: 'Mar', renderTo: host }), ['change']);
+  c({ type: 'dial', label: 'Minutes', shape: 'circle', min: 0, max: 59, snap: 5, value: 15, renderTo: host });
+  c({ type: 'dial', label: 'Size', shape: 'circle', options: [{ value: 's', label: 'S' }, { value: 'm', label: 'M' }, { value: 'l', label: 'L' }, { value: 'xl', label: 'XL' }], value: 'm', renderTo: host });
 });
 
 p.section('Toggle', 'an on/off switch (role="switch"): Space or a click toggles; disabled and read-only.', (host, { watch }) => {

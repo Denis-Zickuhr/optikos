@@ -1,0 +1,58 @@
+@layer optikos {
+  /* the field's control becomes a row: [prefix][input box][suffix], the inner corners squared off */
+  .op-inputgroup__row {
+    display: flex;
+    align-items: stretch;
+  }
+  .op-inputgroup__row > :not(.op-inputgroup__affix) {
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .op-inputgroup__affix {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-1);
+    padding-inline: var(--op-control-padding-x);
+    color: var(--op-inputgroup-affix-fg, var(--op-color-fg-muted));
+    background: var(--op-inputgroup-affix-bg, var(--op-color-surface-2));
+    border: var(--op-border-width) solid var(--op-textfield-border, var(--op-color-border-strong));
+    white-space: nowrap;
+  }
+  .op-inputgroup__btn {
+    color: var(--op-color-fg);
+    font: inherit;
+    font-weight: var(--op-font-weight-medium);
+    cursor: pointer;
+  }
+  .op-inputgroup__btn:hover {
+    background: var(--op-color-hover);
+  }
+  .op-inputgroup__btn:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+  }
+  .op-inputgroup__affix--prefix {
+    margin-inline-end: calc(var(--op-border-width) * -1);
+    border-start-start-radius: var(--op-textfield-radius, var(--op-radius));
+    border-end-start-radius: var(--op-textfield-radius, var(--op-radius));
+  }
+  .op-inputgroup__affix--suffix {
+    margin-inline-start: calc(var(--op-border-width) * -1);
+    border-start-end-radius: var(--op-textfield-radius, var(--op-radius));
+    border-end-end-radius: var(--op-textfield-radius, var(--op-radius));
+  }
+  /* every text-based field (Select, DateField, NumberField...) draws its box on .op-textfield__input */
+  .op-inputgroup .has-prefix .op-textfield__input {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+  .op-inputgroup .has-suffix .op-textfield__input {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .op-inputgroup .op-textfield__input:focus {
+    position: relative;
+    z-index: 1; /* the focus ring stays above the joined segments */
+  }
+}

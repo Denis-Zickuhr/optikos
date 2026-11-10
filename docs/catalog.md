@@ -12,6 +12,7 @@ Priority: **P0** = needed by the demos; **P1** = completes the library; **P2** =
 | SplitButton | `splitbutton` | P1 |
 | Link | `link` | P1 |
 | Badge | `badge` | P1 ✔ |
+| CodeViewer (read-only code: colors, line numbers, marked lines, copy) | `codeviewer` | P1 ✔ |
 | Chip | `chip` | P1 ✔ |
 | Avatar | `avatar` | P2 |
 
@@ -49,6 +50,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (all P0, in the core).
 | DateRangeField | `daterangefield` | P1 ✔ |
 | CheckboxGroup | `checkboxgroup` | P1 ✔ |
 | Slider (a track with a knob, single or range) | `slider` | P1 ✔ |
+| Dial (a flat ruler or a clock face, a range or a list, rolling readout) | `dial` | P1 ✔ |
 | Toggle | `toggle` | P1 ✔ |
 | TagField | `tagfield` | P1 |
 | MaskField, CurrencyField | `maskfield`, `currencyfield` | P1 |
@@ -61,10 +63,17 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (all P0, in the core).
 |---|---|---|
 | Form | `form` | P0 |
 | Validators | (functions) | P0 |
-| FieldContainer | `fieldcontainer` | P1 |
+| FieldGroup (several inputs under one label and one error line) | `fieldgroup` | P1 ✔ |
+| InputGroup (text or buttons joined to a field's box: `R$`, `.com`, Copy) | `inputgroup` | P1 ✔ |
 | Data binding | `form.load / getValues` | P0 (decision in the spec sheet) |
 | Tabbed form (`Form` with `tabs`) | `form` + `tabs` | P1 ✔ |
 | StepForm (multi-step form) | `stepform` | P1 ✔ |
+| Form layouts (`columns`, `colspan: 'full'`, `labelWidth`) and FieldSet variants | `form`, `fieldset` | P1 ✔ |
+| FormSection (settings-page sections: title and description beside the fields) | `formsection` | P1 ✔ |
+| FieldList (a repeating block of fields: add, remove, reorder; the value is an array) | `fieldlist` | P1 ✔ |
+| Conditional fields (`showIf`, `enableIf` on any item of a form) | `form` | P1 ✔ |
+| FormErrors (an error summary with links to the fields) | `formerrors` | P1 ✔ |
+| FormActions (Cancel / Save bar with an "unsaved changes" status, optionally sticky) | `formactions` | P1 ✔ |
 
 ## Data
 

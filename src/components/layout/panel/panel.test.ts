@@ -70,4 +70,28 @@ describe('Panel', () => {
     expect(kids.every((k) => k.destroyed)).toBe(true);
     expect(document.querySelector('.op-panel')).toBeNull();
   });
+
+  it('reloadable: a ↻ tool runs onReload; a Promise shows the loading mask until it settles; before-reload can cancel', async () => {
+    let done!: () => void;
+    const onReload = vi.fn(() => new Promise<void>((r) => (done = r)));
+    const p = make({ reloadable: true, onReload });
+    const reloaded = vi.fn();
+    p.on('reload', reloaded);
+    const tool = p.el.querySelector<HTMLElement>('.op-panel__tool[aria-label="Reload"]')!;
+    expect(tool).not.toBeNull();
+    tool.click();
+    expect(onReload).toHaveBeenCalledWith(p);
+    expect(p.el.classList.contains('is-reloading')).toBe(true);
+    expect(p.el.getAttribute('aria-busy')).toBe('true');
+    tool.click(); // already reloading: ignored
+    expect(onReload).toHaveBeenCalledTimes(1);
+    done();
+    await new Promise((r) => setTimeout(r));
+    expect(p.el.classList.contains('is-reloading')).toBe(false);
+    expect(p.el.hasAttribute('aria-busy')).toBe(false);
+    expect(reloaded).toHaveBeenCalledTimes(1);
+    p.on('before-reload', () => false);
+    expect(await p.reload()).toBe(false);
+    expect(onReload).toHaveBeenCalledTimes(1);
+  });
 });

@@ -16,6 +16,7 @@ import { SuggestField } from '../components/fields/suggestfield/suggestfield';
 import { LookupField } from '../components/fields/lookupfield/lookupfield';
 import { SecretField } from '../components/fields/secretfield/secretfield';
 import { Slider } from '../components/fields/slider/slider';
+import { Dial } from '../components/fields/dial/dial';
 import { Button } from '../components/base/button/button';
 import { Panel } from '../components/layout/panel/panel';
 import { Toolbar } from '../components/layout/toolbar/toolbar';
@@ -43,6 +44,7 @@ export const ui = {
   dateRange: (name: string, label?: string, c?: Cfg) => field(DateRangeField, name, label, c),
   secret: (name: string, label?: string, c?: Cfg) => field(SecretField, name, label, c),
   slider: (name: string, label?: string, c?: Cfg) => field(Slider, name, label, c),
+  dial: (name: string, label?: string, c?: Cfg) => field(Dial, name, label, c),
   /** `boxLabel` is the text beside the box. */
   check: (name: string, boxLabel?: string, c?: Cfg) => field(Checkbox, name, undefined, { boxLabel, ...c }),
   /** An on/off switch; `boxLabel` is the text beside it. */

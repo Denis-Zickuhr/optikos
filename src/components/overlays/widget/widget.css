@@ -4,6 +4,8 @@
     --op-widget-height: 26rem;
     --op-widget-wide: 36rem;
     --op-widget-offset: var(--op-space-4);
+    --op-widget-grip: 0.5rem;
+    --op-widget-corner: 1rem;
   }
   .op-widget {
     min-block-size: 0;
@@ -73,5 +75,61 @@
   }
   .op-widget.is-dragging {
     transition: none;
+  }
+  /* resize: an invisible strip on the inner edge (a line shows on hover/focus); a corner grip once the widget was moved */
+  .op-widget__resize {
+    position: absolute;
+    z-index: 1;
+    touch-action: none;
+  }
+  .op-widget--right .op-widget__resize,
+  .op-widget--left .op-widget__resize {
+    inset-block: 0;
+    inline-size: var(--op-widget-grip);
+    cursor: ew-resize;
+  }
+  .op-widget--right .op-widget__resize {
+    inset-inline-start: calc(var(--op-widget-grip) / -2);
+  }
+  .op-widget--left .op-widget__resize {
+    inset-inline-end: calc(var(--op-widget-grip) / -2);
+  }
+  .op-widget--top .op-widget__resize,
+  .op-widget--bottom .op-widget__resize {
+    inset-inline: 0;
+    block-size: var(--op-widget-grip);
+    cursor: ns-resize;
+  }
+  .op-widget--top .op-widget__resize {
+    inset-block-end: calc(var(--op-widget-grip) / -2);
+  }
+  .op-widget--bottom .op-widget__resize {
+    inset-block-start: calc(var(--op-widget-grip) / -2);
+  }
+  .op-widget__resize:hover,
+  .op-widget__resize:focus-visible,
+  .op-widget.is-resizing .op-widget__resize {
+    background: linear-gradient(var(--op-color-primary), var(--op-color-primary)) center / var(--op-focus-width) 100% no-repeat;
+    outline: none;
+  }
+  .op-widget--top .op-widget__resize:is(:hover, :focus-visible),
+  .op-widget--bottom .op-widget__resize:is(:hover, :focus-visible),
+  .op-widget--top.is-resizing .op-widget__resize,
+  .op-widget--bottom.is-resizing .op-widget__resize {
+    background-size: 100% var(--op-focus-width);
+  }
+  .op-widget.is-moved .op-widget__resize {
+    inset: auto 0 0 auto;
+    inline-size: var(--op-widget-corner);
+    block-size: var(--op-widget-corner);
+    background: linear-gradient(135deg, transparent 55%, var(--op-color-border-strong) 55% 62%, transparent 62% 75%, var(--op-color-border-strong) 75% 82%, transparent 82%);
+    cursor: nwse-resize;
+  }
+  .op-widget.is-moved .op-widget__resize:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+  }
+  .op-widget.is-resizing {
+    transition: none;
+    user-select: none;
   }
 }

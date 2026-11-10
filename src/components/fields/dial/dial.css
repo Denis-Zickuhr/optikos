@@ -1,0 +1,203 @@
+@layer optikos {
+  :root {
+    --op-dial-spacing: 0.75rem;
+    --op-dial-item-spacing: 3.5rem;
+    --op-dial-height: 3.75rem;
+    --op-dial-size: 13rem;
+    --op-dial-readout-size: 2.75rem;
+    --op-dial-readout-size-circle: 2rem;
+    --op-dial-roll-duration: 380ms;
+    --op-dial-tick-height: 0.75rem;
+    --op-dial-major-height: 1.375rem;
+    --op-dial-needle-width: 0.1875rem;
+    --op-dial-label-gap: 0.25rem;
+    --op-dial-ring-inset: 0.5rem;
+    --op-dial-hub: 0.625rem;
+    --op-dial-digit-height: 1em; /* one line of the readout: a reel moves by this per digit */
+  }
+  .op-dial {
+    --_sp: var(--op-dial-spacing);
+  }
+  .op-dial--list {
+    --_sp: var(--op-dial-item-spacing);
+  }
+  .op-dial__box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--op-space-2);
+  }
+
+  /* the readout: digits roll like an odometer (each reel is the column 0–9, moved by --d) */
+  .op-dial__readout {
+    display: flex;
+    justify-content: center;
+    min-block-size: var(--op-dial-digit-height);
+    color: var(--op-dial-readout-fg, var(--op-color-fg));
+    font-size: var(--op-dial-readout-size);
+    font-weight: var(--op-font-weight-bold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: pre;
+  }
+  .op-dial__digit,
+  .op-dial__reel {
+    font-size: inherit; /* the global op-* rule would reset them to the base size */
+  }
+  .op-dial__digit {
+    display: inline-block;
+    block-size: var(--op-dial-digit-height);
+    overflow: hidden;
+  }
+  .op-dial__reel {
+    display: flex;
+    flex-direction: column;
+    transform: translateY(calc(var(--d, 0) * -10%));
+    transition: transform var(--op-dial-roll-duration) var(--op-motion-ease-out);
+  }
+  .op-dial__reel > span {
+    display: block;
+    block-size: var(--op-dial-digit-height);
+  }
+
+  /* the face: a flat ruler sliding under a fixed needle */
+  .op-dial__face {
+    position: relative;
+    inline-size: 100%;
+    block-size: var(--op-dial-height);
+    border-radius: var(--op-radius);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .op-dial__face:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-dial.is-dragging .op-dial__face {
+    cursor: grabbing;
+  }
+  .op-dial__window {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+  }
+  .op-dial__tape {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    /* --pos (set by the component) is the item under the needle, fractional while dragging */
+    transform: translateX(calc(var(--pos, 0) * -1 * var(--_sp)));
+    transition: transform var(--op-dial-roll-duration) var(--op-motion-ease-out);
+  }
+  .op-dial.is-dragging .op-dial__tape {
+    transition: none;
+  }
+  .op-dial.is-gliding .op-dial__tape {
+    transition-timing-function: var(--op-motion-ease-out);
+  }
+  .op-dial__tick {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: calc(var(--i) * var(--_sp));
+    inline-size: var(--op-border-width);
+    block-size: var(--op-dial-tick-height);
+    background: var(--op-dial-tick-fg, var(--op-color-border-strong));
+    transform: translateX(-50%);
+  }
+  .op-dial__tick.is-major {
+    inline-size: calc(var(--op-border-width) * 2);
+    block-size: var(--op-dial-major-height);
+    background: var(--op-dial-major-fg, var(--op-color-fg-muted));
+  }
+  .op-dial__tick-label {
+    position: absolute;
+    inset-block-start: calc(100% + var(--op-dial-label-gap));
+    inset-inline-start: 50%;
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    white-space: nowrap;
+    transform: translateX(-50%);
+    transition: color var(--op-duration) var(--op-easing);
+  }
+  .op-dial__tick.is-current .op-dial__tick-label {
+    color: var(--op-color-primary-text, var(--op-color-primary));
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-dial__needle {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    inline-size: var(--op-dial-needle-width);
+    block-size: calc(var(--op-dial-major-height) + var(--op-space-1));
+    background: var(--op-dial-needle, var(--op-color-primary));
+    border-radius: var(--op-radius-pill);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  /* circle: a clock face, the ticks around the ring and a hand from the center */
+  .op-dial--circle .op-dial__face {
+    inline-size: var(--op-dial-size);
+    block-size: var(--op-dial-size);
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: 50%;
+  }
+  .op-dial--circle .op-dial__window {
+    overflow: visible;
+    mask-image: none;
+  }
+  .op-dial--circle .op-dial__tape {
+    inset: 0;
+    transform: none;
+    transition: none;
+  }
+  .op-dial--circle .op-dial__tick {
+    inset-block-start: var(--op-dial-ring-inset);
+    inset-inline-start: 50%;
+    transform-origin: 50% calc(var(--op-dial-size) / 2 - var(--op-dial-ring-inset) - var(--op-border-width));
+    transform: translateX(-50%) rotate(var(--a));
+  }
+  .op-dial--circle .op-dial__tick-label {
+    transform: translateX(-50%) rotate(calc(var(--a) * -1));
+  }
+  .op-dial--circle .op-dial__needle {
+    inset-block-start: auto;
+    inset-block-end: 50%;
+    block-size: calc(var(--op-dial-size) / 2 - var(--op-dial-ring-inset) - var(--op-dial-major-height) - var(--op-space-5) - var(--op-space-2));
+    transform-origin: 50% 100%;
+    transition: transform var(--op-dial-roll-duration) var(--op-motion-ease-out);
+  }
+  .op-dial--circle.is-dragging .op-dial__needle {
+    transition: none;
+  }
+  /* the hub the hand turns on */
+  .op-dial--circle .op-dial__needle::after {
+    content: '';
+    position: absolute;
+    inset-block-end: calc(var(--op-dial-hub) / -2);
+    inset-inline-start: 50%;
+    inline-size: var(--op-dial-hub);
+    block-size: var(--op-dial-hub);
+    background: inherit;
+    border-radius: 50%;
+    transform: translateX(-50%);
+  }
+  .op-dial--circle .op-dial__readout {
+    font-size: var(--op-dial-readout-size-circle);
+  }
+
+  .op-dial.is-disabled .op-dial__face {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .op-dial.is-readonly .op-dial__face {
+    cursor: default;
+  }
+  .op-motion-off .op-dial__reel,
+  .op-motion-off .op-dial__tape,
+  .op-motion-off .op-dial__needle {
+    transition: none;
+  }
+}

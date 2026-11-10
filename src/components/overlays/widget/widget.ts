@@ -3,18 +3,21 @@ import { register } from '../../../core/registry';
 import { t, addMessages } from '../../../core/i18n';
 import { toLayer } from '../../../core/layer';
 import { focusables } from '../../../core/focus';
+import { h } from '../../../core/dom';
 
 addMessages('en', {
   wDockLeft: 'Dock to the left',
   wDockRight: 'Dock to the right',
   wDockTop: 'Dock to the top',
   wDockBottom: 'Dock to the bottom',
+  wResize: 'Resize',
 });
 addMessages('pt-BR', {
   wDockLeft: 'Fixar à esquerda',
   wDockRight: 'Fixar à direita',
   wDockTop: 'Fixar em cima',
   wDockBottom: 'Fixar embaixo',
+  wResize: 'Redimensionar',
 });
 
 export type WidgetSide = 'right' | 'left' | 'top' | 'bottom';
@@ -30,10 +33,15 @@ export interface WidgetConfig extends PanelConfig {
   /** Which sides the switcher offers. Default left, right, bottom. */
   sides?: WidgetSide[];
   closeOnEsc?: boolean;
+  /** On open the focus goes to the widget itself; `true` focuses its first field instead. Default false. */
   autoFocus?: boolean;
   /** The user can move it by its header (pointer drag, or Alt+arrow keys). A move frees it from the side; `setSide` docks it again. */
   draggable?: boolean;
+  /** The user can resize it: the inner edge while docked, a corner grip once moved; arrow keys on the handle. */
+  resizable?: boolean;
 }
+
+const MIN = 160; // px: the smallest a user can make it
 
 const ICON: Record<WidgetSide, string> = { left: 'chevron-left', right: 'chevron-right', top: 'chevron-up', bottom: 'chevron-down' };
 const LABEL: Record<WidgetSide, string> = { left: 'wDockLeft', right: 'wDockRight', top: 'wDockTop', bottom: 'wDockBottom' };
@@ -47,6 +55,7 @@ export class Widget extends Panel<WidgetConfig> {
   private cancelHide?: () => void;
   private userTools: number;
   private pos?: { x: number; y: number };
+  private grip?: HTMLElement;
 
   constructor(config: WidgetConfig = {}) {
     const tools: PanelTool[] = [...(config.tools ?? [])];
@@ -71,6 +80,7 @@ export class Widget extends Panel<WidgetConfig> {
     this.paintSide();
     if (c.size != null) this.setSize(c.size);
     if (c.draggable && c.floating !== false) this.initDrag();
+    this.setResizable(!!c.resizable);
     this.listen(this.el, 'keydown', (e: KeyboardEvent) => {
       if (e.key === 'Escape' && c.closeOnEsc !== false && !e.defaultPrevented && c.floating !== false) {
         e.stopPropagation();
@@ -98,6 +108,7 @@ export class Widget extends Panel<WidgetConfig> {
     const side = this.getSide();
     for (const s of SIDES) this.el.classList.toggle(`op-widget--${s}`, s === side);
     for (const b of Array.from(this.el.querySelectorAll<HTMLElement>('[data-side]'))) b.setAttribute('aria-pressed', String(b.dataset.side === side));
+    this.paintGrip();
   }
 
   /** Where the user left it (viewport px), or undefined while it sits on its side. */
@@ -112,6 +123,7 @@ export class Widget extends Panel<WidgetConfig> {
     const st = this.el.style;
     for (const k of ['inset', 'inset-inline', 'inset-block', 'left', 'top', 'width', 'height']) st.removeProperty(k);
     this.el.classList.remove('is-moved');
+    this.paintGrip();
     this.emit('move', undefined);
   }
 
@@ -132,6 +144,7 @@ export class Widget extends Panel<WidgetConfig> {
     el.style.inset = 'auto';
     el.style.left = `${this.pos.x}px`;
     el.style.top = `${this.pos.y}px`;
+    this.paintGrip();
     this.emit('move', this.pos);
   }
 
@@ -177,6 +190,76 @@ export class Widget extends Panel<WidgetConfig> {
     if (this.rendered) this.el.style.setProperty('--op-widget-size', typeof size === 'number' ? `${size}px` : size);
   }
 
+  // ---- resize --------------------------------------------------------------------------------
+
+  /** Adds or removes the resize handle (only for a floating widget). */
+  setResizable(resizable: boolean): void {
+    this.config.resizable = resizable;
+    if (!this.rendered) return;
+    this.grip?.remove();
+    this.grip = undefined;
+    if (!resizable || this.config.floating === false) return;
+    const grip = (this.grip = h('div', 'op-widget__resize', { role: 'separator', tabindex: 0, 'aria-label': t('wResize') }));
+    this.el.append(grip);
+    this.listen(grip, 'pointerdown', (e: PointerEvent) => {
+      if (e.button) return;
+      e.preventDefault();
+      const r = this.el.getBoundingClientRect();
+      const x0 = e.clientX;
+      const y0 = e.clientY;
+      this.el.classList.add('is-resizing');
+      const move = (m: PointerEvent) => this.resizeBy(r, m.clientX - x0, m.clientY - y0);
+      const up = () => {
+        this.el.classList.remove('is-resizing');
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', up);
+      };
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+      this.own(up);
+    });
+    this.listen(grip, 'keydown', (e: KeyboardEvent) => {
+      const step = e.shiftKey ? 64 : 16;
+      const d: Record<string, [number, number]> = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+      if (!d[e.key] || e.altKey) return;
+      e.preventDefault();
+      this.resizeBy(this.el.getBoundingClientRect(), ...d[e.key]);
+    });
+    this.paintGrip();
+  }
+
+  /**
+   * Resizes from rect `r` by a pointer (or key) delta. Moved: the corner grip sets width and height. Docked: the inner edge
+   * sets the size, so pulling it away from the docked edge makes the widget bigger.
+   */
+  private resizeBy(r: { width: number; height: number }, dx: number, dy: number): void {
+    const clamp = (v: number, max: number) => Math.round(Math.max(MIN, Math.min(v, max)));
+    if (this.pos) {
+      if (dx) this.el.style.width = `${clamp(r.width + dx, innerWidth - this.pos.x)}px`;
+      if (dy) this.el.style.height = `${clamp(r.height + dy, innerHeight - this.pos.y)}px`;
+    } else {
+      const side = this.getSide();
+      const across = side === 'left' || side === 'right';
+      const grow = side === 'right' ? -dx : side === 'left' ? dx : side === 'bottom' ? -dy : dy;
+      this.setSize(clamp((across ? r.width : r.height) + grow, (across ? innerWidth : innerHeight) - 32));
+    }
+    this.paintGrip();
+    const box = this.el.getBoundingClientRect();
+    this.emit('resize', { width: Math.round(box.width), height: Math.round(box.height) });
+  }
+
+  /** The handle's orientation and value follow the dimension it changes. */
+  private paintGrip(): void {
+    const g = this.grip;
+    if (!g) return;
+    const side = this.getSide();
+    const across = !!this.pos || side === 'left' || side === 'right';
+    const r = this.el.getBoundingClientRect();
+    g.setAttribute('aria-orientation', across ? 'vertical' : 'horizontal');
+    g.setAttribute('aria-valuemin', String(MIN));
+    g.setAttribute('aria-valuenow', String(Math.round(across ? r.width : r.height)));
+  }
+
   // ---- open / close --------------------------------------------------------------------------
 
   isOpen(): boolean {
@@ -204,7 +287,8 @@ export class Widget extends Panel<WidgetConfig> {
     this.notifyMount();
     // next frame, so the slide-in transition has a starting point
     requestAnimationFrame(() => this.opened && el.classList.add('is-open'));
-    if (this.config.autoFocus !== false) (focusables(this.getBody())[0] ?? el).focus();
+    if (el.tabIndex < 0 && !el.hasAttribute('tabindex')) el.tabIndex = -1;
+    ((this.config.autoFocus && focusables(this.getBody())[0]) || el).focus();
     this.emit('show');
   }
 

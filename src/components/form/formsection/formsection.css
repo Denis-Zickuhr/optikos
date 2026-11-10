@@ -1,0 +1,45 @@
+@layer optikos {
+  :root {
+    --op-formsection-aside-width: 16rem;
+    --op-formsection-gap: var(--op-space-6);
+  }
+  /* side by side when the section itself is wide enough: a container query, so it works inside any panel or window */
+  .op-formsection {
+    display: flow-root; /* holds the floated aside */
+    container-type: inline-size;
+    min-inline-size: 0;
+  }
+  .op-formsection__aside,
+  .op-formsection__body {
+    min-inline-size: 0;
+  }
+  .op-formsection__body {
+    --op-layout-gap: var(--op-form-gap, var(--op-space-3));
+    margin-block-start: var(--op-space-3);
+  }
+  .op-formsection__title {
+    margin: 0;
+    font-size: var(--op-font-size-lg);
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-formsection__desc {
+    margin: var(--op-space-1) 0 0;
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-formsection--divided + .op-formsection--divided {
+    margin-block-start: var(--op-space-4);
+    padding-block-start: var(--op-space-5);
+    border-block-start: var(--op-border-width) solid var(--op-formsection-divider, var(--op-color-border));
+  }
+  @container (min-width: 40rem) {
+    .op-formsection:not(.op-formsection--stacked) > .op-formsection__aside {
+      float: inline-start;
+      inline-size: var(--op-formsection-aside-width);
+    }
+    .op-formsection:not(.op-formsection--stacked) > .op-formsection__body {
+      margin-block-start: 0;
+      margin-inline-start: calc(var(--op-formsection-aside-width) + var(--op-formsection-gap));
+    }
+  }
+}

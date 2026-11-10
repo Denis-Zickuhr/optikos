@@ -1,4 +1,5 @@
 import { Container, type ContainerConfig } from '../../../core/container';
+import './reload';
 import { register } from '../../../core/registry';
 import { h, uid } from '../../../core/dom';
 import { t } from '../../../core/i18n';
@@ -20,6 +21,9 @@ export interface PanelConfig extends ContainerConfig {
   collapsed?: boolean;
   closable?: boolean;
   closeAction?: 'destroy' | 'hide';
+  /** A ↻ button in the header that calls `onReload` (a Promise shows the loading mask until it settles). */
+  reloadable?: boolean;
+  onReload?: (panel: Panel) => void | Promise<unknown>;
   tools?: PanelTool[];
   tbar?: ToolbarConfig['items'];
   bbar?: ToolbarConfig['items'];
@@ -71,6 +75,7 @@ export class Panel<C extends PanelConfig = PanelConfig> extends Container<C> {
     this.setTitle(c.title ?? '');
     this.setIcon(c.icon ?? '');
     for (const tool of c.tools ?? []) this.addTool(tool.icon, tool.label, (e) => tool.handler?.(this, e));
+    if (c.reloadable) this.addTool('refresh', t('reload'), () => void this.reload());
     if (c.collapsible) {
       this.toggleBtn = this.addTool('chevron-up', t('collapse'), () => this.toggle());
       this.toggleBtn.setAttribute('aria-controls', this.bodyId);
@@ -91,7 +96,20 @@ export class Panel<C extends PanelConfig = PanelConfig> extends Container<C> {
 
   private updateHeader() {
     const c = this.config;
-    this.headerEl.hidden = !c.title && !c.icon && !c.collapsible && !c.closable && !c.tools?.length;
+    this.headerEl.hidden = !c.title && !c.icon && !c.collapsible && !c.closable && !c.reloadable && !c.tools?.length;
+  }
+
+  /** Runs `onReload` (`before-reload` can cancel); a returned Promise keeps the loading mask (and a turning ↻) until it settles. */
+  async reload(): Promise<boolean> {
+    const el = this.el;
+    if (el.classList.contains('is-reloading') || this.emit('before-reload') === false) return false;
+    el.classList.add('is-reloading');
+    this.setLoading(true);
+    await Promise.resolve(this.config.onReload?.(this)).catch(() => 0);
+    this.setLoading(false);
+    el.classList.remove('is-reloading');
+    this.emit('reload');
+    return true;
   }
 
   setTitle(title: string) {

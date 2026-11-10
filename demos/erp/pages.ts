@@ -145,7 +145,7 @@ const toColumn = (c: Col): Column => {
   return base;
 };
 const toFilterField = (c: Col): FilterField => ({
-  name: c.field, label: c.header,
+  name: c.field, label: c.header, group: groupOf(c),
   type: c.type === 'money' || c.type === 'number' ? 'number' : c.type === 'date' ? 'date' : c.type === 'select' ? 'select' : c.type === 'bool' ? 'select' : 'text',
   options: c.type === 'select' ? c.options : c.type === 'bool' ? ([{ value: true, label: 'Yes' }, { value: false, label: 'No' }] as any) : undefined,
 });

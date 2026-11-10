@@ -74,4 +74,11 @@
     border-block-end: 0;
     border-block-start: var(--op-border-width) solid var(--op-color-border);
   }
+  /* the ↻ tool turns while the panel reloads */
+  .op-panel.is-reloading > .op-panel__header .op-panel__tool svg {
+    animation: op-spin 700ms linear infinite;
+  }
+  .op-motion-off .op-panel.is-reloading > .op-panel__header .op-panel__tool svg {
+    animation: none;
+  }
 }

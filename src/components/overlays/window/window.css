@@ -7,6 +7,10 @@
     inset: 0;
     background: var(--op-backdrop-bg, var(--op-color-overlay));
   }
+  /* mask: false — still modal (the page is inert and takes no clicks), just not dimmed */
+  .op-window-backdrop.is-clear {
+    background: transparent;
+  }
   .op-window {
     position: fixed;
     inline-size: var(--op-window-width);

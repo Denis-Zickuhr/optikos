@@ -2,7 +2,7 @@
 Purpose:       Users build filters at run time: `field · operator · value` rows that add up, with nestable AND/OR groups.
 Anatomy:       `.op-filterbuilder` > `.op-filterbuilder__group` (`is-nested`; `__head`: connector, "Add filter", "Add group", "Clear all"/remove) >
                `.op-filterbuilder__row` (field select, operator select, value editor(s) `__value`, `__to`, `__remove`); `__foot` with Apply when `live: false`.
-Config:        `fields: [{ name, label, type: 'text'|'number'|'date'|'select', options }]`, `value: FilterGroup` (initial filter; with a `store` it is applied on mount),
+Config:        `fields: [{ name, label, type: 'text'|'number'|'date'|'select', options, group }]` (`group`, as `Column.group` in the Grid: grouped in the field select (`<optgroup>`) and in the `pick` menu, which also gets a search field past 6 fields), `value: FilterGroup` (initial filter; with a `store` it is applied on mount),
                `store` (applies `store.filter(...)` / `clearFilter()`), `addMode: 'row'|'pick'` (`row`: "Add filter" creates a row with the 1st field; `pick`: first opens a menu with the fields and creates the row for the chosen one, focusing its value), `live: true` (applies on every edit, debounced by 250 ms; `false` shows an Apply button), `maxDepth: 3`.
 Operators:     text: contains, does not contain, equals, not equal, starts with, ends with, is one of, is none of, empty, not empty.
                number/date: equals, not equal, >, >=, <, <=, between, not between, empty, not empty. select: equals, not equal, is one of (native multi-select), is none of, empty, not empty.
