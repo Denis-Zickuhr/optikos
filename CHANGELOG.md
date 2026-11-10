@@ -5,6 +5,8 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-10
+
 ### Added
 
 - NavMenu in rail mode (`collapsed`): a group shows its icon (or initial) and opens a floating Menu beside it with its
@@ -155,6 +157,7 @@ First public release.
   `corporate`, `soft`, `brutal`, `terminal`, `editorial` and `brand`.
 - Per-component entry points (`optikos/components/<name>`) and stylesheets (`optikos/css/<name>.css`).
 
-[Unreleased]: https://github.com/Denis-Zickuhr/optikos/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/Denis-Zickuhr/optikos/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Denis-Zickuhr/optikos/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Denis-Zickuhr/optikos/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Denis-Zickuhr/optikos/releases/tag/v0.1.0
