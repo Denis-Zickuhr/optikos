@@ -1,6 +1,11 @@
 /* Brutal: thick black borders, no rounding, hard offset shadows, loud yellow, uppercase labels. data-op-theme="brutal" */
 @layer optikos {
   [data-op-theme~='brutal'] {
+    /* code colors: these theme colors are pale or bright, so they lean further towards the text to keep 4.5:1 */
+    --op-codeviewer-keyword: color-mix(in srgb, var(--op-color-primary) 30%, var(--op-color-fg));
+    --op-codeviewer-string: color-mix(in srgb, var(--op-color-success) 55%, var(--op-color-fg));
+    --op-codeviewer-number: color-mix(in srgb, var(--op-color-warning) 40%, var(--op-color-fg));
+    --op-codeviewer-tag: color-mix(in srgb, var(--op-color-danger) 60%, var(--op-color-fg));
     --op-color-bg: #fff4d6;
     --op-color-surface: #ffffff;
     --op-color-surface-2: #ffe9a8;

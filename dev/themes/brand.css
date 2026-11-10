@@ -3,6 +3,9 @@
    data-op-theme="brand"; add "night" (data-op-theme="brand night") for the dark onyx version. */
 @layer optikos {
   [data-op-theme~='brand'] {
+    /* code colors: these theme colors are pale or bright, so they lean further towards the text to keep 4.5:1 */
+    --op-codeviewer-keyword: color-mix(in srgb, var(--op-color-primary) 45%, var(--op-color-fg));
+    --op-codeviewer-number: color-mix(in srgb, var(--op-color-warning) 60%, var(--op-color-fg));
     color-scheme: light;
     --op-brand-gold: #c9a24b;
     --op-brand-gold-light: #ecd28c;

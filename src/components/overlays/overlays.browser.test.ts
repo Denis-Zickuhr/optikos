@@ -19,7 +19,9 @@ describe('Window (browser)', () => {
     const w = create<Window>({ type: 'window', title: 'Edit', items: [{ type: 'textfield', label: 'Name' }, { type: 'textfield', label: 'City' }], buttons: [{ text: 'Save', variant: 'primary' }] });
     w.show();
     const inside = () => w.el.contains(document.activeElement);
-    expect(document.activeElement).toBe(w.el.querySelector('input'));
+    expect(document.activeElement).toBe(w.el); // the dialog itself: no field autofocus (a phone keyboard would pop up)
+    await userEvent.tab();
+    expect(document.activeElement).toBe(w.el.querySelector('input')); // Tab goes to the first field
     for (let i = 0; i < 8; i++) {
       await userEvent.tab();
       expect(inside(), `Tab #${i + 1} left the window`).toBe(true);

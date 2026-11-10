@@ -4,6 +4,10 @@
     background: linear-gradient(135deg, #eef1fb 0%, #f6efff 100%) fixed;
   }
   [data-op-theme~='soft'] {
+    /* code colors: these theme colors are pale or bright, so they lean further towards the text to keep 4.5:1 */
+    --op-codeviewer-string: color-mix(in srgb, var(--op-color-success) 40%, var(--op-color-fg));
+    --op-codeviewer-number: color-mix(in srgb, var(--op-color-warning) 35%, var(--op-color-fg));
+    --op-codeviewer-property: color-mix(in srgb, var(--op-color-info) 45%, var(--op-color-fg));
     --op-color-bg: #eef1fb;
     --op-color-surface: #ffffff;
     --op-color-surface-2: #f4f5fd;
