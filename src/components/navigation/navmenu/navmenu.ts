@@ -2,6 +2,7 @@ import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
 import { iconEl } from '../../base/icon/icon';
+import { Menu, type MenuEntry } from '../../overlays/menu/menu';
 
 export interface NavItem {
   id: string;
@@ -36,6 +37,10 @@ export class NavMenu extends Component<NavMenuConfig> {
   private query = '';
   private focusId?: string;
   private root!: HTMLElement;
+  /** Rail mode: the floating menu of a group, and the group it belongs to. */
+  private flyout?: Menu;
+  private flyoutOf?: string;
+  private hoverTimer?: () => void;
 
   protected override onRender() {
     const c = this.config;
@@ -51,6 +56,15 @@ export class NavMenu extends Component<NavMenuConfig> {
       if (row) this.activate(row.dataset.id!);
     });
     this.listen(this.root, 'keydown', (e: KeyboardEvent) => this.onKey(e));
+    // rail: hovering a group's icon opens its menu (after a short pause, so passing over the rail does not)
+    this.listen(this.root, 'pointerover', (e: Event) => {
+      const row = (e.target as HTMLElement).closest<HTMLElement>('.op-navmenu__item.is-group');
+      this.hoverTimer?.();
+      if (!this.config.collapsed || !row || row.dataset.id === this.flyoutOf) return;
+      this.hoverTimer = this.later(() => this.openFlyout(row.dataset.id!, false), 200);
+    });
+    this.listen(this.root, 'pointerleave', () => this.hoverTimer?.());
+    this.own(() => this.flyout?.destroy());
     this.listen(this.root, 'focusin', (e: Event) => {
       const row = (e.target as HTMLElement).closest<HTMLElement>('.op-navmenu__item');
       if (row) this.focusId = row.dataset.id;
@@ -87,7 +101,8 @@ export class NavMenu extends Component<NavMenuConfig> {
     return !i.items || i.items.some((c) => this.visible(c));
   }
   private isOpen(i: NavItem): boolean {
-    return this.query || this.config.collapsed ? true : this.open.has(i.id);
+    if (this.config.collapsed) return false; // rail: a group's children live in its floating menu
+    return this.query ? true : this.open.has(i.id);
   }
 
   // ---- rendering -------------------------------------------------------------------------------
@@ -105,12 +120,15 @@ export class NavMenu extends Component<NavMenuConfig> {
     const open = group && this.isOpen(i);
     const rail = !!this.config.collapsed;
     const li = h('li', 'op-navmenu__node', { role: 'none' });
-    const row = h('div', `op-navmenu__item${group ? ' is-group' : ''}${open ? ' is-expanded' : ''}${i.id === this.active ? ' is-active' : ''}${i.disabled ? ' is-disabled' : ''}`, {
-      role: 'treeitem', 'data-id': i.id, 'aria-level': level, 'aria-expanded': group ? String(open) : null, 'aria-current': i.id === this.active ? 'page' : null,
-      'aria-disabled': i.disabled ? 'true' : null, title: rail ? i.text : null, tabindex: -1,
+    const holdsActive = group && !!this.active && !!this.parentsOf(this.active)?.some((p) => p.id === i.id);
+    const flying = rail && group;
+    const row = h('div', `op-navmenu__item${group ? ' is-group' : ''}${open ? ' is-expanded' : ''}${i.id === this.active ? ' is-active' : ''}${holdsActive && rail ? ' has-active' : ''}${i.disabled ? ' is-disabled' : ''}`, {
+      role: 'treeitem', 'data-id': i.id, 'aria-level': level, 'aria-expanded': group ? String(flying ? this.flyoutOf === i.id : open) : null, 'aria-current': i.id === this.active ? 'page' : null,
+      'aria-haspopup': flying ? 'menu' : null, 'aria-disabled': i.disabled ? 'true' : null, title: rail ? i.text : null, tabindex: -1,
     });
     row.style.setProperty('--_level', String(level - 1));
-    row.append(h('span', 'op-navmenu__icon', {}, i.icon ? iconEl(i.icon) : ''), h('span', 'op-navmenu__text', {}, i.text));
+    // in the rail a group shows its icon (or its initial) and opens a floating menu
+    row.append(h('span', 'op-navmenu__icon', {}, i.icon ? iconEl(i.icon) : flying ? i.text.charAt(0).toUpperCase() : ''), h('span', 'op-navmenu__text', {}, i.text));
     if (i.badge != null && i.badge !== '') row.append(h('span', 'op-navmenu__badge', {}, String(i.badge)));
     if (group) row.append(h('span', 'op-navmenu__chevron', { 'aria-hidden': 'true' }, iconEl('chevron-down')));
     li.append(row);
@@ -123,6 +141,7 @@ export class NavMenu extends Component<NavMenuConfig> {
   private activate(id: string) {
     const i = this.getItem(id);
     if (!i || i.disabled) return;
+    if (i.items && this.config.collapsed) return this.openFlyout(id, true);
     if (i.items) return this.toggle(id);
     this.select(id);
   }
@@ -194,8 +213,37 @@ export class NavMenu extends Component<NavMenuConfig> {
     Object.assign(i, patch);
     if (this.rendered) this.paint();
   }
+  /** Rail mode: a group's children in a Menu beside its icon (title as the header, badges kept). */
+  private openFlyout(id: string, focus: boolean) {
+    const group = this.getItem(id);
+    const row = this.root.querySelector<HTMLElement>(`[data-id="${CSS.escape(id)}"]`);
+    if (!group?.items || !row) return;
+    const entries = (list: NavItem[], top: boolean): MenuEntry[] =>
+      list.filter((c) => this.visible(c)).map((c) => ({
+        text: c.text, icon: c.icon, badge: c.badge, disabled: c.disabled, group: top ? group.text : undefined,
+        items: c.items ? entries(c.items, false) : undefined,
+        handler: c.items ? undefined : () => this.select(c.id),
+      }));
+    if (!this.flyout) {
+      this.flyout = new Menu({ cls: 'op-navmenu__flyout' });
+      this.flyout.on('hide', () => {
+        const was = this.flyoutOf;
+        this.flyoutOf = undefined;
+        if (was) this.root.querySelector(`[data-id="${CSS.escape(was)}"]`)?.setAttribute('aria-expanded', 'false');
+      });
+      // ← closes it (the Menu only does that for submenus) and gives the focus back to the icon
+      this.listen(this.flyout.el, 'keydown', (e: KeyboardEvent) => e.key === 'ArrowLeft' && !(e.target as HTMLElement).closest('.op-menu__item[aria-expanded="true"]') && this.flyout!.hide());
+    }
+    this.flyout.hide();
+    this.flyoutOf = id;
+    this.flyout.setItems(entries(group.items, true));
+    row.setAttribute('aria-expanded', 'true');
+    this.flyout.showBy(row, 'right-start', focus);
+  }
+
   setCollapsed(collapsed: boolean) {
     this.config.collapsed = collapsed;
+    if (!collapsed) this.flyout?.hide();
     if (this.rendered) this.paint();
   }
   /** Hides what does not match and opens the groups that have a match; empty text clears the filter. */
@@ -228,7 +276,8 @@ export class NavMenu extends Component<NavMenuConfig> {
       case 'Home': this.focusRow(rows[0]); break;
       case 'End': this.focusRow(rows[rows.length - 1]); break;
       case 'ArrowRight':
-        if (item.items && !open) this.expand(item.id);
+        if (item.items && this.config.collapsed) this.openFlyout(item.id, true);
+        else if (item.items && !open) this.expand(item.id);
         else if (item.items) this.focusRow(rows[i + 1]);
         break;
       case 'ArrowLeft':
@@ -243,6 +292,7 @@ export class NavMenu extends Component<NavMenuConfig> {
       default: return;
     }
     e.preventDefault();
+    if (this.flyout?.el.contains(document.activeElement)) return; // the focus went to the rail's floating menu: leave it there
     this.focusId = (document.activeElement as HTMLElement | null)?.dataset?.id ?? item.id;
     // a repaint (expand/collapse/select) rebuilt the rows: put the focus back on the one the user is on
     const again = this.root.querySelector<HTMLElement>(`[data-id="${CSS.escape(this.focusId)}"]`);

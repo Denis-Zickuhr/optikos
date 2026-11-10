@@ -43,7 +43,7 @@ p.section('Breadcrumb', 'last item is the current page (aria-current); links use
   guarded.on('before-navigate', () => (log('before-navigate', 'cancelled'), false));
 });
 
-p.section('NavMenu', 'sidebar tree: groups open/close, one active page, badges, rail mode (icons only), filter, accordion. Keyboard: ↑↓ move, → opens/enters, ← closes/goes to the parent, Home/End, Enter.', (host, { watch }) => {
+p.section('NavMenu', 'sidebar tree: groups open/close, one active page, badges, rail mode (icons only: a group opens a floating menu by click, hover, → or Enter; ← / Esc close it), filter, accordion. Keyboard: ↑↓ move, → opens/enters, ← closes/goes to the parent, Home/End, Enter.', (host, { watch }) => {
   const items = () => [
     { id: 'dash', text: 'Dashboard', icon: 'home' },
     { id: 'sales', text: 'Sales', expanded: true, items: [{ id: 'orders', text: 'Orders', icon: 'list', badge: 12 }, { id: 'inv', text: 'Invoices', icon: 'file', badge: 3 }, { id: 'cust', text: 'Customers', icon: 'users', disabled: true }] },
@@ -54,7 +54,7 @@ p.section('NavMenu', 'sidebar tree: groups open/close, one active page, badges, 
   watch(box({}, '16rem'), ['select', 'expand', 'collapse']);
   const filterable = box({}, '16rem');
   create({ type: 'textfield', placeholder: 'Filter the menu (try "ord")…', width: 220, renderTo: host, listeners: { change: (v: string) => filterable.filter(v ?? '') } });
-  box({ collapsed: true }, 'auto');
+  watch(box({ collapsed: true }, 'auto'), ['select']);
   box({ accordion: true }, '16rem');
 });
 

@@ -95,19 +95,21 @@
     inline-size: var(--op-navmenu-rail-width);
   }
   .op-navmenu.is-rail .op-navmenu__text,
-  .op-navmenu.is-rail .op-navmenu__chevron,
-  .op-navmenu.is-rail .op-navmenu__item.is-group .op-navmenu__icon {
+  .op-navmenu.is-rail .op-navmenu__chevron {
     display: none;
   }
   .op-navmenu.is-rail .op-navmenu__item {
     justify-content: center;
     padding-inline: 0;
   }
-  .op-navmenu.is-rail .op-navmenu__item.is-group {
-    min-block-size: var(--op-space-3);
-    border-block-start: var(--op-border-width) solid var(--op-color-border);
-    border-radius: 0;
-    pointer-events: none;
+  /* in the rail a group is an icon that opens a floating menu; it lights up when the active page is inside */
+  .op-navmenu.is-rail .op-navmenu__item.is-group .op-navmenu__icon {
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-navmenu.is-rail .op-navmenu__item.has-active,
+  .op-navmenu.is-rail .op-navmenu__item[aria-expanded='true'] {
+    color: var(--op-navmenu-active-fg, var(--op-color-primary));
+    background: var(--op-navmenu-active-bg, var(--op-color-primary-soft));
   }
   .op-navmenu.is-rail .op-navmenu__badge {
     display: none;

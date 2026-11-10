@@ -250,3 +250,80 @@ montados à mão na toolbar, e seleção por clique de linha. Faltam as operaç�
 ## Rodada 12 (pedido do dono)
 
 - [x] **Debounce em todo campo**: `debounce` (ms) na config de qualquer `Field` e evento `settled(value)` (decisão 44). `change` continua imediato. O shop passou a filtrar em `settled` (busca 300 ms, preço 150 ms).
+
+## Backlog do app Comptease (P1, pedido do dono; ainda sem rodada)
+
+Motivação: o dashboard do Comptease (`/home/corin/projects/apps/competease`, doc `docs/03-prototipo/06-padroes-dashboard.md`)
+segue três regras: menu lateral recolhível (`NavMenu`), todo cadastro em `Window` + `StepForm` e `LookupField` para
+entidades grandes (pessoa, participante, evento...). Estes são os buracos encontrados ao desenhar essas telas. Os IDs `OPK-##`
+são os mesmos citados no doc do app.
+
+- [ ] **OPK-01 · `LookupField` com seleção múltipla** (M)
+  - **Problema:** o campo só fica com o 1º registro (`recs[0]` em `lookupfield.ts`); o `selection: 'multi'` da definição vale
+    só para o `SearchGrid` avulso. O app precisa escolher vários jurados para uma bancada e vários parceiros para um cupom.
+  - **Esperado:** `multiple: true` no `LookupField`: valor = lista de `valueField` (`getValue(): id[]`), seleção exibida
+    como `Chip`s removíveis dentro do campo (Backspace no input vazio remove o último), sugestões digitadas acrescentam,
+    a janela de pesquisa abre com o grid em seleção múltipla (checkboxes) já marcando o que está no campo e "Selecionar"
+    devolve o conjunto. `getSelection()` vira lista de `{ value, label, raw }`; `max` opcional; `required` = ao menos um.
+  - **Como:** reaproveitar `Chip` e a coluna de checkbox do `Grid` (`checkboxSelection`, `keepSelection` por `id`);
+    `load`/`getValues`/`dirty` do `Form` comparando listas.
+  - **Aceite:** ficha `lookupfield.md` atualizada antes do código; testes (adicionar por sugestão e pela janela, remover chip
+    por clique e teclado, janela reabre com a seleção marcada, `max`, `required`, Form load/getValues/dirty/reset, ARIA dos
+    chips); caso na sandbox `fields`; screenshot claro/escuro; orçamento revisto.
+
+- [ ] **OPK-02 · `LookupField`: "+ Novo" na janela de pesquisa** (M)
+  - **Problema:** se a pessoa procurada não existe, o usuário tem que fechar o cadastro em que está, cadastrar a pessoa e
+    recomeçar. A ficha lista "criar registro a partir da janela" como fora do escopo.
+  - **Esperado:** `create: { text?, handler(query) => Promise<record | null> }` na definição do lookup (ou no campo). A janela
+    mostra o botão "+ Novo" (e uma linha "Cadastrar «texto digitado»" quando a busca não acha nada). O handler é do app:
+    normalmente abre outra `Window` com `StepForm` empilhada por cima e resolve com o registro salvo, que é selecionado no
+    campo e fecha a janela de pesquisa. `null` = cancelado, volta para a pesquisa com o foco onde estava.
+  - **Como:** só orquestração (janelas empilhadas já funcionam). O texto digitado vai como `query` para pré-preencher.
+  - **Aceite:** ficha atualizada; testes (botão aparece só com `create`, linha "Cadastrar …" sem resultados, resolve
+    seleciona e fecha, `null` mantém a janela e o foco, erro no handler não quebra a janela); caso na sandbox `fields`
+    (cadastro de cliente com "Novo gerente"); screenshot.
+
+- [ ] **OPK-03 · `StepForm`: etapas condicionais** (M)
+  - **Problema:** o cadastro de competição tem etapas diferentes conforme o formato (`painel` tem critérios e bancada;
+    `chaveamento` tem regras do torneio; `popular`, pacotes de voto). Hoje as etapas são fixas (ficha: "etapas
+    condicionais/ramificadas" fora do escopo).
+  - **Esperado:** `when?: (values) => boolean` por etapa. Etapa com `when` falso some do `Stepper` e do fluxo
+    (Próximo/Voltar pulam), seus campos **não validam** e **não entram** em `getValues()` (opção `keepHiddenValues: true`
+    para manter). Reavalia quando os valores mudam (no `change` dos campos, sem render global). `getStepCount()` conta só as
+    visíveis; a revisão lista só as visíveis.
+  - **Como:** reavaliar em `step-change` e no `change` do Form; `Stepper.setItems` para refazer o indicador; os campos da
+    etapa oculta ficam `disabled` (o que já os tira da validação).
+  - **Aceite:** ficha `stepform.md` atualizada antes do código; testes (etapa some e volta, Próximo/Voltar pulam, validação
+    e `getValues` ignoram oculta, `keepHiddenValues`, `linear` com etapa que aparece à frente, revisão); caso na sandbox
+    `form` (formato muda as etapas); screenshot.
+
+- [ ] **OPK-04 · `StepForm`: validação assíncrona por etapa** (S)
+  - **Problema:** checagens que dependem do servidor (e-mail/CPF já cadastrado, slug disponível, código de cupom único) só
+    rodam no `finish`, depois que o usuário já passou da etapa.
+  - **Esperado:** `validate?: (values, form) => Promise<true | Record<campo, mensagem> | string>` por etapa. Próximo mostra
+    `loading` no botão, aguarda e, se falhar, marca os campos (`markInvalid`) ou mostra a mensagem geral da etapa, e não
+    avança. Clique duplo não dispara duas vezes; trocar de etapa cancela a validação pendente (`AbortSignal` no 3º argumento).
+    Validadores assíncronos por campo (`asyncValidator`, com `debounce`) também, se couber no mesmo mecanismo.
+  - **Como:** em cima do `before-step-change` (que já é cancelável), com estado `is-validating` na etapa; `stableSize` no botão.
+  - **Aceite:** ficha atualizada; testes (sucesso avança, erro por campo, erro geral, clique duplo, abort ao voltar, `finish`
+    roda as validações das etapas); caso na sandbox `form` com atraso simulado; screenshot.
+
+- [ ] **OPK-05 · Roteador de cliente (decidir antes: lib ou app)** (M)
+  - **Problema:** não há roteamento. No dashboard, cada item do `NavMenu` é uma tela com URL própria (voltar/avançar do
+    navegador, link direto, recarregar mantém a tela), e o `Breadcrumb` precisa refletir a rota. Hoje cada app faria à mão.
+  - **Esperado:** `optikos/router` pequeno: rotas declaradas (`{ path: '/eventos/:id', view: () => Component | Promise<…>,
+    title?, data? }`), modos hash e history, parâmetros, guarda `before-navigate` cancelável (ex.: form sujo), carregamento
+    preguiçoso da tela, e ligações opcionais: `NavMenu.setActive` pela rota, `Breadcrumb` a partir da rota, `Tabs` ↔ sub-rota.
+  - **Como:** decidir pelo princípio 3 (precisa servir a três componentes reais: NavMenu, Breadcrumb, Tabs). Se ficar no
+    app, documentar a receita nos guias.
+  - **Aceite:** decisão registrada em `architecture.md`; se for para a lib: ficha, testes (match, params, guarda,
+    hash/history, lazy), demo admin usando, entrada própria no orçamento.
+
+- [ ] **OPK-06 · `NavMenu`: grupos em menu flutuante no modo trilho** (C)
+  - **Problema:** com `collapsed: true` os grupos viram separadores e só os ícones aparecem; não dá para chegar aos filhos
+    sem expandir o menu inteiro.
+  - **Esperado:** no trilho, clicar ou passar o mouse no ícone de um grupo abre um `Menu` flutuante ao lado com o título do
+    grupo e os filhos (com selos). Escolher navega (`select`) e fecha; → abre e ← fecha pelo teclado.
+  - **Como:** reaproveitar `Menu` + `position.ts`; o grupo no trilho ganha `aria-haspopup="menu"`.
+  - **Aceite:** ficha `navmenu.md` atualizada; testes (abrir por clique/teclado, escolher filho, Esc, item ativo dentro do
+    grupo destacado no ícone); caso na sandbox `navigation`; screenshot.

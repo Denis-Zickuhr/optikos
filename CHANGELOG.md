@@ -5,6 +5,12 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ## [Unreleased]
 
+### Added
+
+- NavMenu in rail mode (`collapsed`): a group shows its icon (or initial) and opens a floating Menu beside it with its
+  title and children (badges included), by click, hover, → or Enter; the icon lights up when the active page is inside.
+  `MenuItem.badge`.
+
 ## [0.2.0] - 2026-11-10
 
 ### Added

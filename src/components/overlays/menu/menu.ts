@@ -18,6 +18,8 @@ export interface MenuItem {
   items?: MenuEntry[];
   /** Items with the same group sit together under its name (ungrouped items come first). */
   group?: string;
+  /** A count or short label at the end of the row. */
+  badge?: string | number;
 }
 export type MenuEntry = MenuItem | '-';
 
@@ -140,6 +142,7 @@ export class Menu extends Component<MenuConfig> {
           'aria-expanded': it.items ? 'false' : null,
         });
         row.append(h('span', 'op-menu__icon', {}, it.icon ? iconEl(it.icon) : checkable && it.checked ? iconEl('check') : null), h('span', 'op-menu__text', {}, it.text ?? ''));
+        if (it.badge != null && it.badge !== '') row.append(h('span', 'op-menu__badge', {}, String(it.badge)));
         if (it.items) row.append(h('span', 'op-menu__arrow', {}, iconEl('chevron-right')));
         return row;
       });

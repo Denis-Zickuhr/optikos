@@ -103,14 +103,54 @@ describe('NavMenu', () => {
     expect(ids(n)).toEqual(['dash', 'sales', 'buy']);
   });
 
-  it('rail mode: icons only, every group open, text kept as title', () => {
+  it('rail mode: icons only, groups closed (their children go to a floating menu), text kept as title', () => {
     const n = mk({ collapsed: true });
     expect(n.el.classList.contains('is-rail')).toBe(true);
-    expect(ids(n)).toContain('orders');
+    expect(ids(n)).toEqual(['dash', 'sales', 'buy']);
     expect(row(n, 'dash')!.title).toBe('Dashboard');
+    expect(row(n, 'sales')!.getAttribute('aria-haspopup')).toBe('menu');
+    expect(row(n, 'buy')!.querySelector('.op-navmenu__icon')!.textContent).toBe('P'); // no icon: its initial
     n.setCollapsed(false);
     expect(n.el.classList.contains('is-rail')).toBe(false);
-    expect(ids(n)).not.toContain('orders');
+    expect(row(n, 'sales')!.hasAttribute('aria-haspopup')).toBe(false);
+  });
+
+  it('rail: a group opens a Menu beside it with its title and children (badges kept); choosing selects and closes', () => {
+    const n = mk({ collapsed: true });
+    const select = vi.fn();
+    n.on('select', select);
+    row(n, 'sales')!.click();
+    const menu = document.querySelector<HTMLElement>('.op-layer .op-navmenu__flyout')!;
+    expect(menu).not.toBeNull();
+    expect(row(n, 'sales')!.getAttribute('aria-expanded')).toBe('true');
+    expect(menu.querySelector('.op-menu__group')!.getAttribute('aria-label')).toBe('Sales');
+    const items = Array.from(menu.querySelectorAll<HTMLElement>('.op-menu__item'));
+    expect(items.map((i) => i.querySelector('.op-menu__text')!.textContent)).toEqual(['Orders', 'Invoices', 'Customers']);
+    expect(items[0].querySelector('.op-menu__badge')!.textContent).toBe('3');
+    expect(items[2].getAttribute('aria-disabled')).toBe('true');
+    expect(document.activeElement).toBe(items[0]);
+    items[1].click();
+    expect(select).toHaveBeenCalledWith(expect.objectContaining({ id: 'invoices' }));
+    expect(menu.closest('.op-dropdown')!.hasAttribute('hidden') || !menu.isConnected || !menu.offsetParent).toBeTruthy();
+    expect(row(n, 'sales')!.getAttribute('aria-expanded')).toBe('false');
+    expect(row(n, 'sales')!.classList.contains('has-active')).toBe(true); // the active page is inside
+  });
+
+  it('rail keyboard: → opens the group menu, ← and Esc close it and give the focus back to the icon', () => {
+    const n = mk({ collapsed: true });
+    const sales = row(n, 'sales')!;
+    sales.focus();
+    key(sales, 'ArrowRight');
+    let first = document.querySelector<HTMLElement>('.op-layer .op-navmenu__flyout .op-menu__item')!;
+    expect(document.activeElement).toBe(first);
+    key(first, 'ArrowLeft');
+    expect(document.activeElement).toBe(row(n, 'sales'));
+    expect(row(n, 'sales')!.getAttribute('aria-expanded')).toBe('false');
+    key(row(n, 'sales')!, 'Enter');
+    first = document.querySelector<HTMLElement>('.op-layer .op-navmenu__flyout .op-menu__item')!;
+    expect(document.activeElement).toBe(first);
+    key(first, 'Escape');
+    expect(document.activeElement).toBe(row(n, 'sales'));
   });
 
   it('keyboard (APG tree): arrows move, → opens then enters, ← closes then goes to the parent, Enter selects, one tab stop', () => {
