@@ -157,6 +157,7 @@ its weight (about 3.6 kB gzip) because a back-office dashboard needs it; an engi
 | Chart (bar, line, area, pie, donut, sparkline) | `chart` | P1 ✔ |
 | Stat (KPI tile with change and sparkline) | `stat` | P1 ✔ |
 | Timeline (event log, schedule on a time axis) | `timeline` (data) | P1 ✔ |
+| TimeEntry (time tracking on a Timeline: create, move, resize, totals) | `timeentry` (plugin) | P1 ✔ |
 
 Not components, but part of the same set: `exportGrid` / `printGrid` (`gridexport`), `persistState` (`gridstate`),
 `shortcuts`, `store.connect` / `applyPatches` (live data), `setPermissionResolver`, `defineTheme({ seeds })`, `optikos/dev`
@@ -172,6 +173,7 @@ and `optikos/testing`. See the [back-office recipes](erp.md).
 
 | Piece | What it is |
 |---|---|
+| `optikos/build` | `buildGrid/buildForm/buildColumns/buildFields/buildFilterFields(fieldSpecs)` ✔ (`docs/build.md`) |
 | `optikos/ui` | `ui.text(...)`, `ui.select(...)`, `ui.row(...)` shortcuts and enums (`Variant`, `Op`...) ✔ (`docs/ui.md`) |
 
 ## Shared pieces (they live in the core)

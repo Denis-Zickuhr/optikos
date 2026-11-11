@@ -10,6 +10,7 @@ export const alias = {
   'optikos/bind': r('./src/bind/index.ts'),
   'optikos/motion': r('./src/motion/index.ts'),
   'optikos/ui': r('./src/ui/index.ts'),
+  'optikos/build': r('./src/build/index.ts'),
   'optikos/testing': r('./src/testing/index.ts'),
   'optikos/dev': r('./src/dev/index.ts'),
   optikos: r('./src/index.ts'),

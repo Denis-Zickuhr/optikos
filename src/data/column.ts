@@ -21,7 +21,7 @@ export interface Column<T extends Record<string, any> = any> {
   hidden?: boolean;
   /** Pinned to the start or the end while the body scrolls sideways (give it a `width`; default 140). The columns of one edge stay together. */
   locked?: 'start' | 'end';
-  /** With the `grouping()` plugin: what the total row shows for this column. */
+  /** With the `grouping()` plugin: what the total row shows. Numbers: `sum`, `avg`, `min`, `max`, `count`; dates: `min` (earliest), `max` (latest), `count`; or your own function of the values. */
   summary?: 'sum' | 'avg' | 'min' | 'max' | 'count' | ((values: any[], recs: Model<T>[]) => unknown);
   /** Text for the total of this column (default: the column's `format`, else the plain value). */
   summaryRenderer?: (value: any, col: Column<T>) => string | Node;

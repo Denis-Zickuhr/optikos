@@ -19,6 +19,7 @@
       "optikos/bind": ["./src/bind/index.ts"],
       "optikos/motion": ["./src/motion/index.ts"],
       "optikos/ui": ["./src/ui/index.ts"],
+      "optikos/build": ["./src/build/index.ts"],
       "optikos/testing": ["./src/testing/index.ts"],
       "optikos/dev": ["./src/dev/index.ts"]
     }

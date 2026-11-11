@@ -1,4 +1,3 @@
-// Time tracking on a range Timeline, as a plugin: `plugins: [timeEntry({ step: 15 })]`. Lanes can be days, people or resources.
 import { h } from '../../../core/dom';
 import { t, addMessages } from '../../../core/i18n';
 import type { Model } from '../../../data/model';
@@ -103,7 +102,6 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
       const store = () => tl.config.store;
       const recOf = (it: TimelineItem): Model | undefined => store()?.getFiltered().find((r) => r.data === it);
 
-      /** The time under the pointer, clamped to the axis, and the lane element under it (by its own y). */
       const msAt = (track: HTMLElement, x: number) => {
         const r = track.getBoundingClientRect();
         const f = r.width ? Math.min(1, Math.max(0, (x - r.left) / r.width)) : 0;
@@ -113,7 +111,6 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
       const trackOf = (lane: HTMLElement) => lane.querySelector<HTMLElement>('.op-timeline__track')!;
 
       const fits = (s: Span, skip?: TimelineItem) => open || !inLane(s.lane, skip).some((x) => { const o = span(x); return s.start < o.end && o.start < s.end; });
-      /** A neighbour stops an edge instead of refusing the whole drag. */
       const limit = (s: Span, around: Span, skip?: TimelineItem): Span => {
         if (open) return s;
         const others = inLane(s.lane, skip).map(span);
@@ -123,8 +120,9 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
       };
 
       function candidate(d: Drag, x: number, y: number): Span {
-        const track = trackOf(laneAt(y, d.holder.closest<HTMLElement>('.op-timeline__lane')!));
-        const at = snap(msAt(trackOf(d.holder.closest<HTMLElement>('.op-timeline__lane')!), x));
+        const own = d.holder.closest<HTMLElement>('.op-timeline__lane')!;
+        const track = trackOf(laneAt(y, own));
+        const at = snap(msAt(trackOf(own), x));
         const { from } = d;
         if (d.kind === 'create') return limit({ lane: from.lane, start: Math.min(d.anchor, at), end: Math.max(d.anchor + minMs, at) }, { ...from, start: d.anchor, end: d.anchor });
         if (d.kind === 'start') return limit({ ...from, start: Math.max(sc().lo, Math.min(at, from.end - minMs)) }, from, d.item);
@@ -161,26 +159,26 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
         apply(d.kind, d.item, s, d.from);
       }
 
-      /** Writes an entry (new or changed) after the cancelable `before-*` event; the store or the items hold it. */
       function apply(kind: Drag['kind'] | 'key', item: TimelineItem | undefined, s: Span, from?: Span) {
         const values = { lane: s.lane, start: sc().format(s.start), end: sc().format(s.end) };
         if (!item) {
           if (tl.emit('before-create', values) === false) return void tl.setItems(tl.getItems());
           const made = { title: t('teNew'), ...options.defaults, ...values } as TimelineItem;
-          if (store()) refocus = store()!.add(made)[0].data;
-          else tl.setItems([...tl.getItems(), (refocus = made)]);
-          say('teCreated', made, s);
-          return void tl.emit('create', refocus);
+          const item = store() ? store()!.add(made)[0].data : made;
+          refocus = item;
+          tl.setItems(store() ? tl.getItems() : [...tl.getItems(), item]);
+          say('teCreated', item, s);
+          return void tl.emit('create', item);
         }
         const old = { lane: from!.lane, start: sc().format(from!.start), end: sc().format(from!.end) };
         if (tl.emit('before-change', item, values, old) === false) return void tl.setItems(tl.getItems());
+        refocus = item;
         const rec = recOf(item);
         if (rec) for (const k of ['lane', 'start', 'end'] as const) rec.set(k, values[k]);
         else {
           Object.assign(item, values);
           tl.setItems([...tl.getItems()]);
         }
-        refocus = item;
         say(kind === 'move' || kind === 'key' ? 'teMoved' : 'teResized', item, s);
         tl.emit('change', item, values, old);
       }
@@ -234,7 +232,6 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
       };
       const onMove = (e: PointerEvent) => {
         if (press && e.pointerType === 'touch') {
-          // a swipe before the long press is a scroll: do not start
           clearTimeout(press);
           press = undefined;
         }
@@ -246,7 +243,6 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
         press = undefined;
         if (drag && e.pointerId === drag.id) finish(drag, e.type === 'pointerup');
       };
-      // once a touch drag is on, the page must not scroll under it
       const onTouchMove = (e: TouchEvent) => drag && e.cancelable && e.preventDefault();
       const onDouble = (e: Event) => {
         const item = itemOf((e.target as HTMLElement).closest('.op-timeline__bar'));
@@ -307,8 +303,8 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
         decorate();
       };
 
-      /** After every paint: handles, labels, tab stops, the keyboard cursor, the totals. */
       function decorate() {
+        if (!tl.getScale()) return;
         const items = tl.getItems();
         let all = 0;
         for (const lane of lanes()) {
@@ -360,7 +356,7 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
       on('touchmove', onTouchMove, { passive: false });
       off.push(tl.on('paint', decorate));
       el.classList.add('op-timeline--entry');
-      if (tl.getScale()) decorate();
+      decorate();
       return () => {
         clearTimeout(press);
         off.forEach((f) => f());

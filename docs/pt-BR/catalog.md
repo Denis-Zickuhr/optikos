@@ -157,6 +157,7 @@ Revertido (decisão 62): um gráfico SVG pequeno que desenha barra, linha, área
 | Chart (barra, linha, área, pizza, rosca, sparkline) | `chart` | P1 ✔ |
 | Stat (card de KPI com variação e sparkline) | `stat` | P1 ✔ |
 | Timeline (histórico de eventos, cronograma num eixo de tempo) | `timeline` (data) | P1 ✔ |
+| TimeEntry (apontamento de horas na Timeline: criar, mover, redimensionar, totais) | `timeentry` (plugin) | P1 ✔ |
 
 Não são componentes, mas fazem parte do mesmo conjunto: `exportGrid` / `printGrid` (`gridexport`), `persistState` (`gridstate`),
 `shortcuts`, `store.connect` / `applyPatches` (dados ao vivo), `setPermissionResolver`, `defineTheme({ seeds })`, `optikos/dev`
@@ -172,6 +173,7 @@ e `optikos/testing`. Veja as [receitas para back-office](erp.md).
 
 | Peça | O que é |
 |---|---|
+| `optikos/build` | `buildGrid/buildForm/buildColumns/buildFields/buildFilterFields(fieldSpecs)` ✔ (`docs/build.md`) |
 | `optikos/ui` | atalhos `ui.text(...)`, `ui.select(...)`, `ui.row(...)` e enums (`Variant`, `Op`...) ✔ (`docs/pt-BR/ui.md`) |
 
 ## Peças compartilhadas (viram core)

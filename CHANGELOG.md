@@ -5,6 +5,17 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-11
+
+### Added
+
+- `optikos/build`: one `FieldSpec[]` list gives the grid columns (`buildColumns`, `buildGrid`), the form (`buildFields`,
+  `buildForm`, groups become fieldsets) and the filter fields (`buildFilterFields`).
+- `timeEntry()` (a Timeline plugin): create, move, resize and remove entries by pointer or keyboard, with snapping,
+  overlap control, locked entries, a total per lane against a `target`, and `before-*` / `create` / `change` / `remove` / `edit` events.
+- `grouping({ summary: 'grand' })` works without `field`/`by`: a total row over the rows the filter left.
+- Column `summary` on dates: `min` (earliest), `max` (latest) and `count`.
+
 ## [0.4.0] - 2026-11-10
 
 ### Added

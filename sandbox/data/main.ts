@@ -1,4 +1,5 @@
-import { create, grouping, rowEditing, treeGrid, flattenTree, exportGrid, printGrid, persistState, setStateStorage, Stat, Timeline, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, type Form, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
+import { buildGrid, buildForm, buildFilterFields, type FieldSpec } from 'optikos/build';
+import { create, grouping, timeEntry, rowEditing, treeGrid, flattenTree, exportGrid, printGrid, persistState, setStateStorage, Stat, Timeline, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, type Form, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
 import { viewModel, bindVM, bindForm } from 'optikos/bind';
 import { page } from '../../dev/kit';
 
@@ -257,6 +258,31 @@ p.section('Timeline · log and schedule', 'list mode (an event log) and range mo
     { title: 'Rehearsal', lane: 'Stage', start: '2026-11-10', end: '2026-11-11', tone: 'info' }, { title: 'Semi-final', lane: 'Stage', start: '2026-11-12T19:00', end: '2026-11-12T23:00' },
     { title: 'Final night', lane: 'Stage', start: '2026-11-14T19:00', end: '2026-11-14T23:59', tone: 'success' }, { title: 'Make-up', lane: 'Backstage', start: '2026-11-12', end: '2026-11-14' }, { title: 'Night shift', lane: 'Security', start: '2026-11-11', end: '2026-11-14', tone: 'warning' },
   ] });
+});
+
+p.section('Timeline · time entry', 'drag an empty lane to create, a block to move, its ends to resize; Tab to a block: ←/→ move, Shift resizes, Delete removes; Tab to a lane: ←/→ then Enter adds. Lanes add up to 8h; Tue is locked, overlap is refused.', (host, { watch }) => {
+  const tl = create<Timeline>({
+    type: 'timeline', mode: 'range', from: '07:00', to: '19:00', lanes: ['Mon', 'Tue', 'Wed'], width: '100%', renderTo: host,
+    items: [{ title: 'Design review', lane: 'Mon', start: '09:00', end: '11:30', tone: 'info' }, { title: 'Build', lane: 'Mon', start: '13:00', end: '17:30' }, { title: 'Invoiced', lane: 'Tue', start: '08:00', end: '16:00', tone: 'success' }, { title: 'Support', lane: 'Wed', start: '08:00', end: '12:00', tone: 'warning' }],
+    plugins: [timeEntry({ step: 15, overlap: false, moveAcrossLanes: true, target: 480, editable: (it) => it.title !== 'Invoiced' })],
+  });
+  watch(tl, ['create', 'change', 'remove', 'edit']);
+});
+
+const orderSpecs: FieldSpec[] = [
+  { name: 'number', label: 'Order', readonly: true, width: 90 },
+  { name: 'customer', required: true },
+  { name: 'status', type: 'select', options: ['open', 'paid', 'late'], group: 'State' },
+  { name: 'paid', type: 'bool', group: 'State' },
+  { name: 'due', type: 'date', summary: 'max' },
+  { name: 'total', type: 'money', summary: 'sum' },
+  { name: 'note', type: 'area', hide: ['grid', 'filter'] },
+];
+p.section('Build · grid, form and filters from one field list', 'buildGrid / buildForm / buildFilterFields read the same FieldSpec[]; the grid total row sums the filtered rows (money: sum, due: latest).', (host) => {
+  const store = new Store<any>({ data: Array.from({ length: 12 }, (_, i) => ({ number: `SO-${100 + i}`, customer: names[i % names.length], status: ['open', 'paid', 'late'][i % 3], paid: i % 3 === 1, due: `2026-1${i % 3}-${String(i + 10).padStart(2, '0')}`, total: 120 + i * 37.5 })) });
+  create({ type: 'filterbuilder', store, fields: buildFilterFields(orderSpecs), renderTo: host });
+  buildGrid(orderSpecs, { store, height: 260, width: '100%', plugins: [grouping({ summary: 'grand' })] }).mount(host);
+  buildForm(orderSpecs, { width: 520 }).mount(host);
 });
 
 p.section('Grid · export, print, saved layout', 'CSV / Excel / Print of the visible columns, sort and filters (every page); the layout (widths, order, sort, page) is saved per user — resize a column and reload the page.', (host) => {

@@ -33,6 +33,7 @@ export interface Grouping extends GridPlugin {
 }
 
 const num = (v: unknown) => (typeof v === 'number' ? v : Number(v));
+const time = (v: unknown) => (v instanceof Date ? +v : typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v) ? Date.parse(v) : NaN);
 
 /** The value of a column's `summary` over some records. */
 export function summarize(col: Column, recs: Model[]): unknown {
@@ -41,7 +42,11 @@ export function summarize(col: Column, recs: Model[]): unknown {
   const s = col.summary;
   if (typeof s === 'function') return s(values, recs);
   if (s === 'count') return values.filter((v) => v != null && v !== '').length;
-  if (!nums.length) return null;
+  if (!nums.length) {
+    // dates have no sum: min/max give the earliest and the latest, as the value the record holds
+    const dates = s === 'min' || s === 'max' ? values.filter((v) => !isNaN(time(v))) : [];
+    return dates.length ? dates.reduce((a, b) => ((s === 'min' ? time(b) < time(a) : time(b) > time(a)) ? b : a)) : null;
+  }
   if (s === 'sum') return nums.reduce((a, b) => a + b, 0);
   if (s === 'avg') return nums.reduce((a, b) => a + b, 0) / nums.length;
   return s === 'min' ? Math.min(...nums) : Math.max(...nums);
@@ -85,7 +90,10 @@ export function grouping(options: GroupingOptions = {}): Grouping {
   function build() {
     const store = grid.getStore();
     const recs = store.getRange();
-    if (!by) return grid.setRowLayout(undefined);
+    if (!by) {
+      if (where === 'group' || !grid.getColumns().some((c) => c.summary)) return grid.setRowLayout(undefined);
+      return grid.setRowLayout([...recs.map((rec) => ({ rec })), totals(t('groupTotal'), recs, 'is-grand-total')]);
+    }
     const groups = new Map<unknown, Model[]>();
     for (const r of recs) {
       const k = by(r);

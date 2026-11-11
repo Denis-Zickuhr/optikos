@@ -32,6 +32,7 @@ const GUIDES = [
   { name: 'getting-started', title: { en: 'Getting started', 'pt-BR': 'Começar' } },
   { name: 'theming', title: { en: 'Theming', 'pt-BR': 'Tematização' } },
   { name: 'ui', title: { en: 'Short writing (ui and enums)', 'pt-BR': 'Escrita enxuta (ui e enums)' } },
+  { name: 'build', title: { en: 'Building from a field list', 'pt-BR': 'Construir a partir de campos' } },
   { name: 'erp', title: { en: 'Back-office recipes', 'pt-BR': 'Receitas para back-office' } },
   { name: 'bind', title: { en: 'Binding and the view model', 'pt-BR': 'Binding e view model' } },
   { name: 'motion', title: { en: 'Motion', 'pt-BR': 'Motion' } },

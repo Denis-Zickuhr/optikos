@@ -1,6 +1,6 @@
 {
   "name": "optikos",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Declarative UI components in plain TypeScript: forms, grids, windows and themes. No runtime dependencies.",
   "keywords": [
     "ui",
@@ -50,6 +50,10 @@
     "./ui": {
       "types": "./dist/types/ui/index.d.ts",
       "import": "./dist/ui.js"
+    },
+    "./build": {
+      "types": "./dist/types/build/index.d.ts",
+      "import": "./dist/build.js"
     },
     "./testing": {
       "types": "./dist/types/testing/index.d.ts",

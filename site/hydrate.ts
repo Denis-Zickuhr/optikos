@@ -1,10 +1,10 @@
 // The docs examples are plain JSON so the MCP server can serve them too. Two markers cover what JSON cannot say:
 //   { "$store": [rows] }   → new Store({ data: rows })
 //   { "$tpl": "{name}" }   → (record) => text with {field} replaced
-//   { "$plugin": "cellEditing", ...options } → the grid plugin (cellEditing, rowEditing, grouping, treeGrid)
-import { Store, cellEditing, grouping, rowEditing, treeGrid } from 'optikos';
+//   { "$plugin": "cellEditing", ...options } → the grid plugin (cellEditing, rowEditing, grouping, treeGrid, timeEntry)
+import { Store, cellEditing, grouping, rowEditing, treeGrid, timeEntry } from 'optikos';
 
-const PLUGINS: Record<string, (o: object) => unknown> = { cellEditing, grouping, rowEditing, treeGrid };
+const PLUGINS: Record<string, (o: object) => unknown> = { cellEditing, grouping, rowEditing, treeGrid, timeEntry };
 
 export function hydrate<T>(value: T): T {
   if (Array.isArray(value)) return value.map(hydrate) as T;

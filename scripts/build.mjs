@@ -21,7 +21,7 @@ rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 
 const comps = componentEntries();
-const entries = { index: 'src/index.ts', core: 'src/core/index.ts', data: 'src/data/index.ts', bind: 'src/bind/index.ts', motion: 'src/motion/index.ts', ui: 'src/ui/index.ts', testing: 'src/testing/index.ts', dev: 'src/dev/index.ts' };
+const entries = { index: 'src/index.ts', core: 'src/core/index.ts', data: 'src/data/index.ts', bind: 'src/bind/index.ts', motion: 'src/motion/index.ts', ui: 'src/ui/index.ts', build: 'src/build/index.ts', testing: 'src/testing/index.ts', dev: 'src/dev/index.ts' };
 for (const [name, file] of Object.entries(comps)) entries[`components/${name}`] = relative(root, file);
 
 const common = { bundle: true, format: 'esm', target: 'es2022', minify: true, absWorkingDir: root, logLevel: 'warning' };
@@ -54,7 +54,7 @@ async function standalone(entry) {
 }
 
 const sizes = {};
-for (const key of ['core', 'data', 'bind', 'motion', 'ui', 'testing', 'index']) sizes[key] = await standalone(entries[key]);
+for (const key of ['core', 'data', 'bind', 'motion', 'ui', 'build', 'testing', 'index']) sizes[key] = await standalone(entries[key]);
 const baseline = gz((await build({ ...common, stdin: { contents: "export { Component } from './src/core/component.ts'; export { register, create } from './src/core/registry.ts';", resolveDir: root }, write: false, outdir: 'out' })).outputFiles[0].contents);
 const rows = [];
 let failed = false;
@@ -77,6 +77,7 @@ console.log(`data ${kb(sizes.data)}  (budget ${kb(DATA_BUDGET)})${dataOver ? '  
 console.log(`bind ${kb(sizes.bind)}`);
 console.log(`motion ${kb(sizes.motion)}`);
 console.log(`testing ${kb(sizes.testing)}  (dev only: not part of the app bundle)`);
+console.log(`build ${kb(sizes.build)}  (field specs → columns, form, filters; includes what they build)`);
 console.log(`ui ${kb(sizes.ui)}  (enums + shortcuts; includes the fields they build)`);
 console.log(`runtime baseline (Component + register + create) ${kb(baseline)}`);
 console.log(`full ${kb(sizes.index)}  (all components, JS)`);
