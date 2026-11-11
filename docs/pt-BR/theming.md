@@ -62,6 +62,29 @@ setTheme('dark brand'); // troca os temas de qualquer elemento: setTheme(names, 
 Chaves camelCase viram kebab-case. Números saem sem unidade (`radius: 0`); escreva unidades como string (`'4px'`).
 Para gerar o `.css` no build: `npm run theme -- meu-tema.ts meu-tema.css` (o arquivo faz `export default defineTheme(...)`), ou o comando kai **Theme to CSS**.
 
+## 4. Um tema a partir de duas cores
+
+```ts
+const marca = defineTheme({
+  seeds: { primary: '#D9A441', neutral: '#2A1C12' },
+  font: { family: "'Marca Sans', system-ui, sans-serif" },
+  fonts: [{ family: 'Marca Sans', url: '/fonts/marca.woff2', weight: '400 700' }],
+}, 'marca');
+marca.apply();                 // claro: data-op-theme="marca"
+setTheme('marca dark');        // escuro: as sementes também geraram o visual noturno
+await loadFonts(marca.fonts);  // opcional: baixa os arquivos agora em vez de no primeiro uso
+```
+
+`seeds.primary` é usada como está nos preenchimentos; o texto que carrega a marca usa um tom dela que mantém 4.5:1
+(`--op-color-primary-text`, definido só quando a cor falha como texto, como um dourado). `neutral` tinge os cinzas: fundos,
+bordas, texto. As sementes também geram as cores do navmenu e do cabeçalho da grid. Tokens dados junto com `seeds` vencem no
+conjunto claro. `fonts` viram regras `@font-face` (fora do layer) para que a fonte de um tenant vá junto com o tema; a
+família em si é `font: { family }`.
+
+`checkContrast(el?)` devolve os pares de texto abaixo de 4.5:1 (`fg` sobre `surface`, `fg-muted`, primária e o seu texto, cores
+de status, navmenu, cabeçalho da grid) e os imprime em dev; `theme.apply()` roda isso em localhost. As cores de gráficos e
+avatares são `--op-chart-1…8` (a primeira é a primária, a menos que o tema defina).
+
 ## Densidade
 
 `--op-control-height`, `--op-control-padding-x`, `--op-row-height` e a escala `--op-space-*` definem a densidade; o tema `compact` só os redefine.

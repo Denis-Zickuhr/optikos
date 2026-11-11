@@ -3,7 +3,7 @@ Purpose:       A side navigation menu as a tree (app sidebar): grouped, collapsi
 Anatomy:       `nav.op-navmenu[aria-label]` > `ul[role=tree]` > `li[role=treeitem]` > `.op-navmenu__item` (icon, text, `__badge`, `__chevron` on groups) and, in groups, a `ul[role=group]` with the children.
                State classes: `is-active`, `is-group`, `is-expanded`, `is-disabled`; root `is-rail`.
 Config:        `items: NavItem[]` (`{ id, text, icon?, badge?, items?, disabled?, hidden?, expanded?, data? }`), `active: id`, `collapsed: false` (rail: icons only, the text becomes `title`; a group shows its icon, or its initial, and opens a floating Menu beside it with its title and children, badges included; it lights up (`has-active`) when the active page is inside),
-               `accordion: false` (opening a group closes the others), `ariaLabel`.
+               `accordion: false` (opening a group closes the others), `ariaLabel`. An item takes `permission` (hidden, or disabled, while `setPermissionResolver` denies it; a group goes with its children).
 API:           `setActive(id)` (opens the parents), `getActive()`, `expand(id)`, `collapse(id)`, `toggle(id)`, `expandAll()`, `collapseAll()`, `setItems(items)`, `updateItem(id, patch)` (e.g. change the badge),
                `getItem(id)`, `setCollapsed(bool)`, `filter(text)` (hides what does not match and opens the groups with results; empty clears).
 Events:        `before-select(item)` (cancelable), `select(item)` (leaves), `expand(item)`, `collapse(item)`.

@@ -1,4 +1,5 @@
-import { create, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
+import { create, grouping, rowEditing, treeGrid, flattenTree, exportGrid, printGrid, persistState, setStateStorage, Stat, Timeline, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, type Form, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
+import { viewModel, bindVM, bindForm } from 'optikos/bind';
 import { page } from '../../dev/kit';
 
 const p = page('data');
@@ -219,4 +220,103 @@ p.section('Tree', 'a file tree: multi selection (Ctrl/⌘+click), tri-state chec
   t.mount(host);
   watch(t, ['select', 'check', 'activate', 'expand', 'load', 'error']);
   log('ready');
+});
+
+const votes = () => new Store({ data: ['Ada', 'Grace', 'Linus', 'Alan', 'Margaret'].map((name, i) => ({ id: i + 1, name, votes: 40 + i * 25, share: 10 + i })) });
+const hours = Array.from({ length: 12 }, (_, i) => ({ hour: `${i + 8}h`, a: 20 + ((i * 17) % 40), b: 10 + ((i * 11) % 30) }));
+
+p.section('Chart · every kind', 'bar, stacked bar, line, area, pie, donut and a sparkline. Hover or use ←/→ on a chart; click the legend to hide a series. Colors are --op-chart-1…8: switch the theme.', (host) => {
+  const wrap = Object.assign(document.createElement('div'), { style: 'display:grid;grid-template-columns:repeat(auto-fit,minmax(20rem,1fr));gap:1rem;inline-size:100%' });
+  host.append(wrap);
+  const series = [{ field: 'a', label: 'Online' }, { field: 'b', label: 'Store' }];
+  for (const cfg of [{ kind: 'bar' }, { kind: 'bar', stacked: true }, { kind: 'line' }, { kind: 'area', stacked: true }, { kind: 'pie', series: ['a'] }, { kind: 'donut', series: ['a'], format: 'number' }]) {
+    create({ type: 'chart', x: 'hour', series, data: hours, title: JSON.stringify(cfg), renderTo: wrap, ...cfg });
+  }
+  create({ type: 'chart', kind: 'sparkline', x: 'hour', series: ['a'], data: hours, width: 160, renderTo: wrap });
+});
+
+p.section('Chart · live Store + KPI tiles', 'one store feeds a grid, a chart and a Stat; every 1.5 s a patch arrives (store.applyPatches), a burst repaints once.', (host, { log }) => {
+  const store = votes();
+  const sum = () => store.getData().reduce((a, r) => a + r.votes, 0);
+  const stat = create<Stat>({ type: 'stat', label: 'Votes', value: sum(), delta: 0.08, trend: [3, 5, 4, 8, 9, 12], caption: 'live', width: 220, renderTo: host });
+  create({ type: 'stat', label: 'Refunds', value: 31, delta: 0.2, good: 'down', caption: 'up is bad', width: 220, renderTo: host });
+  create({ type: 'chart', kind: 'bar', x: 'name', series: ['votes'], store, title: 'Votes', width: 340, renderTo: host });
+  create({ type: 'grid', store, columns: [{ field: 'name' }, { field: 'votes', align: 'right' }], width: 260, height: 220, renderTo: host });
+  const t = setInterval(() => {
+    if (!host.isConnected) return clearInterval(t);
+    const id = 1 + Math.floor(Math.random() * 5);
+    store.applyPatches([{ data: { id, votes: store.getById(id)!.get('votes') + 1 + Math.floor(Math.random() * 6) } }]);
+    stat.setValue(sum());
+  }, 1500);
+  log('patching every 1.5 s');
+});
+
+p.section('Timeline · log and schedule', 'list mode (an event log) and range mode (phases and shifts on a time axis, lanes in order). Click or Enter on an item fires select.', (host, { watch }) => {
+  watch(create<Timeline>({ type: 'timeline', width: 340, renderTo: host, items: [{ time: '2026-11-10T09:00', title: 'Voting opened', tone: 'success' }, { time: '2026-11-10T12:30', title: 'Sponsor added', text: 'Logo uploaded', icon: 'image' }, { time: '2026-11-10T16:00', title: 'Refund requested', tone: 'warning' }] }), ['select']);
+  create({ type: 'timeline', mode: 'range', lanes: ['Stage', 'Backstage', 'Security'], width: '100%', renderTo: host, items: [
+    { title: 'Rehearsal', lane: 'Stage', start: '2026-11-10', end: '2026-11-11', tone: 'info' }, { title: 'Semi-final', lane: 'Stage', start: '2026-11-12T19:00', end: '2026-11-12T23:00' },
+    { title: 'Final night', lane: 'Stage', start: '2026-11-14T19:00', end: '2026-11-14T23:59', tone: 'success' }, { title: 'Make-up', lane: 'Backstage', start: '2026-11-12', end: '2026-11-14' }, { title: 'Night shift', lane: 'Security', start: '2026-11-11', end: '2026-11-14', tone: 'warning' },
+  ] });
+});
+
+p.section('Grid · export, print, saved layout', 'CSV / Excel / Print of the visible columns, sort and filters (every page); the layout (widths, order, sort, page) is saved per user — resize a column and reload the page.', (host) => {
+  setStateStorage(undefined);
+  const g = create<Grid>({ type: 'grid', store: new Store({ data: make(250), pageSize: 25 }), columns, paging: true, resizableColumns: true, reorderableColumns: true, plugins: [persistState('sandbox-data-grid')], height: 360, width: '100%', renderTo: host });
+  create({ type: 'button', text: 'CSV', renderTo: host, handler: () => void exportGrid(g, { filename: 'rows' }) });
+  create({ type: 'button', text: 'Excel', renderTo: host, handler: () => void exportGrid(g, { format: 'xlsx', filename: 'rows' }) });
+  create({ type: 'button', text: 'This page only', renderTo: host, handler: () => void exportGrid(g, { scope: 'page', filename: 'page' }) });
+  create({ type: 'button', text: 'Print', renderTo: host, handler: () => void printGrid(g, { title: 'Rows' }) });
+});
+
+const tally = () => new Store({ data: ['Semi-final', 'Final'].flatMap((event, e) => ['Amara', 'Bianca', 'Chloe', 'Dalia'].map((name, i) => ({ id: e * 10 + i + 1, event, name, votes: 50 + ((i * 37 + e * 19) % 120), fee: 90000 + i * 25000 }))) });
+const tallyCols = [{ field: 'name', header: 'Candidate', sortable: true, summary: 'count' as const, editor: { type: 'textfield', required: true } }, { field: 'votes', header: 'Votes', align: 'right' as const, sortable: true, summary: 'sum' as const, format: 'number', editor: 'numberfield' }, { field: 'fee', header: 'Fee (cents)', align: 'right' as const, summary: 'avg' as const, renderer: (v: number) => (v / 100).toFixed(2) }];
+
+p.section('Grid · grouping with totals', 'a header per group (click, Enter/Space, → ←), a total per group and a grand total; sorting works inside the groups. Try the buttons.', (host, { watch }) => {
+  const g = grouping({ field: 'event', summary: 'both' });
+  const grid = create<Grid>({ type: 'grid', store: tally(), columns: tallyCols.map(({ editor: _e, ...c }) => c), plugins: [g], height: 340, width: '100%', renderTo: host });
+  watch(grid, ['group-toggle', 'sort']);
+  create({ type: 'button', text: 'Collapse all', renderTo: host, handler: () => g.collapseAll() });
+  create({ type: 'button', text: 'Expand all', renderTo: host, handler: () => g.expandAll() });
+  create({ type: 'button', text: 'By votes (≥100)', renderTo: host, handler: () => g.setGroupBy((r) => (r.get('votes') >= 100 ? 'Leaders' : 'Chasing')) });
+  create({ type: 'button', text: 'By event', renderTo: host, handler: () => g.setGroupBy('event') });
+});
+
+p.section('Grid · locked columns', 'scroll sideways: the checkbox, the first column and the actions stay; a shadow shows when there is more to scroll. Pin or release a column with the buttons.', (host) => {
+  const grid = create<Grid>({
+    type: 'grid', store: new Store({ data: make(40) }), checkboxSelection: true, resizableColumns: true, reorderableColumns: true, width: 480, height: 260, renderTo: host,
+    columns: [{ field: 'name', header: 'Name', width: 150, locked: 'start' }, { field: 'total', header: 'Total', width: 140 }, { field: 'since', header: 'Since', width: 140 }, { field: 'active', header: 'Active', width: 140 }, { field: 'id', header: '#', width: 140, locked: 'end' }],
+    rowActions: [{ text: 'Open', icon: 'edit', handler: () => {} }],
+  });
+  create({ type: 'button', text: 'Lock Total at start', renderTo: host, handler: () => grid.setColumnLocked('total', 'start') });
+  create({ type: 'button', text: 'Release Total', renderTo: host, handler: () => grid.setColumnLocked('total', null) });
+});
+
+p.section('Grid · row editing', 'double-click (or Enter / F2): every editor column opens under a Save / Cancel bar. Name is required; Esc cancels, Enter saves; the edit event carries only what changed.', (host, { log }) => {
+  const grid = create<Grid>({ type: 'grid', store: tally(), columns: tallyCols.map(({ summary: _s, ...c }) => c), plugins: [rowEditing()], height: 300, width: '100%', renderTo: host });
+  grid.on('edit', (_rec: unknown, values: unknown, old: unknown) => log('edit', values, 'was', old));
+  grid.on('cancel-edit', () => log('cancelled'));
+});
+
+p.section('Grid · tree with columns', 'flat rows with a parentId, nested data through flattenTree, lazy children (a delay; “Broken” fails). ←/→ close/open and walk to the parent / first child.', (host, { watch }) => {
+  const rows = flattenTree([{ id: 1, name: 'Events', size: '', children: [{ id: 2, name: 'Gala', size: '120', children: [{ id: 3, name: 'Doors', size: '40' }, { id: 4, name: 'Stage', size: '80' }] }, { id: 5, name: 'Final', size: '300' }] }, { id: 6, name: 'Lazy (loads)', size: '?' }, { id: 7, name: 'Broken (fails)', size: '?' }]);
+  const grid = create<Grid>({
+    type: 'grid', store: new Store({ data: rows }), resizableColumns: true, selection: 'multi', height: 300, width: '100%', renderTo: host,
+    columns: [{ field: 'name', header: 'Name', width: 260, sortable: true }, { field: 'size', header: 'Size', align: 'right' }, { field: 'id', header: '#', width: 70 }],
+    plugins: [treeGrid({ load: (n) => new Promise((ok, fail) => setTimeout(() => (n.get('name').startsWith('Broken') ? fail(new Error('server down')) : ok([{ id: 60 + Number(n.id), name: 'Loaded child', size: '1', leaf: true }])), 600)) })],
+  });
+  watch(grid, ['expand-node', 'collapse-node', 'load-error']);
+});
+
+p.section('Bind · view model master/detail', 'select a row: the form is bound to the record (clean until you edit), the title and the Save button read the view model, and a formula counts the changes.', (host) => {
+  const store = tally();
+  const vm = viewModel({ formulas: { name: (get) => get('record.name') ?? '', dirty: (get) => get('touched') > 0 }, data: { touched: 0 } });
+  const grid = create<Grid>({ type: 'grid', store, columns: tallyCols.map(({ editor: _e, summary: _s, ...c }) => c), height: 220, width: 360, renderTo: host });
+  const title = create({ type: 'label', renderTo: host });
+  const form = create<Form>({ type: 'form', width: 360, renderTo: host, items: [{ type: 'textfield', name: 'name', label: 'Name' }, { type: 'numberfield', name: 'votes', label: 'Votes' }] } as never);
+  const save = create({ type: 'button', text: 'Save', variant: 'primary', renderTo: host, handler: () => (store.commitChanges(), vm.set('touched', 0)) });
+  bindVM(title, vm, { text: 'Editing {record.name}' });
+  bindVM(save, vm, { disabled: '{!dirty}' });
+  bindForm(form, vm, 'record');
+  grid.on('select', (recs: Model[]) => vm.link('record', recs[0] ?? null));
+  form.on('dirty-change', (d: boolean) => d && vm.set('touched', 1));
 });

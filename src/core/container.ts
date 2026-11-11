@@ -2,7 +2,17 @@ import { Component, type ComponentConfig, type Parent } from './component';
 import { create, type AnyConfig } from './registry';
 import { createLayout, type Layout, type LayoutSpec } from '../layout/layout';
 
-export interface ContainerConfig extends ComponentConfig {
+/** What a Tabs header reads from its panel (any Container, not just Panel). */
+export interface TabPanelConfig {
+  title?: string;
+  icon?: string;
+  closable?: boolean;
+  reloadable?: boolean;
+  /** Called by the tab's ↻; a returned Promise keeps the tab busy until it settles. */
+  onReload?: (panel: any) => void | Promise<unknown>;
+}
+
+export interface ContainerConfig extends ComponentConfig, TabPanelConfig {
   items?: Array<AnyConfig | Component | string>;
   layout?: LayoutSpec;
   /** Config merged into every item that does not set the key itself. */

@@ -18,7 +18,9 @@
       "optikos/data": ["./src/data/index.ts"],
       "optikos/bind": ["./src/bind/index.ts"],
       "optikos/motion": ["./src/motion/index.ts"],
-      "optikos/ui": ["./src/ui/index.ts"]
+      "optikos/ui": ["./src/ui/index.ts"],
+      "optikos/testing": ["./src/testing/index.ts"],
+      "optikos/dev": ["./src/dev/index.ts"]
     }
   },
   "include": ["src", "sandbox", "demos", "scripts/*.ts", "dev", "site"]

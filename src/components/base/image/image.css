@@ -1,0 +1,46 @@
+@layer optikos {
+  :root {
+    --op-image-icon-size: 2em;
+  }
+  .op-image {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: var(--op-image-bg, var(--op-color-surface-2));
+    color: var(--op-color-fg-muted);
+    min-inline-size: 0;
+  }
+  .op-image--rounded {
+    border-radius: var(--op-image-radius, var(--op-radius));
+  }
+  .op-image__fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--op-image-icon-size);
+  }
+  .op-image__img {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    opacity: 0;
+    transition: opacity var(--op-duration) var(--op-easing);
+  }
+  .op-image.has-image .op-image__img {
+    opacity: 1;
+  }
+  .op-image--cover .op-image__img {
+    object-fit: cover;
+  }
+  .op-image--contain .op-image__img {
+    object-fit: contain;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .op-image__img {
+      transition: none;
+    }
+  }
+}

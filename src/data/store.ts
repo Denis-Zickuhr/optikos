@@ -5,6 +5,18 @@ import type { FilterNode, FilterSpec, Proxy, ReadParams, ReadResult, Sorter } fr
 export type StoreProxy<T> = Proxy<T> | ((params: ReadParams, signal?: AbortSignal) => Promise<ReadResult<T> | T[]> | ReadResult<T> | T[]);
 export type FilterFn<T extends Record<string, any>> = (rec: Model<T>) => boolean;
 
+/** One live change: `upsert` merges `data` into the record with the same id (or adds it), `remove` drops the record with `id`. */
+export interface Patch<T> {
+  op?: 'upsert' | 'remove';
+  data?: Partial<T>;
+  id?: string | number;
+}
+/** What `connect` needs from a source: an `EventSource` or a `WebSocket` both fit. */
+export interface LiveSource {
+  addEventListener(type: 'message', fn: (e: { data: any }) => void): void;
+  removeEventListener(type: 'message', fn: (e: { data: any }) => void): void;
+}
+
 export interface StoreConfig<T extends Record<string, any>> {
   data?: Partial<T>[];
   model?: ModelDef;
@@ -175,6 +187,19 @@ export class Store<T extends Record<string, any> = Record<string, any>> extends 
     }
   }
 
+  /** Every record that matches the current sort and filters: a local store has them; a remote one is read page by page through its proxy. */
+  async fetchAll(pageSize = 500): Promise<Model<T>[]> {
+    if (!this.remote) return this.rows;
+    const out: Model<T>[] = [];
+    const base = { ...this.params, pageSize, sorters: this.sorters, filters: this.filters.filter((f): f is FilterNode => typeof f !== 'function') };
+    for (let page = 1; ; page++) {
+      const res = await this.proxy!.read({ ...base, page });
+      const { data, total } = Array.isArray(res) ? { data: res, total: res.length } : res;
+      out.push(...data.map((r) => new Model<T>(r, this.cfg.model)));
+      if (!data.length || out.length >= (total ?? 0) || data.length < pageSize) return out;
+    }
+  }
+
   private setRecords(recs: Model<T>[], total: number) {
     this.all = recs;
     this.total = total;
@@ -297,6 +322,47 @@ export class Store<T extends Record<string, any> = Record<string, any>> extends 
     this.total -= gone.length;
     this.refreshView();
     this.fire('remove', gone);
+  }
+
+  /** Applies live changes in place, with one repaint: known ids are patched (not marked as edits), unknown ones are added, `remove` drops. */
+  applyPatches(patches: Array<Patch<T>>): void {
+    const idf = this.cfg.model?.idField ?? 'id';
+    const byId = new Map(this.all.map((r) => [r.id, r]));
+    const added: Model<T>[] = [];
+    let touched = false;
+    for (const p of patches) {
+      const id = p.id ?? p.data?.[idf];
+      const rec = id === undefined ? undefined : byId.get(id);
+      if (p.op === 'remove') {
+        if (!rec) continue;
+        byId.delete(id!);
+        this.all = this.all.filter((r) => r !== rec);
+        this.total--;
+        touched = true;
+      } else if (rec) touched = rec.patch(p.data!) || touched;
+      else if (p.data) {
+        const m = this.wrap(p.data);
+        added.push(m);
+        byId.set(m.id, m);
+      }
+    }
+    if (added.length) {
+      this.all = [...this.all, ...added];
+      this.total += added.length;
+    }
+    if (!added.length && !touched) return;
+    this.refreshView();
+    this.fire('patch', patches);
+  }
+
+  /** Applies what a source sends as it arrives (`{ op, data, id }`, or an array of them; text is parsed as JSON). Returns the function that stops it. */
+  connect(source: LiveSource, parse: (data: any) => Patch<T> | Array<Patch<T>> = (d) => (typeof d === 'string' ? JSON.parse(d) : d)): () => void {
+    const fn = (e: { data: any }) => {
+      const p = parse(e.data);
+      this.applyPatches(Array.isArray(p) ? p : [p]);
+    };
+    source.addEventListener('message', fn);
+    return () => source.removeEventListener('message', fn);
   }
 
   clear(): void {

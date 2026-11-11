@@ -3,7 +3,7 @@ Purpose:       A command window opened with a shortcut (Ctrl/⌘+K): the user ty
 Anatomy:       `body > .op-layer` > `.op-palette-backdrop` > `.op-palette[role=dialog]` > `__search` (input `role=combobox`) + `__filters` ("All" chip + one per category) +
                `__list[role=listbox]` with `__group` (category title) and `__item[role=option]` (icon, title with `<mark>`, description, `<kbd>` shortcut) + `__empty`; a footer with keyboard hints.
 Config:        `commands: Command[]`, `hotkey: 'mod+k'` (`mod` = Ctrl on Windows/Linux, ⌘ on Mac; `false` turns it off), `placeholder`, `emptyText`, `maxResults: 50`,
-               `categories: string[]` (group order; the rest come after), `filters: true` (category chips).
+               `categories: string[]` (group order; the rest come after), `filters: true` (category chips). A command takes `permission` (left out while `setPermissionResolver` denies it).
 Command:       `{ id, title, category?, icon?, description?, keywords?: string[], shortcut?: string (display only), disabled?, hidden?: () => boolean, handler(ctx) }`.
                `children: Command[] | () => Command[] | Promise<Command[]>` opens a second level ("Switch theme… → light/dark/..."); Backspace in the empty field goes back. The `handler` runs **after** the palette has closed (so it can open a modal window).
 API:           `open()`, `close()`, `toggle()`, `isOpen()`, `setCommands(list)`, `register(cmd | cmds)` (returns the function that unregisters), `run(id)`, `getCommands()`.

@@ -1,0 +1,168 @@
+@layer optikos {
+  :root {
+    --op-chart-line-width: 2px;
+    --op-chart-font-size: 0.75rem;
+    --op-chart-area-opacity: 0.18;
+    --op-chart-tip-width: 11rem;
+    --op-chart-swatch: 0.625rem;
+    --op-chart-total-size: 1.125rem;
+    --op-chart-bar-radius: 2px;
+  }
+  .op-chart {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-space-2);
+    min-inline-size: 0;
+    font-family: var(--op-font-family);
+    color: var(--op-chart-fg, var(--op-color-fg));
+  }
+  .op-chart__plot {
+    position: relative;
+  }
+  .op-chart__svg {
+    display: block;
+    inline-size: 100%;
+    overflow: visible;
+    touch-action: pan-y;
+  }
+  .op-chart__svg:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-chart__grid line {
+    stroke: var(--op-chart-grid, var(--op-color-border));
+    stroke-width: var(--op-border-width);
+  }
+  .op-chart__grid .op-chart__axis {
+    stroke: var(--op-color-border-strong);
+  }
+  .op-chart__tick,
+  .op-chart__empty {
+    fill: var(--op-color-fg-muted);
+    font-size: var(--op-chart-font-size);
+  }
+  .op-chart__total {
+    fill: var(--op-chart-fg, var(--op-color-fg));
+    font-size: var(--op-chart-total-size);
+    font-weight: 600;
+  }
+  .op-chart__series {
+    --op-chart-c: var(--op-chart-1, var(--op-color-primary));
+  }
+  .op-chart__bar {
+    fill: var(--op-chart-c);
+  }
+  .op-chart__line {
+    fill: none;
+    stroke: var(--op-chart-c);
+    stroke-width: var(--op-chart-line-width);
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .op-chart__area {
+    fill: var(--op-chart-c);
+    fill-opacity: var(--op-chart-area-opacity);
+    stroke: none;
+  }
+  .op-chart__dot {
+    fill: var(--op-color-surface);
+    stroke: var(--op-chart-c);
+    stroke-width: var(--op-chart-line-width);
+  }
+  .op-chart--sparkline .op-chart__dot {
+    fill: var(--op-chart-c);
+  }
+  .op-chart__slice {
+    fill: var(--op-chart-c);
+    stroke: var(--op-color-surface);
+    stroke-width: var(--op-chart-line-width);
+    transition: opacity var(--op-duration) var(--op-easing);
+  }
+  .op-chart__svg:has(.is-active) .op-chart__slice:not(.is-active) {
+    opacity: 0.55;
+  }
+  .op-chart__hit {
+    fill: transparent;
+  }
+  .op-chart__guide {
+    stroke: var(--op-color-border-strong);
+    stroke-width: var(--op-border-width);
+    visibility: hidden;
+  }
+  .op-chart__guide.is-on {
+    visibility: visible;
+  }
+  .op-chart__tip {
+    position: absolute;
+    inset-block-start: 0;
+    z-index: 1;
+    inline-size: max-content;
+    max-inline-size: var(--op-chart-tip-width);
+    padding: var(--op-space-2) var(--op-space-3);
+    transform: translateX(var(--op-space-3));
+    background: var(--op-color-surface);
+    color: var(--op-color-fg);
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-radius);
+    box-shadow: var(--op-shadow);
+    font-size: var(--op-chart-font-size);
+    pointer-events: none;
+  }
+  .op-chart__tip.is-left {
+    transform: translateX(calc(-100% - var(--op-space-3)));
+  }
+  .op-chart__tip-head {
+    font-weight: 600;
+    margin-block-end: var(--op-space-1);
+  }
+  .op-chart__tip-row {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-2);
+  }
+  .op-chart__tip-row b {
+    margin-inline-start: auto;
+    padding-inline-start: var(--op-space-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .op-chart__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--op-space-1) var(--op-space-3);
+  }
+  .op-chart__key {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--op-chart-font-size);
+    color: var(--op-color-fg);
+    cursor: pointer;
+  }
+  .op-chart__key.is-off {
+    color: var(--op-color-fg-muted);
+    text-decoration: line-through;
+  }
+  .op-chart__key:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-chart__swatch {
+    inline-size: var(--op-chart-swatch);
+    block-size: var(--op-chart-swatch);
+    border-radius: var(--op-chart-bar-radius);
+    background: var(--op-chart-c);
+    flex: none;
+  }
+  .op-chart__key.is-off .op-chart__swatch {
+    opacity: 0.35;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .op-chart__slice {
+      transition: none;
+    }
+  }
+}

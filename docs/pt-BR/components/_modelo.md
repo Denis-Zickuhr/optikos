@@ -18,5 +18,5 @@ Fora do escopo: o que não vamos fazer
 ```
 
 Convenções que valem para toda ficha (não repetir): config comum de `Component` (`id`, `cls`, `style`,
-`hidden`, `width`, `height`, `flex`, `tooltip`, `theme`, `loading`, `stableSize`, `listeners`, `renderTo`), métodos comuns
+`hidden`, `width`, `height`, `flex`, `tooltip`, `theme`, `permission`, `permissionMode`, `loading`, `stableSize`, `listeners`, `renderTo`), métodos comuns
 (`show/hide`, `setDisabled`, `focus`, `destroy`, `on/off/once/emit`) e o evento `destroy`.

@@ -1,0 +1,15 @@
+@layer optikos {
+  .op-datetimefield__parts {
+    display: flex;
+    gap: var(--op-datetimefield-gap, var(--op-space-2));
+  }
+  .op-datetimefield__parts > .op-field {
+    margin: 0;
+  }
+  .op-datetimefield__parts > .op-field:first-child {
+    flex: 1 1 60%;
+  }
+  .op-datetimefield__parts > .op-field:last-child {
+    flex: 1 1 40%;
+  }
+}

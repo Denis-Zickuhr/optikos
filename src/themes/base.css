@@ -61,6 +61,15 @@
     --op-color-warning-soft: #fcecc9;
     --op-color-info: #1f5fa8;
     --op-color-info-soft: #dfeaf8;
+
+    /* categorical series colors (charts, avatars): distinct for color-blind eyes, 3:1 or more on the surface; the first one, unless a theme sets it, is its primary */
+    --op-chart-2: #b45309;
+    --op-chart-3: #1e7a4d;
+    --op-chart-4: #7e3fa8;
+    --op-chart-5: #0e7490;
+    --op-chart-6: #b3261e;
+    --op-chart-7: #8a6d00;
+    --op-chart-8: #5b6676;
     --op-color-focus: #2f7bd6;
     --op-color-disabled-fg: #9aa4b2;
     --op-color-disabled-bg: #eef1f5;

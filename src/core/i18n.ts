@@ -68,6 +68,11 @@ export function setLocale(l: string | Locale): void {
   }
 }
 
+/** The ISO 4217 code that `money` columns and currency fields use (each locale brings its own default). */
+export function setCurrency(code: string): void {
+  current._currency = code;
+}
+
 export const getLocale = (): Locale => current;
 
 /**

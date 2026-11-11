@@ -10,6 +10,7 @@
     --op-grid-action-idle-opacity: 0.45;
     --op-grid-action-disabled-opacity: 0.3;
     --op-grid-selected-bar-width: 0.125rem;
+    --op-grid-lock-shadow-size: 0.375rem;
   }
   .op-grid {
     --_border: var(--op-grid-border, var(--op-color-border));
@@ -374,5 +375,44 @@
   }
   .op-grid__colgroup ~ .op-grid__colitem {
     padding-inline-start: var(--op-space-4);
+  }
+
+  /* locked columns: body cells stick, header cells are shifted by the scroll (the header scrolls by script, not natively) */
+  .op-grid__cell.is-locked {
+    z-index: 1;
+    background: var(--op-grid-bg, var(--op-color-surface));
+  }
+  .op-grid__body-row .is-locked-start {
+    position: sticky;
+    inset-inline-start: var(--_lock);
+  }
+  .op-grid__body-row .is-locked-end {
+    position: sticky;
+    inset-inline-end: var(--_lock);
+  }
+  .op-grid__hcell.is-locked {
+    position: relative;
+    background: var(--op-grid-header-bg, var(--op-color-surface-2));
+  }
+  .op-grid__hcell.is-locked-start {
+    inset-inline-start: var(--op-grid-scroll-x);
+  }
+  .op-grid__hcell.is-locked-end {
+    inset-inline-start: calc(-1 * var(--op-grid-scroll-end));
+  }
+  .op-grid__body-row:hover .is-locked {
+    background: var(--op-grid-row-hover-bg, var(--op-color-hover));
+  }
+  .op-grid--striped .op-grid__body-row.is-odd .is-locked {
+    background: var(--op-grid-row-stripe-bg, var(--op-color-surface-2));
+  }
+  .op-grid__body-row.is-selected .is-locked {
+    background: var(--op-grid-row-selected-bg, var(--op-color-selected));
+  }
+  .op-grid.is-scrolled-start .is-lock-edge.is-locked-start {
+    box-shadow: var(--op-grid-lock-shadow-size) 0 var(--op-grid-lock-shadow-size) calc(-1 * var(--op-grid-lock-shadow-size)) var(--op-color-border-strong);
+  }
+  .op-grid.is-scrolled-end .is-lock-edge.is-locked-end {
+    box-shadow: calc(-1 * var(--op-grid-lock-shadow-size)) 0 var(--op-grid-lock-shadow-size) calc(-1 * var(--op-grid-lock-shadow-size)) var(--op-color-border-strong);
   }
 }

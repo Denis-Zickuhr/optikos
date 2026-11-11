@@ -1,5 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { defineTheme, setTheme } from 'optikos';
+import { parse, contrast } from './color';
+import { checkContrast } from './contrast';
 
 afterEach(() => {
   document.head.innerHTML = '';
@@ -21,6 +23,12 @@ describe('defineTheme', () => {
     const th = defineTheme({ radius: '0.75rem', space: { 3: '1rem' } }, 'plain-group');
     expect(th.css).toContain('--op-radius: 0.75rem;');
     expect(th.css).toContain('--op-space-3: 1rem;');
+  });
+
+  it('the key base sits beside variants in the same group', () => {
+    const th = defineTheme({ radius: { base: '8px', sm: '4px' } }, 'both');
+    expect(th.css).toContain('--op-radius: 8px;');
+    expect(th.css).toContain('--op-radius-sm: 4px;');
   });
 
   it('inject adds one style tag (idempotent) without activating; apply activates and keeps other themes', () => {
@@ -72,5 +80,52 @@ describe('scrollbars', () => {
     const base = readFileSync('src/themes/base.css', 'utf8');
     for (const t of ['--op-scrollbar-thumb:', '--op-scrollbar-track:', '--op-scrollbar-width:', 'scrollbar-color:']) expect(base).toContain(t);
     expect(readFileSync('src/themes/dark.css', 'utf8')).toContain('color-scheme: dark');
+  });
+});
+
+describe('seeds, fonts and the contrast checker', () => {
+  const tokens = (css: string, scope: string) => {
+    const block = css.split('\n  }\n').find((b) => b.includes(scope))!;
+    return Object.fromEntries([...block.matchAll(/(--[\w-]+): ([^;]+);/g)].map((m) => [m[1], m[2]]));
+  };
+  const ratio = (t: Record<string, string>, fg: string, bg: string) => contrast(parse(t[fg])!, parse(t[bg])!);
+
+  it('a gold and a brown seed make light and dark themes whose text pairs keep 4.5:1', () => {
+    const css = defineTheme({ seeds: { primary: '#D9A441', neutral: '#2A1C12' } }, 'beleza').css;
+    const light = tokens(css, "[data-op-theme~='beleza'] {");
+    const dark = tokens(css, "[data-op-theme~='beleza'][data-op-theme~='dark'] {");
+    for (const t of [light, dark]) {
+      expect(ratio(t, '--op-color-fg', '--op-color-surface')).toBeGreaterThanOrEqual(7);
+      expect(ratio(t, '--op-color-fg-muted', '--op-color-bg')).toBeGreaterThanOrEqual(4.5);
+      expect(ratio(t, '--op-color-primary-fg', '--op-color-primary')).toBeGreaterThanOrEqual(4.5);
+      expect(ratio(t, '--op-navmenu-fg', '--op-navmenu-bg')).toBeGreaterThanOrEqual(4.5);
+      expect(ratio(t, '--op-navmenu-active-fg', '--op-navmenu-active-bg')).toBeGreaterThanOrEqual(4.5);
+      expect(ratio(t, '--op-grid-header-fg', '--op-grid-header-bg')).toBeGreaterThanOrEqual(4.5);
+    }
+    // gold fails as text on white: a separate text token carries the brand
+    expect(ratio(light, '--op-color-primary-text', '--op-color-surface-2')).toBeGreaterThanOrEqual(4.5);
+    expect(light['--op-color-primary']).toBe('#d9a441');
+    expect(dark['--op-color-bg']).not.toBe(light['--op-color-bg']);
+  });
+
+  it('tokens given next to seeds win in the light set; a bad seed says so', () => {
+    expect(defineTheme({ seeds: { primary: '#06f' }, radius: { base: '2px' } }, 'x').css).toContain('--op-radius: 2px;');
+    expect(() => defineTheme({ seeds: { primary: 'blue' } })).toThrow(/hex color/);
+  });
+
+  it('fonts become @font-face rules outside the layer', () => {
+    const css = defineTheme({ fonts: [{ family: 'Brand', url: '/f/brand.woff2', weight: '400 700' }], font: { family: "'Brand', sans-serif" } }, 'f').css;
+    expect(css.startsWith('@font-face {')).toBe(true);
+    expect(css).toContain("url('/f/brand.woff2')");
+    expect(css).toContain('font-weight: 400 700;');
+    expect(css).toContain("--op-font-family: 'Brand', sans-serif;");
+  });
+
+  it('checkContrast reports the pairs under 4.5:1 and skips unset tokens', () => {
+    const colors: Record<string, string> = { '--op-color-fg': '#777777', '--op-color-surface': '#ffffff', '--op-color-primary-fg': '#ffffff', '--op-color-primary': '#0b3d91' };
+    const issues = checkContrast(document.documentElement, { warn: false, resolve: (t) => (colors[t] ? parse(colors[t]) : undefined) });
+    expect(issues).toHaveLength(1);
+    expect(issues[0].pair).toBe('--op-color-fg on --op-color-surface');
+    expect(issues[0].ratio).toBeLessThan(4.5);
   });
 });

@@ -4,6 +4,7 @@ import { h } from '../../../core/dom';
 import { t } from '../../../core/i18n';
 import { roving } from '../../../core/focus';
 import type { Placement } from '../../../core/position';
+import { gate } from '../../../core/permission';
 import { iconEl } from '../../base/icon/icon';
 import { Dropdown } from '../dropdown/dropdown';
 import { stagger } from '../../../motion/core';
@@ -20,8 +21,11 @@ export interface MenuItem {
   group?: string;
   /** A count or short label at the end of the row. */
   badge?: string | number;
+  /** Hidden (or disabled) while `setPermissionResolver` denies it. */
+  permission?: string;
 }
-export type MenuEntry = MenuItem | '-';
+/** An item, or `'-'` for a separator (typed `string` so an array built in a variable still fits). */
+export type MenuEntry = MenuItem | string;
 
 export interface MenuConfig extends ComponentConfig {
   items?: MenuEntry[];
@@ -123,8 +127,8 @@ export class Menu extends Component<MenuConfig> {
     });
   }
 
-  private entries(): MenuEntry[] {
-    return this.config.items ?? [];
+  private entries(): Array<MenuItem | '-'> {
+    return (this.config.items ?? []).flatMap((e): Array<MenuItem | '-'> => (typeof e === 'string' ? ['-'] : (gate([e]) ?? [])));
   }
 
   private renderItems() {

@@ -1,0 +1,64 @@
+@layer optikos {
+  :root {
+    --op-stat-value-size: 1.75rem;
+    --op-stat-spark-width: 6rem;
+  }
+  .op-stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-space-1);
+    padding: var(--op-space-4);
+    background: var(--op-stat-bg, var(--op-color-surface));
+    color: var(--op-color-fg);
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-stat-radius, var(--op-radius));
+    font-family: var(--op-font-family);
+    min-inline-size: 0;
+  }
+  .op-stat__label {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-stat__row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--op-space-2);
+  }
+  .op-stat__value {
+    font-size: var(--op-stat-value-size);
+    font-weight: 600;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .op-stat__delta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-1);
+    font-size: var(--op-font-size-sm);
+    font-weight: 600;
+  }
+  .op-stat__delta.is-good {
+    color: var(--op-color-success);
+  }
+  .op-stat__delta.is-bad {
+    color: var(--op-color-danger);
+  }
+  .op-stat__delta.is-flat {
+    color: var(--op-color-fg-muted);
+  }
+  .op-stat__caption {
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-stat__spark {
+    position: absolute;
+    inset-block-end: var(--op-space-3);
+    inset-inline-end: var(--op-space-4);
+    inline-size: var(--op-stat-spark-width);
+  }
+}

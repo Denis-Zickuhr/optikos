@@ -3,7 +3,7 @@ Purpose:       Picks one record from a large set (customer, manager, product): t
 Anatomy:       like `SuggestField` (`op-suggest`) + `op-lookup`; a magnifier button on the right (`.op-lookup__btn`, `aria-haspopup=dialog`) instead of the decorative icon.
                The magnifier opens a modal `Window` with a `SearchGrid` (filters on top, grid below) and the Cancel / Select buttons.
 Config:        (SuggestField, incl. `showValue` to display the record id) + `lookup: LookupDef | string` (the definition, or the name given to `registerLookup`; see `searchgrid.md`).
-               `valueField` (`id`) and `displayField` (`name`) come from the definition; typed suggestions filter `queryField` (default: the 1st filter) with `contains`.
+               `valueField` (`id`) and `displayField` (`name`) come from the definition; typed suggestions filter `queryField` (default: the 1st filter) with `contains`. `displayFrom` (on any field; the key of the loaded record that holds the text to show: `{ name: 'event', displayFrom: 'eventName' }` makes `form.load({ event: 7, eventName: 'Gala' })` show `Gala` without a search, also in the rows of a `FieldList`). `setValue({ value, label })` does the same by hand.
 API:           (SuggestField) + `openDialog()`. `getValue()` is the record's `valueField`; `getSelection()` is `{ value, label, raw }`.
 Events:        (SuggestField) `select(item)` when picking (in the list or in the window), `change(value)`.
 States:        disabled/readonly disable the magnifier; `is-searching` (a spinner left of the magnifier).

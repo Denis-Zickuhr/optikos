@@ -1,6 +1,7 @@
 @layer optikos {
   :root {
     --op-window-width: 28rem;
+    --op-window-max-height: 85dvh;
   }
   .op-window-backdrop {
     position: fixed;
@@ -15,8 +16,7 @@
     position: fixed;
     inline-size: var(--op-window-width);
     max-inline-size: calc(100vw - var(--op-space-4));
-    max-block-size: calc(100vh - var(--op-space-4));
-    max-block-size: calc(100dvh - var(--op-space-4));
+    max-block-size: var(--op-window-max-height);
     background: var(--op-window-bg, var(--op-color-surface));
     border-radius: var(--op-window-radius, var(--op-radius-lg));
     box-shadow: var(--op-window-shadow, var(--op-shadow-lg));

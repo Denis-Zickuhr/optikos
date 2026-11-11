@@ -10,6 +10,28 @@ afterEach(() => {
 describe('Window', () => {
   const mk = (cfg: object = {}) => create<Window>({ type: 'window', title: 'Edit', items: [{ type: 'textfield', label: 'Name' }], buttons: [{ text: 'Save', variant: 'primary' }], ...cfg });
 
+  it('stays on screen when its content grows: re-centers, or (once dragged) pulls up to fit; stops watching when hidden', () => {
+    let grew: () => void = () => {};
+    const disconnect = vi.fn();
+    vi.stubGlobal('ResizeObserver', class { constructor(cb: () => void) { grew = cb; } observe() {} disconnect = disconnect; });
+    let height = 200;
+    const w = mk();
+    Object.defineProperty(w.el, 'offsetHeight', { get: () => height });
+    w.show();
+    height = innerHeight;
+    grew();
+    expect(w.el.style.top).toBe('0px');
+    (w as unknown as { moved: boolean }).moved = true;
+    w.el.style.top = `${innerHeight - 100}px`;
+    height = 300;
+    grew();
+    expect(w.el.style.top).toBe(`${innerHeight - 300}px`);
+    w.hide();
+    expect(disconnect).toHaveBeenCalled();
+    w.destroy();
+    vi.unstubAllGlobals();
+  });
+
   it('shows modal in the layer: backdrop, dialog role, inert page, focus on the dialog (not a field), restores focus', () => {
     const opener = document.createElement('button');
     document.body.append(opener);
@@ -225,7 +247,7 @@ describe('Tooltip', () => {
 describe('Menu', () => {
   const items = [
     { text: 'Open', handler: vi.fn() },
-    '-' as const,
+    '-',
     { text: 'Disabled', disabled: true },
     { text: 'Bold', checked: false },
     { text: 'More', items: [{ text: 'Sub A', handler: vi.fn() }, { text: 'Sub B' }] },

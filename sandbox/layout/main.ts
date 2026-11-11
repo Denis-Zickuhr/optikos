@@ -43,3 +43,26 @@ p.section('Panel', 'title, tools, collapsible, closable, reloadable (the ↻ run
 p.section('Toolbar', 'arrow keys move between buttons (single Tab stop); `->` fill, `-` separator.', (host) => {
   create({ type: 'toolbar', ariaLabel: 'Formatting', style: 'width:100%', renderTo: host, items: [{ type: 'button', text: 'Cut' }, { type: 'button', text: 'Copy' }, '-', { type: 'button', text: 'Paste' }, '->', { type: 'button', text: 'Help', variant: 'ghost' }] });
 });
+
+const slide = (n: number) => ({ type: 'imagecanvas', src: 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="hsl(${n * 67} 55% 55%)"/><text x="400" y="250" font-size="90" fill="#fff" text-anchor="middle" font-family="sans-serif">${n}</text></svg>`), alt: `Picture ${n}`, zoomable: false, ratio: '16 / 9' });
+const card = (n: number) => ({ type: 'panel', title: `Card ${n}`, items: [{ type: 'label', text: `Anything that is a component fits: card number ${n}.` }] });
+
+p.section('Carousel · images', 'arrows, dots, ← → Home End on the controls, swipe or trackpad. The slides out of view are inert.', (host, { watch }) => {
+  watch(create({ type: 'carousel', width: 480, renderTo: host, ariaLabel: 'Pictures', items: [1, 2, 3, 4].map(slide) } as never), ['change']);
+});
+
+p.section('Carousel · cards', 'perView 3 with a gap: it moves one card at a time; loop wraps around.', (host) => {
+  create({ type: 'carousel', perView: 3, gap: 12, loop: true, renderTo: host, items: [1, 2, 3, 4, 5, 6].map(card) } as never);
+});
+
+p.section('Carousel · autoplay', 'every 2.5 s; it pauses under the pointer or focus, stops for good after any use of the controls, and never runs with prefers-reduced-motion.', (host, { watch }) => {
+  watch(create({ type: 'carousel', autoplay: 2500, width: 480, renderTo: host, items: [1, 2, 3].map(slide) } as never), ['change']);
+});
+
+p.section('Carousel · runtime', 'add and remove items; one item shows no controls.', (host) => {
+  const c = create({ type: 'carousel', width: 480, renderTo: host, items: [slide(1), slide(2)] } as never) as unknown as Container;
+  let n = 2;
+  create({ type: 'button', text: 'Add', renderTo: host, handler: () => c.add(slide(++n)) });
+  create({ type: 'button', text: 'Remove last', renderTo: host, handler: () => c.remove(c.items.length - 1) });
+  create({ type: 'carousel', width: 480, renderTo: host, items: [slide(9)] } as never);
+});

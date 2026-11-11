@@ -1,11 +1,14 @@
 export { Emitter, type Handler } from './emitter';
 export { h, attr, uid, kebab, px, clamp, type Attrs, type Child } from './dom';
-export { t, setLocale, getLocale, addMessages, locales, type Locale } from './i18n';
+export { t, setLocale, setCurrency, getLocale, addMessages, locales, type Locale } from './i18n';
 export { Component, type ComponentConfig, type Parent } from './component';
 export { Container, type ContainerConfig } from './container';
 export { register, create, getType, type AnyConfig, type ComponentClass } from './registry';
 export { registerLayout, createLayout, type Layout, type LayoutSpec, type LayoutFactory } from '../layout/layout';
 export { Field, type FieldConfig } from './field';
+export { setStateStorage, loadState, saveState, type StateStorage } from './state';
+export { getPath, setPath } from './path';
+export { setPermissionResolver, setPermissionMode, allowed, gate, type PermissionMode } from './permission';
 export * as validators from './validators';
 export type { Validator } from './validators';
 export { layer, toLayer, lockModal } from './layer';

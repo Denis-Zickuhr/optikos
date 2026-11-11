@@ -10,6 +10,9 @@ Guia para agentes (IA ou humanos) que trabalham no Optikos. Leia `PHILOSOPHY.md`
   permitidas; nada entra em `dependencies` do `package.json`.
 - **Código enxuto.** Sem over-engineering, sem camadas "para o futuro" e sem config de
   configuração. Se a solução precisa de explicação longa, simplifique.
+- **Comentários só quando vitais:** uma gambiarra, um contorno não óbvio, algo que quebraria se alguém "arrumasse".
+  Uma linha. Nada de comentário narrando o código nem cabeçalho de seção. Única exceção: TSDoc curto em config e
+  método público, que é a documentação que o editor mostra para quem usa a lib.
 - **Idioma:** código, APIs e identificadores em inglês. Docs públicas (fichas, guias, README, site) em inglês, com a
   tradução pt-BR em `docs/pt-BR/` atualizada **no mesmo commit** (o teste `scripts/site.test.mjs` exige as duas).
   Planejamento (`docs/internal/`) e o registro de decisões (`docs/architecture.md`) em português.

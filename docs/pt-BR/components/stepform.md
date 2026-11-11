@@ -13,7 +13,7 @@ Fluxo:         Próximo só avança se os campos da etapa atual validam (o 1º i
                O `validate` de uma etapa roda depois que os campos dela passam, ao sair dela para a frente e de novo no Concluir: Próximo e Concluir ficam
                em loading (`is-validating` no form) e um segundo clique não faz nada; mensagens por campo marcam esses campos, um texto (ou um erro lançado)
                aparece numa linha de alerta acima da etapa. Voltar aborta a checagem (o `signal`); com checagens, Concluir devolve `false` e `finish` dispara quando elas passam.
-Estados:       etapas do Stepper: atual, feita (já validada), com erro (falhou ao validar). A etapa de revisão é remontada toda vez que se entra nela.
+Estados:       etapas do Stepper: atual, feita (já validada), com erro (falhou ao validar). A etapa de revisão é remontada toda vez que se entra nela; uma FieldList mostra uma linha por item.
 Teclado/ARIA:  Enter avança; o stepper tem `aria-current="step"`; a mudança de etapa leva o foco ao painel da nova etapa (`autoFocus: true`: ao 1º campo dela, o que abre o teclado do celular); botões nativos.
 Tokens:        `--op-stepform-gap`, `--op-stepform-step-padding` (+ os do Stepper).
 Casos sandbox: `form`: cadastro em 4 etapas com revisão, dentro de uma `Window` (modal) e na página, etapa opcional, modo não linear, checagem da etapa contra um servidor (simulado).

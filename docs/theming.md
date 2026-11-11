@@ -61,6 +61,29 @@ setTheme('dark brand'); // sets the themes of any element: setTheme(names, el)
 camelCase keys become kebab-case. Numbers have no unit (`radius: 0`); write units as strings (`'4px'`).
 To produce the `.css` at build time: `npm run theme -- my-theme.ts my-theme.css` (the file does `export default defineTheme(...)`), or the kai command **Theme to CSS**.
 
+## 4. A theme from two colors
+
+```ts
+const brand = defineTheme({
+  seeds: { primary: '#D9A441', neutral: '#2A1C12' },
+  font: { family: "'Brand Sans', system-ui, sans-serif" },
+  fonts: [{ family: 'Brand Sans', url: '/fonts/brand.woff2', weight: '400 700' }],
+}, 'brand');
+brand.apply();                 // light: data-op-theme="brand"
+setTheme('brand dark');        // dark: the seeds also made the night look
+await loadFonts(brand.fonts);  // optional: fetch the files now instead of on first use
+```
+
+`seeds.primary` is used as is for fills; text that carries the brand uses a shade of it that keeps 4.5:1
+(`--op-color-primary-text`, set only when the color fails as text, as a gold does). `neutral` tints the grays: backgrounds,
+borders, text. The seeds also make the navmenu and grid header colors. Tokens you give next to `seeds` win in the light set.
+`fonts` become `@font-face` rules (outside the layer) so a tenant's font ships with its theme; the family itself is
+`font: { family }`.
+
+`checkContrast(el?)` returns the text pairs under 4.5:1 (`fg` on `surface`, `fg-muted`, primary and its text, status
+colors, navmenu, grid header) and prints them in dev; `theme.apply()` runs it on localhost. Chart and avatar colors are
+`--op-chart-1…8` (the first is the primary unless the theme sets it).
+
 ## Density
 
 `--op-control-height`, `--op-control-padding-x`, `--op-row-height` and the `--op-space-*` scale define the density; the `compact` theme only redefines them.

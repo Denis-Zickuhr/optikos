@@ -3,7 +3,7 @@ Purpose:       The common contract of fields: value, validation, dirty state, di
 Anatomy:       `.op-field` > `label.op-field__label`, `.op-field__control` (filled by `createControl()`), `.op-field__help`, `.op-field__error[role=alert]`.
                State classes on the root: `is-invalid`, `is-dirty`, `is-readonly`, `is-disabled`, `is-focused`; `op-field--label-left`.
 Config:        `name`, `label`, `labelPos: 'top'|'left'` (top), `value`, `required: false`, `readonly: false`, `disabled: false`,
-               `help`, `stableSize: true`, `validators: Validator[]`, `validateOn: 'blur'|'change'|'submit'` (blur — after the first error it revalidates on every change), `debounce: 0` (ms of quiet after the last change before the `settled` event; works for **every** field).
+               `help`, `stableSize: true`, `validators: Validator[]`, `validateOn: 'blur'|'change'|'submit'` (blur — after the first error it revalidates on every change), `debounce: 0` (ms of quiet after the last change before the `settled` event; works for **every** field). `displayFrom` (a lookup or picker: the key of the loaded record that holds its text, read by `form.load` / `setValues`).
 API:           `getValue/setValue(v, silent?)`, `clear()` (empty value + `change`), `reset()` (back to the original value), `markClean()` (the current value becomes the original),
                `isDirty()`, `validate()` (updates the UI, returns a boolean), `isValid()` (no UI), `getError()`, `setError(msg)`, `clearError()`,
                `setLabel`, `setRequired`, `setReadonly`, `setDisabled`, `setHelp`, `setValidators`.

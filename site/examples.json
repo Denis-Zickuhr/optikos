@@ -420,6 +420,48 @@
     "value": 3,
     "help": "↑/↓ change the value"
    }
+  },
+  {
+   "title": {
+    "en": "Money and percent (Intl), cents as integers",
+    "pt-BR": "Moeda e porcentagem (Intl), centavos como inteiros"
+   },
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 12,
+    "width": 300,
+    "items": [
+     {
+      "type": "numberfield",
+      "name": "price",
+      "label": "Price (US, cents: value 123456)",
+      "format": "currency",
+      "currency": "USD",
+      "locale": "en-US",
+      "scale": 100,
+      "value": 123456
+     },
+     {
+      "type": "numberfield",
+      "name": "priceBr",
+      "label": "Preço (BR, same code)",
+      "format": "currency",
+      "currency": "BRL",
+      "locale": "pt-BR",
+      "scale": 100,
+      "value": 123456
+     },
+     {
+      "type": "numberfield",
+      "name": "tax",
+      "label": "Tax (the value is a fraction)",
+      "format": "percent",
+      "decimals": 1,
+      "value": 0.15
+     }
+    ]
+   }
   }
  ],
  "checkbox": [
@@ -685,36 +727,13 @@
       ]
      },
      "columns": [
-      {
-       "field": "id",
-       "header": "#",
-       "width": 60,
-       "sortable": true,
-       "align": "right"
-      },
-      {
-       "field": "name",
-       "header": "Name",
-       "sortable": true,
-       "minWidth": 140
-      },
-      {
-       "field": "role",
-       "header": "Role",
-       "sortable": true
-      }
+      { "field": "id", "header": "#", "width": 60, "sortable": true, "align": "right" },
+      { "field": "name", "header": "Name", "sortable": true, "minWidth": 140 },
+      { "field": "role", "header": "Role", "sortable": true }
      ],
      "filters": [
-      {
-       "type": "textfield",
-       "name": "name",
-       "label": "Name"
-      },
-      {
-       "type": "textfield",
-       "name": "role",
-       "label": "Role"
-      }
+      { "type": "textfield", "name": "name", "label": "Name" },
+      { "type": "textfield", "name": "role", "label": "Role" }
      ],
      "valueField": "id",
      "displayField": "name",
@@ -723,7 +742,32 @@
     "showValue": true,
     "width": 320
    },
-   "description": { "en": "Type to get suggestions or click the magnifier to open the window with filters and a grid.", "pt-BR": "Digite para receber sugestões ou clique na lupa para abrir a janela com filtros e grid." }
+   "description": {
+    "en": "Type to get suggestions or click the magnifier to open the window with filters and a grid.",
+    "pt-BR": "Digite para receber sugestões ou clique na lupa para abrir a janela com filtros e grid."
+   }
+  },
+  {
+   "title": { "en": "Shows its text from the loaded record", "pt-BR": "Mostra o texto do registro carregado" },
+   "description": {
+    "en": "The record has the id and the name; `displayFrom` says where the name is, so nothing is searched.",
+    "pt-BR": "O registro tem o id e o nome; `displayFrom` diz onde está o nome, então nada é pesquisado."
+   },
+   "code": "registerLookup('events', { store: () => new Store({ proxy }), columns: [{ field: 'name' }], filters: [{ type: 'textfield', name: 'name', op: 'contains' }] });\nconst form = create({ type: 'form', renderTo: host, items: [\n  { type: 'lookupfield', name: 'event', label: 'Event', lookup: 'events', displayFrom: 'eventName' },\n] });\nform.load({ event: 7, eventName: 'Gala' }); // shows \"Gala\"; form.getValues().event === 7\n// by hand: field.setValue({ value: 7, label: 'Gala' })"
+  }
+ ],
+ "timefield": [
+  {
+   "title": { "en": "Limits and step", "pt-BR": "Limites e passo" },
+   "config": {
+    "type": "timefield",
+    "label": "Opening time",
+    "min": "08:00",
+    "max": "18:00",
+    "step": 15,
+    "value": "09:30",
+    "help": "Type 930 or use ↑/↓ (15 min)"
+   }
   }
  ],
  "secretfield": [
@@ -875,18 +919,8 @@
     "type": "form",
     "width": 420,
     "items": [
-     {
-      "type": "textfield",
-      "name": "name",
-      "label": "Name",
-      "required": true
-     },
-     {
-      "type": "textfield",
-      "name": "email",
-      "label": "Email",
-      "inputType": "email"
-     },
+     { "type": "textfield", "name": "name", "label": "Name", "required": true },
+     { "type": "textfield", "name": "email", "label": "Email", "inputType": "email" },
      {
       "type": "select",
       "name": "plan",
@@ -897,17 +931,8 @@
       ],
       "value": "Free"
      },
-     {
-      "type": "checkbox",
-      "name": "news",
-      "boxLabel": "Subscribe"
-     },
-     {
-      "type": "button",
-      "text": "Validate",
-      "variant": "primary",
-      "htmlType": "submit"
-     }
+     { "type": "checkbox", "name": "news", "boxLabel": "Subscribe" },
+     { "type": "button", "text": "Validate", "variant": "primary", "htmlType": "submit" }
     ]
    }
   },
@@ -920,27 +945,14 @@
      {
       "title": "Person",
       "items": [
-       {
-        "type": "textfield",
-        "name": "n",
-        "label": "Name",
-        "required": true
-       }
+       { "type": "textfield", "name": "n", "label": "Name", "required": true }
       ]
      },
      {
       "title": "Address",
       "items": [
-       {
-        "type": "textfield",
-        "name": "s",
-        "label": "Street"
-       },
-       {
-        "type": "textfield",
-        "name": "c",
-        "label": "City"
-       }
+       { "type": "textfield", "name": "s", "label": "Street" },
+       { "type": "textfield", "name": "c", "label": "City" }
       ]
      }
     ]
@@ -948,26 +960,46 @@
   },
   {
    "title": { "en": "Columns and aligned labels", "pt-BR": "Colunas e rótulos alinhados" },
-   "description": { "en": "`columns: 2` is a responsive grid (one column when narrow); `colspan: 'full'` takes the row. `labelWidth` lines up left labels.", "pt-BR": "`columns: 2` é uma grade responsiva (uma coluna quando estreita); `colspan: 'full'` ocupa a linha. `labelWidth` alinha os rótulos à esquerda." },
+   "description": {
+    "en": "`columns: 2` is a responsive grid (one column when narrow); `colspan: 'full'` takes the row. `labelWidth` lines up left labels.",
+    "pt-BR": "`columns: 2` é uma grade responsiva (uma coluna quando estreita); `colspan: 'full'` ocupa a linha. `labelWidth` alinha os rótulos à esquerda."
+   },
    "config": {
     "type": "container",
     "layout": "vbox",
     "gap": 28,
     "width": 520,
     "items": [
-     { "type": "form", "columns": 2, "items": [
-      { "type": "textfield", "name": "first", "label": "First name" },
-      { "type": "textfield", "name": "last", "label": "Last name" },
-      { "type": "textfield", "name": "email", "label": "Email", "inputType": "email", "colspan": "full" },
-      { "type": "textarea", "name": "notes", "label": "Notes", "colspan": "full" }
-     ] },
-     { "type": "form", "labelPos": "left", "labelWidth": 130, "items": [
-      { "type": "textfield", "name": "company", "label": "Company" },
-      { "type": "textfield", "name": "vat", "label": "VAT number" },
-      { "type": "textfield", "name": "billing", "label": "Billing email", "inputType": "email" }
-     ] }
+     {
+      "type": "form",
+      "columns": 2,
+      "items": [
+       { "type": "textfield", "name": "first", "label": "First name" },
+       { "type": "textfield", "name": "last", "label": "Last name" },
+       { "type": "textfield", "name": "email", "label": "Email", "inputType": "email", "colspan": "full" },
+       { "type": "textarea", "name": "notes", "label": "Notes", "colspan": "full" }
+      ]
+     },
+     {
+      "type": "form",
+      "labelPos": "left",
+      "labelWidth": 130,
+      "items": [
+       { "type": "textfield", "name": "company", "label": "Company" },
+       { "type": "textfield", "name": "vat", "label": "VAT number" },
+       { "type": "textfield", "name": "billing", "label": "Billing email", "inputType": "email" }
+      ]
+     }
     ]
    }
+  },
+  {
+   "title": { "en": "Server errors on the fields", "pt-BR": "Erros do servidor nos campos" },
+   "description": {
+    "en": "By dotted path; a row of a FieldList is `list.index.field`. The first error opens its tab or step and takes the focus.",
+    "pt-BR": "Por caminho pontilhado; uma linha de FieldList é `lista.indice.campo`. O primeiro erro abre a aba ou etapa e recebe o foco."
+   },
+   "code": "const form = create({ type: 'form', renderTo: host, items: [\n  { type: 'textfield', name: 'slug', label: 'Slug' },\n  { type: 'fieldlist', name: 'criteria', label: 'Criteria', items: [{ type: 'textfield', name: 'name' }], value: [{ name: 'Poise' }, { name: 'Walk' }] },\n] });\n\ntry { await api.save(form.getValues()); }\ncatch (e) {\n  const left = form.setErrors({ slug: 'Already in use', 'criteria.1.name': 'Repeated' }); // e.fieldErrors\n  if (left.length) toast({ type: 'error', text: 'Not shown on a field: ' + left.join(', ') });\n}"
   }
  ],
  "fieldgroup": [
@@ -1394,43 +1426,12 @@
      }
     ],
     "columns": [
-     {
-      "field": "id",
-      "header": "#",
-      "width": 60,
-      "sortable": true,
-      "align": "right"
-     },
-     {
-      "field": "name",
-      "header": "Name",
-      "sortable": true,
-      "minWidth": 140
-     },
-     {
-      "field": "role",
-      "header": "Role",
-      "sortable": true
-     },
-     {
-      "field": "total",
-      "header": "Total",
-      "format": "money",
-      "align": "right",
-      "sortable": true
-     },
-     {
-      "field": "since",
-      "header": "Since",
-      "format": "date",
-      "sortable": true
-     },
-     {
-      "field": "active",
-      "header": "Active",
-      "format": "bool",
-      "align": "center"
-     }
+     { "field": "id", "header": "#", "width": 60, "sortable": true, "align": "right" },
+     { "field": "name", "header": "Name", "sortable": true, "minWidth": 140 },
+     { "field": "role", "header": "Role", "sortable": true },
+     { "field": "total", "header": "Total", "format": "money", "align": "right", "sortable": true },
+     { "field": "since", "header": "Since", "format": "date", "sortable": true },
+     { "field": "active", "header": "Active", "format": "bool", "align": "center" }
     ],
     "selection": "multi",
     "height": 260,
@@ -1485,36 +1486,54 @@
      }
     ],
     "columns": [
-     {
-      "field": "id",
-      "header": "#",
-      "width": 60,
-      "sortable": true,
-      "align": "right"
-     },
-     {
-      "field": "name",
-      "header": "Name",
-      "sortable": true,
-      "minWidth": 140
-     },
-     {
-      "field": "role",
-      "header": "Role",
-      "sortable": true
-     },
-     {
-      "field": "total",
-      "header": "Total",
-      "format": "money",
-      "align": "right",
-      "sortable": true
-     }
+     { "field": "id", "header": "#", "width": 60, "sortable": true, "align": "right" },
+     { "field": "name", "header": "Name", "sortable": true, "minWidth": 140 },
+     { "field": "role", "header": "Role", "sortable": true },
+     { "field": "total", "header": "Total", "format": "money", "align": "right", "sortable": true }
     ],
     "paging": true,
     "pageSize": 3,
     "height": 240,
     "width": "100%"
+   }
+  },
+  {
+   "title": { "en": "Export, print and remember the layout", "pt-BR": "Exportar, imprimir e lembrar o layout" },
+   "code": "const grid = create({\n  type: 'grid', renderTo: host, store, resizableColumns: true, reorderableColumns: true,\n  columns: [{ field: 'name', sortable: true }, { field: 'price', format: 'money' }],\n  plugins: [persistState('grid-lots')],            // widths, order, sort, filters, page: per user, in the browser or your API\n});\nawait exportGrid(grid, { format: 'xlsx', filename: 'lots' }); // visible columns, current sort and filters, every page ('csv' too)\nawait printGrid(grid, { title: 'Lots' });                      // a plain table: header on every page, none of the app around it\nsetStateStorage({ get: (k) => api.getPref(k), set: (k, v) => api.setPref(k, v) }); // optional: follow the user"
+  },
+  {
+   "title": { "en": "Actions and columns by permission", "pt-BR": "Ações e colunas por permissão" },
+   "code": "setPermissionResolver((p) => user.permissions.includes(p));\ncreate({\n  type: 'grid', renderTo: host, store,\n  columns: [{ field: 'name' }, { field: 'cost', permission: 'finance.view' }],        // the column is left out\n  rowActions: [{ text: 'Delete', permission: 'lot.delete', handler: (rec) => store.remove(rec) }],\n});\ncreate({ type: 'button', text: 'New lot', permission: 'lot.create', permissionMode: 'disable' }); // disabled instead of hidden"
+  },
+  {
+   "title": { "en": "Locked columns", "pt-BR": "Colunas travadas" },
+   "description": {
+    "en": "Scroll sideways: the first column and the actions stay.",
+    "pt-BR": "Role para o lado: a primeira coluna e as ações ficam."
+   },
+   "config": {
+    "type": "grid",
+    "width": 420,
+    "height": 220,
+    "checkboxSelection": true,
+    "resizableColumns": true,
+    "data": [
+     { "id": 1, "name": "Candidate 1", "a": 3, "b": 5, "c": 7, "d": 11 },
+     { "id": 2, "name": "Candidate 2", "a": 6, "b": 10, "c": 14, "d": 22 },
+     { "id": 3, "name": "Candidate 3", "a": 9, "b": 15, "c": 21, "d": 33 },
+     { "id": 4, "name": "Candidate 4", "a": 12, "b": 20, "c": 28, "d": 44 },
+     { "id": 5, "name": "Candidate 5", "a": 15, "b": 25, "c": 35, "d": 55 },
+     { "id": 6, "name": "Candidate 6", "a": 18, "b": 30, "c": 42, "d": 66 },
+     { "id": 7, "name": "Candidate 7", "a": 21, "b": 35, "c": 49, "d": 77 },
+     { "id": 8, "name": "Candidate 8", "a": 24, "b": 40, "c": 56, "d": 88 }
+    ],
+    "columns": [
+     { "field": "name", "header": "Name", "width": 140, "locked": "start" },
+     { "field": "a", "header": "Alpha", "width": 120 },
+     { "field": "b", "header": "Beta", "width": 120 },
+     { "field": "c", "header": "Gamma", "width": 120 },
+     { "field": "d", "header": "Delta", "width": 120, "locked": "end" }
+    ]
    }
   }
  ],
@@ -1738,37 +1757,25 @@
    "config": {
     "type": "menu",
     "items": [
-     {
-      "text": "New",
-      "icon": "plus"
-     },
-     {
-      "text": "Rename",
-      "icon": "edit"
-     },
-     {
-      "text": "Locked",
-      "disabled": true
-     },
+     { "text": "New", "icon": "plus" },
+     { "text": "Rename", "icon": "edit" },
+     { "text": "Locked", "disabled": true },
      "-",
-     {
-      "text": "Show hidden",
-      "checked": false
-     },
+     { "text": "Show hidden", "checked": false },
      {
       "text": "Share",
       "items": [
-       {
-        "text": "Email"
-       },
-       {
-        "text": "Link"
-       }
+       { "text": "Email" },
+       { "text": "Link" }
       ]
      }
     ]
    },
    "launch": "anchor"
+  },
+  {
+   "title": { "en": "Items by permission", "pt-BR": "Itens por permissão" },
+   "code": "setPermissionResolver((p) => p !== 'lot.delete');\ncreate({ type: 'menu', items: [{ text: 'Edit' }, { text: 'Delete', permission: 'lot.delete' }] }).showAt(100, 100); // Delete is not there"
   }
  ],
  "tooltip": [
@@ -1795,25 +1802,33 @@
      {
       "type": "form",
       "items": [
-       {
-        "type": "textfield",
-        "label": "Name",
-        "required": true
-       }
+       { "type": "textfield", "label": "Name", "required": true }
       ]
      }
     ],
     "buttons": [
-     {
-      "text": "Cancel"
-     },
-     {
-      "text": "Save",
-      "variant": "primary"
-     }
+     { "text": "Cancel" },
+     { "text": "Save", "variant": "primary" }
     ]
    },
    "launch": "show"
+  },
+  {
+   "title": { "en": "Ask before discarding changes", "pt-BR": "Perguntar antes de descartar alterações" },
+   "launch": "show",
+   "config": {
+    "type": "window",
+    "title": "Edit lot",
+    "width": 360,
+    "closable": true,
+    "confirmDiscard": true,
+    "items": [
+     { "type": "textfield", "name": "name", "label": "Name (type, then close)", "value": "Lot 12" }
+    ],
+    "buttons": [
+     { "text": "Close" }
+    ]
+   }
   }
  ],
  "messagebox": [
@@ -2359,6 +2374,707 @@
      }
     ]
    }
+  }
+ ],
+ "imagefield": [
+  {
+   "title": { "en": "Avatar and gallery", "pt-BR": "Avatar e galeria" },
+   "config": {
+    "type": "container",
+    "layout": {
+     "type": "vbox",
+     "gap": 12
+    },
+    "items": [
+     {
+      "type": "imagefield",
+      "name": "avatar",
+      "label": "Avatar",
+      "help": "PNG or JPG, up to 1 MB",
+      "accept": "image/png,image/jpeg",
+      "maxSize": 1048576,
+      "width": 320
+     },
+     {
+      "type": "imagefield",
+      "name": "gallery",
+      "label": "Gallery",
+      "multiple": true,
+      "maxFiles": 3,
+      "width": 320
+     }
+    ]
+   }
+  }
+ ],
+ "imagecanvas": [
+  {
+   "title": { "en": "Zoom and pan", "pt-BR": "Zoom e arrastar" },
+   "config": {
+    "type": "imagecanvas",
+    "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22450%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22hsl%28134%2055%25%2055%25%29%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22250%22%20font-size%3D%2290%22%20fill%3D%22%23fff%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%3E2%3C/text%3E%3C/svg%3E",
+    "alt": "A colored picture",
+    "width": 360,
+    "ratio": "16 / 9"
+   }
+  }
+ ],
+ "carousel": [
+  {
+   "title": { "en": "Pictures", "pt-BR": "Imagens" },
+   "config": {
+    "type": "carousel",
+    "width": 420,
+    "ariaLabel": "Pictures",
+    "items": [
+     {
+      "type": "imagecanvas",
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22450%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22hsl%2867%2055%25%2055%25%29%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22250%22%20font-size%3D%2290%22%20fill%3D%22%23fff%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%3E1%3C/text%3E%3C/svg%3E",
+      "alt": "Picture 1",
+      "zoomable": false,
+      "ratio": "16 / 9"
+     },
+     {
+      "type": "imagecanvas",
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22450%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22hsl%28134%2055%25%2055%25%29%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22250%22%20font-size%3D%2290%22%20fill%3D%22%23fff%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%3E2%3C/text%3E%3C/svg%3E",
+      "alt": "Picture 2",
+      "zoomable": false,
+      "ratio": "16 / 9"
+     },
+     {
+      "type": "imagecanvas",
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22450%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22hsl%28201%2055%25%2055%25%29%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22250%22%20font-size%3D%2290%22%20fill%3D%22%23fff%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%3E3%3C/text%3E%3C/svg%3E",
+      "alt": "Picture 3",
+      "zoomable": false,
+      "ratio": "16 / 9"
+     },
+     {
+      "type": "imagecanvas",
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22450%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22hsl%28268%2055%25%2055%25%29%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22250%22%20font-size%3D%2290%22%20fill%3D%22%23fff%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%3E4%3C/text%3E%3C/svg%3E",
+      "alt": "Picture 4",
+      "zoomable": false,
+      "ratio": "16 / 9"
+     }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Cards, three at a time", "pt-BR": "Cards, três por vez" },
+   "config": {
+    "type": "carousel",
+    "perView": 3,
+    "gap": 12,
+    "loop": true,
+    "items": [
+     {
+      "type": "panel",
+      "title": "Card 1",
+      "items": [
+       {
+        "type": "label",
+        "text": "Any component fits here (1)."
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "Card 2",
+      "items": [
+       {
+        "type": "label",
+        "text": "Any component fits here (2)."
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "Card 3",
+      "items": [
+       {
+        "type": "label",
+        "text": "Any component fits here (3)."
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "Card 4",
+      "items": [
+       {
+        "type": "label",
+        "text": "Any component fits here (4)."
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "Card 5",
+      "items": [
+       {
+        "type": "label",
+        "text": "Any component fits here (5)."
+       }
+      ]
+     },
+     {
+      "type": "panel",
+      "title": "Card 6",
+      "items": [
+       {
+        "type": "label",
+        "text": "Any component fits here (6)."
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "chart": [
+  {
+   "title": { "en": "Bars, side by side and stacked", "pt-BR": "Barras, lado a lado e empilhadas" },
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 16,
+    "items": [
+     {
+      "type": "chart",
+      "flex": 1,
+      "x": "m",
+      "title": "Sales by month",
+      "series": [
+       { "field": "a", "label": "Online" },
+       { "field": "b", "label": "Store" }
+      ],
+      "data": [
+       { "m": "Jan", "a": 120, "b": 80 },
+       { "m": "Feb", "a": 180, "b": 95 },
+       { "m": "Mar", "a": 150, "b": 140 },
+       { "m": "Apr", "a": 210, "b": 120 },
+       { "m": "May", "a": 260, "b": 170 }
+      ]
+     },
+     {
+      "type": "chart",
+      "flex": 1,
+      "x": "m",
+      "stacked": true,
+      "title": "Stacked",
+      "series": [
+       { "field": "a", "label": "Online" },
+       { "field": "b", "label": "Store" }
+      ],
+      "data": [
+       { "m": "Jan", "a": 120, "b": 80 },
+       { "m": "Feb", "a": 180, "b": 95 },
+       { "m": "Mar", "a": 150, "b": 140 },
+       { "m": "Apr", "a": 210, "b": 120 },
+       { "m": "May", "a": 260, "b": 170 }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Lines and areas, with money", "pt-BR": "Linhas e áreas, com moeda" },
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 16,
+    "items": [
+     {
+      "type": "chart",
+      "flex": 1,
+      "kind": "line",
+      "x": "m",
+      "format": "money",
+      "title": "Revenue",
+      "series": [
+       { "field": "a", "label": "Revenue" }
+      ],
+      "data": [
+       { "m": "Jan", "a": 120, "b": 80 },
+       { "m": "Feb", "a": 180, "b": 95 },
+       { "m": "Mar", "a": 150, "b": 140 },
+       { "m": "Apr", "a": 210, "b": 120 },
+       { "m": "May", "a": 260, "b": 170 }
+      ]
+     },
+     {
+      "type": "chart",
+      "flex": 1,
+      "kind": "area",
+      "stacked": true,
+      "x": "m",
+      "title": "Revenue by channel",
+      "series": [
+       { "field": "a", "label": "Online" },
+       { "field": "b", "label": "Store" }
+      ],
+      "data": [
+       { "m": "Jan", "a": 120, "b": 80 },
+       { "m": "Feb", "a": 180, "b": 95 },
+       { "m": "Mar", "a": 150, "b": 140 },
+       { "m": "Apr", "a": 210, "b": 120 },
+       { "m": "May", "a": 260, "b": 170 }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Pie and donut", "pt-BR": "Pizza e rosca" },
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 16,
+    "items": [
+     {
+      "type": "chart",
+      "flex": 1,
+      "kind": "pie",
+      "x": "m",
+      "series": [
+       "a"
+      ],
+      "height": 200,
+      "title": "Share by month",
+      "data": [
+       { "m": "Jan", "a": 120, "b": 80 },
+       { "m": "Feb", "a": 180, "b": 95 },
+       { "m": "Mar", "a": 150, "b": 140 },
+       { "m": "Apr", "a": 210, "b": 120 },
+       { "m": "May", "a": 260, "b": 170 }
+      ]
+     },
+     {
+      "type": "chart",
+      "flex": 1,
+      "kind": "donut",
+      "x": "m",
+      "series": [
+       "a"
+      ],
+      "height": 200,
+      "title": "Total",
+      "data": [
+       { "m": "Jan", "a": 120, "b": 80 },
+       { "m": "Feb", "a": 180, "b": 95 },
+       { "m": "Mar", "a": 150, "b": 140 },
+       { "m": "Apr", "a": 210, "b": 120 },
+       { "m": "May", "a": 260, "b": 170 }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Fed by a Store: live data", "pt-BR": "Alimentado por um Store: dados ao vivo" },
+   "description": {
+    "en": "The same store feeds a grid and a chart; `store.connect(eventSource)` or `applyPatches` update both once per message.",
+    "pt-BR": "O mesmo store alimenta uma grid e um gráfico; `store.connect(eventSource)` ou `applyPatches` atualizam os dois uma vez por mensagem."
+   },
+   "code": "const votes = new Store({ data: [{ id: 1, name: 'Amara', votes: 120 }, { id: 2, name: 'Bianca', votes: 95 }] });\ncreate({ type: 'container', layout: 'hbox', gap: 16, renderTo: host, items: [\n  { type: 'grid', flex: 1, store: votes, columns: [{ field: 'name' }, { field: 'votes' }] },\n  { type: 'chart', flex: 1, kind: 'bar', x: 'name', series: ['votes'], store: votes, title: 'Votes' },\n] });\n\n// from a server (SSE or a WebSocket), a message is { op?: 'upsert' | 'remove', data?, id? } or an array of them\nconst stop = votes.connect(new EventSource('/events/votes'));\n// or by hand: a known id is patched in place (not an edit), an unknown one is added\nvotes.applyPatches([{ data: { id: 1, votes: 121 } }, { op: 'remove', id: 2 }]);"
+  },
+  {
+   "title": { "en": "Sparkline", "pt-BR": "Sparkline" },
+   "config": {
+    "type": "chart",
+    "kind": "sparkline",
+    "x": "m",
+    "series": [
+     "a"
+    ],
+    "width": 160,
+    "title": "Trend",
+    "data": [
+     { "m": "Jan", "a": 120, "b": 80 },
+     { "m": "Feb", "a": 180, "b": 95 },
+     { "m": "Mar", "a": 150, "b": 140 },
+     { "m": "Apr", "a": 210, "b": 120 },
+     { "m": "May", "a": 260, "b": 170 }
+    ]
+   }
+  }
+ ],
+ "stat": [
+  {
+   "title": { "en": "KPI tiles", "pt-BR": "Cards de KPI" },
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 12,
+    "items": [
+     {
+      "type": "stat",
+      "flex": 1,
+      "label": "Votes",
+      "value": 12840,
+      "delta": 0.125,
+      "caption": "vs yesterday",
+      "icon": "heart",
+      "trend": [
+       4,
+       6,
+       5,
+       9,
+       12,
+       11,
+       15
+      ]
+     },
+     {
+      "type": "stat",
+      "flex": 1,
+      "label": "Revenue",
+      "value": 4820000,
+      "format": "money",
+      "delta": 0.04,
+      "caption": "tickets"
+     },
+     {
+      "type": "stat",
+      "flex": 1,
+      "label": "Refunds",
+      "value": 31,
+      "delta": 0.2,
+      "good": "down",
+      "caption": "this week (up is bad)"
+     }
+    ]
+   }
+  }
+ ],
+ "avatar": [
+  {
+   "title": { "en": "Sizes, shapes and status", "pt-BR": "Tamanhos, formas e status" },
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 12,
+    "items": [
+     { "type": "avatar", "name": "Ada Lovelace", "size": "sm" },
+     { "type": "avatar", "name": "Grace Hopper", "status": "online" },
+     { "type": "avatar", "name": "Alan Turing", "size": "lg", "status": "busy" },
+     { "type": "avatar", "name": "Mary Jackson", "size": "lg", "shape": "square", "status": "away" },
+     { "type": "avatar", "name": "Katherine Johnson", "src": "/missing.png", "size": "xl" }
+    ]
+   }
+  }
+ ],
+ "image": [
+  {
+   "title": { "en": "Ratio and fallback", "pt-BR": "Proporção e substituto" },
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 12,
+    "items": [
+     {
+      "type": "image",
+      "width": 180,
+      "ratio": "16/9",
+      "rounded": true,
+      "alt": "Event poster",
+      "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22160%22%20height%3D%2290%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23b45309%22/%3E%3C/svg%3E"
+     },
+     {
+      "type": "image",
+      "width": 180,
+      "ratio": "16/9",
+      "rounded": true,
+      "src": "/missing.png",
+      "fallback": "image"
+     },
+     {
+      "type": "image",
+      "width": 90,
+      "ratio": "1",
+      "rounded": true,
+      "src": "/missing.png",
+      "fallback": "user"
+     }
+    ]
+   }
+  }
+ ],
+ "timeline": [
+  {
+   "title": { "en": "Event log", "pt-BR": "Histórico de eventos" },
+   "config": {
+    "type": "timeline",
+    "items": [
+     { "time": "2026-11-10T09:00", "title": "Voting opened", "tone": "success" },
+     { "time": "2026-11-10T12:30", "title": "Sponsor added", "text": "Logo uploaded", "icon": "image" },
+     { "time": "2026-11-10T16:00", "title": "Refund requested", "tone": "warning" },
+     { "time": "2026-11-10T18:45", "title": "Payment failed", "tone": "danger", "text": "Card declined" }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Schedule: phases and shifts", "pt-BR": "Cronograma: fases e escalas" },
+   "config": {
+    "type": "timeline",
+    "mode": "range",
+    "now": false,
+    "lanes": [
+     "Stage",
+     "Backstage",
+     "Security"
+    ],
+    "items": [
+     { "title": "Rehearsal", "lane": "Stage", "start": "2026-11-10", "end": "2026-11-11", "tone": "info" },
+     { "title": "Semi-final", "lane": "Stage", "start": "2026-11-12T19:00", "end": "2026-11-12T23:00" },
+     {
+      "title": "Final night",
+      "lane": "Stage",
+      "start": "2026-11-14T19:00",
+      "end": "2026-11-14T23:59",
+      "tone": "success"
+     },
+     { "title": "Make-up", "lane": "Backstage", "start": "2026-11-12", "end": "2026-11-14" },
+     {
+      "title": "Night shift",
+      "lane": "Security",
+      "start": "2026-11-11",
+      "end": "2026-11-14",
+      "tone": "warning"
+     }
+    ]
+   }
+  }
+ ],
+ "datetimefield": [
+  {
+   "title": { "en": "Local and UTC", "pt-BR": "Local e UTC" },
+   "config": {
+    "type": "container",
+    "layout": "hbox",
+    "gap": 16,
+    "items": [
+     {
+      "type": "datetimefield",
+      "name": "start",
+      "label": "Starts at",
+      "value": "2026-11-10T19:30",
+      "flex": 1
+     },
+     {
+      "type": "datetimefield",
+      "name": "deadline",
+      "label": "Deadline (stores an ISO instant)",
+      "utc": true,
+      "min": "2026-11-01",
+      "flex": 1
+     }
+    ]
+   }
+  }
+ ],
+ "maskfield": [
+  {
+   "title": { "en": "Tax id (two patterns), plate, phone", "pt-BR": "CPF/CNPJ (dois padrões), placa, telefone" },
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 12,
+    "width": 320,
+    "items": [
+     {
+      "type": "maskfield",
+      "name": "taxId",
+      "label": "CPF / CNPJ",
+      "mask": [
+       "000.000.000-00",
+       "00.000.000/0000-00"
+      ],
+      "raw": true,
+      "help": "The value keeps only the digits"
+     },
+     { "type": "maskfield", "name": "plate", "label": "Plate", "mask": "AAA-0A00" },
+     {
+      "type": "maskfield",
+      "name": "phone",
+      "label": "Phone",
+      "mask": [
+       "(00) 0000-0000",
+       "(00) 00000-0000"
+      ],
+      "inputType": "tel"
+     }
+    ]
+   }
+  },
+  {
+   "title": { "en": "A rule of your own (check digit)", "pt-BR": "Uma regra sua (dígito verificador)" },
+   "description": {
+    "en": "The mask formats; what is valid is the app's: any function goes in `validators`.",
+    "pt-BR": "A máscara formata; o que é válido é do app: qualquer função entra em `validators`."
+   },
+   "code": "const checkDigit = (v) => (v.length === 11 && luhn(v) ? true : 'Invalid number');\ncreate({ type: 'maskfield', label: 'Card', mask: '0000 0000 0000 0000', raw: true, validators: [checkDigit], renderTo: host });"
+  }
+ ],
+ "gridexport": [
+  {
+   "title": { "en": "CSV, Excel and print", "pt-BR": "CSV, Excel e imprimir" },
+   "code": "await exportGrid(grid, { format: 'csv', filename: 'lots' });\nawait exportGrid(grid, { format: 'xlsx', scope: 'page' });       // only what the grid shows now\nconst file = await exportGrid(grid, { download: false });        // a Blob, to upload or test\nawait printGrid(grid, { title: 'Lots' });"
+  }
+ ],
+ "gridstate": [
+  {
+   "title": { "en": "A grid that remembers the user", "pt-BR": "Uma grid que lembra do usuário" },
+   "code": "create({ type: 'grid', store, columns, resizableColumns: true, plugins: [persistState('grid-lots', { filters: false })], renderTo: host });\n\n// default: localStorage. Follow the user across devices with your own endpoint:\nsetStateStorage({ get: (key) => fetch('/prefs/' + key).then((r) => r.json()), set: (key, value) => fetch('/prefs/' + key, { method: 'PUT', body: JSON.stringify(value) }) });\n\n// anything else worth remembering\nawait saveState('density', 'compact');\nconst density = await loadState('density');"
+  }
+ ],
+ "shortcuts": [
+  {
+   "title": {
+    "en": "Global and per-screen shortcuts, with help on ?",
+    "pt-BR": "Atalhos globais e por tela, com ajuda em ?"
+   },
+   "code": "shortcuts.register({ keys: 'mod+s', title: 'Save', handler: () => form.submit() });            // Ctrl+S, or ⌘S on a Mac\nshortcuts.register({ keys: 'alt+n', title: 'New lot', scope: 'lots', handler: openNew });     // only while the lots screen is the scope\nshortcuts.setScope('lots');                                                                    // when the screen is shown\n// `?` lists what is active now, grouped by screen. The same keys twice in a scope warn in dev."
+  }
+ ],
+ "grouping": [
+  {
+   "title": { "en": "Groups with a count and totals", "pt-BR": "Grupos com contagem e totais" },
+   "config": {
+    "type": "grid",
+    "height": 340,
+    "data": [
+     { "id": 1, "event": "Semi-final", "name": "Amara", "votes": 120, "fee": 1500 },
+     { "id": 2, "event": "Final", "name": "Bianca", "votes": 95, "fee": 1800 },
+     { "id": 3, "event": "Semi-final", "name": "Chloe", "votes": 210, "fee": 1200 },
+     { "id": 4, "event": "Final", "name": "Dalia", "votes": 150, "fee": 2000 },
+     { "id": 5, "event": "Semi-final", "name": "Elena", "votes": 80, "fee": 900 },
+     { "id": 6, "event": "Final", "name": "Farah", "votes": 175, "fee": 2200 }
+    ],
+    "columns": [
+     { "field": "name", "header": "Candidate", "sortable": true, "summary": "count" },
+     {
+      "field": "votes",
+      "header": "Votes",
+      "align": "right",
+      "sortable": true,
+      "summary": "sum",
+      "format": "number"
+     },
+     { "field": "fee", "header": "Fee", "align": "right", "summary": "avg", "format": "money" }
+    ],
+    "plugins": [
+     { "$plugin": "grouping", "field": "event", "summary": "both" }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Closed at start, no totals", "pt-BR": "Fechados no início, sem totais" },
+   "config": {
+    "type": "grid",
+    "height": 220,
+    "data": [
+     { "id": 1, "event": "Semi-final", "name": "Amara", "votes": 120, "fee": 1500 },
+     { "id": 2, "event": "Final", "name": "Bianca", "votes": 95, "fee": 1800 },
+     { "id": 3, "event": "Semi-final", "name": "Chloe", "votes": 210, "fee": 1200 },
+     { "id": 4, "event": "Final", "name": "Dalia", "votes": 150, "fee": 2000 },
+     { "id": 5, "event": "Semi-final", "name": "Elena", "votes": 80, "fee": 900 },
+     { "id": 6, "event": "Final", "name": "Farah", "votes": 175, "fee": 2200 }
+    ],
+    "columns": [
+     { "field": "name", "header": "Candidate" },
+     { "field": "votes", "header": "Votes", "align": "right" }
+    ],
+    "plugins": [
+     { "$plugin": "grouping", "field": "event", "collapsed": true }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Any function, and the plugin API", "pt-BR": "Qualquer função, e a API do plugin" },
+   "code": "const g = grouping({ by: (rec) => (rec.get('votes') >= 150 ? 'Leaders' : 'Chasing'), summary: 'grand', label: (k) => `${k} (by votes)` });\nconst grid = create({ type: 'grid', renderTo: host, store, columns, plugins: [g] });\ng.collapseAll();            // g.expandAll(), g.toggle('Leaders', true), g.setGroupBy('event'), g.setGroupBy(null)\ngrid.on('group-toggle', (key, open) => console.log(key, open));"
+  }
+ ],
+ "rowediting": [
+  {
+   "title": { "en": "Edit a row, save or cancel it", "pt-BR": "Editar uma linha, salvar ou cancelar" },
+   "description": {
+    "en": "Double-click a row (or Enter / F2). Name is required; Esc cancels, Enter saves.",
+    "pt-BR": "Dê duplo clique numa linha (ou Enter / F2). Nome é obrigatório; Esc cancela, Enter salva."
+   },
+   "config": {
+    "type": "grid",
+    "height": 260,
+    "data": [
+     { "id": 1, "event": "Semi-final", "name": "Amara", "votes": 120, "fee": 1500 },
+     { "id": 2, "event": "Final", "name": "Bianca", "votes": 95, "fee": 1800 },
+     { "id": 3, "event": "Semi-final", "name": "Chloe", "votes": 210, "fee": 1200 },
+     { "id": 4, "event": "Final", "name": "Dalia", "votes": 150, "fee": 2000 },
+     { "id": 5, "event": "Semi-final", "name": "Elena", "votes": 80, "fee": 900 },
+     { "id": 6, "event": "Final", "name": "Farah", "votes": 175, "fee": 2200 }
+    ],
+    "columns": [
+     {
+      "field": "name",
+      "header": "Candidate",
+      "editor": { "type": "textfield", "required": true }
+     },
+     {
+      "field": "event",
+      "header": "Event",
+      "editor": {
+       "type": "select",
+       "options": [
+        "Semi-final",
+        "Final"
+       ]
+      }
+     },
+     { "field": "votes", "header": "Votes", "align": "right", "editor": "numberfield" },
+     { "field": "id", "header": "#", "width": 60 }
+    ],
+    "plugins": [
+     { "$plugin": "rowEditing" }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Saving to the server", "pt-BR": "Salvando no servidor" },
+   "code": "const grid = create({ type: 'grid', renderTo: host, store, columns, plugins: [rowEditing()] });\ngrid.on('before-edit', (rec) => rec.get('locked') !== true);            // return false to refuse\ngrid.on('edit', async (rec, values, old) => {                           // only the changed fields\n  try { await api.patch(rec.id, values); rec.commit(); }\n  catch (e) { for (const k in old) rec.set(k, old[k]); toast({ type: 'error', text: 'Not saved' }); }\n});"
+  }
+ ],
+ "treegrid": [
+  {
+   "title": { "en": "A tree with columns", "pt-BR": "Uma árvore com colunas" },
+   "description": {
+    "en": "Click a chevron, or use → ← ↑ ↓ on the focused grid.",
+    "pt-BR": "Clique num chevron, ou use → ← ↑ ↓ na grid focada."
+   },
+   "config": {
+    "type": "grid",
+    "height": 260,
+    "data": [
+     { "id": 1, "parentId": null, "name": "Events", "size": "—" },
+     { "id": 2, "parentId": 1, "name": "Gala", "size": "120" },
+     { "id": 3, "parentId": 2, "name": "Doors", "size": "40" },
+     { "id": 4, "parentId": 2, "name": "Stage", "size": "80" },
+     { "id": 5, "parentId": 1, "name": "Final", "size": "300" },
+     { "id": 6, "parentId": null, "name": "Staff", "size": "45" },
+     { "id": 7, "parentId": 6, "name": "Security", "size": "20" }
+    ],
+    "resizableColumns": true,
+    "columns": [
+     { "field": "name", "header": "Name", "width": 240 },
+     { "field": "size", "header": "Size", "align": "right" },
+     { "field": "id", "header": "#", "width": 60 }
+    ],
+    "plugins": [
+     { "$plugin": "treeGrid", "expanded": true }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Nested data and lazy children", "pt-BR": "Dados aninhados e filhos preguiçosos" },
+   "code": "// nested data → flat rows with a parentId\nstore.loadData(flattenTree([{ id: 1, name: 'Events', children: [{ id: 2, name: 'Gala' }] }]));\n\n// or children fetched the first time a node opens\ncreate({\n  type: 'grid', renderTo: host, store, columns,\n  plugins: [treeGrid({ load: async (node) => (await fetch(`/nodes/${node.id}/children`)).json() })], // rows with a `leaf: true` get no expander\n});"
   }
  ]
 }

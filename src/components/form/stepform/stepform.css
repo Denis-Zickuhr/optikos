@@ -42,6 +42,7 @@
   .op-stepform__review-list dd {
     margin: 0;
     overflow-wrap: anywhere;
+    white-space: pre-line; /* FieldList: one line per row */
   }
   /* a step's general message (its validate returned a string) */
   .op-stepform__note {

@@ -4,23 +4,24 @@ import { rmSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync
 import { execFileSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { join, relative, dirname } from 'node:path';
-import { root, componentEntries, buildCss, genIndex } from './lib.mjs';
+import { root, componentEntries, buildCss, genIndex, genKeys } from './lib.mjs';
 
 genIndex();
+genKeys();
 
 // Budgets in bytes (gzip). `core` and `data` are absolute; a component is judged by what it adds over the bare runtime
 // (Component + register + create), so shared dependencies (Field, Toolbar...) count against whoever needs them.
 const CORE_BUDGET = 9 * 1024;
-const DATA_BUDGET = 4.25 * 1024;
+const DATA_BUDGET = 4.75 * 1024;
 // Composites carry their whole dependency chain (Field → TextField → PickerField → Dropdown + ListBox...), hence the higher caps.
-const COMPONENT_BUDGET = { default: 7 * 1024, panel: 7.5 * 1024, navmenu: 11 * 1024, breadcrumb: 8 * 1024, window: 9 * 1024, widget: 9.5 * 1024, dataview: 8 * 1024, pickerfield: 9.5 * 1024, select: 9.5 * 1024, combobox: 10 * 1024, datefield: 10 * 1024, daterangefield: 10 * 1024, suggestfield: 10 * 1024, messagebox: 11 * 1024, grid: 19.5 * 1024, filterbuilder: 15.5 * 1024, searchgrid: 20.5 * 1024, stepform: 11 * 1024, secretfield: 13 * 1024, lookupfield: 27.5 * 1024, viewmanager: 15.5 * 1024 };
+const COMPONENT_BUDGET = { default: 7 * 1024, panel: 7.5 * 1024, navmenu: 11 * 1024, breadcrumb: 8 * 1024, window: 9.25 * 1024, shortcuts: 10.25 * 1024, datetimefield: 11 * 1024, widget: 9.5 * 1024, dataview: 8.5 * 1024, pickerfield: 9.75 * 1024, select: 9.75 * 1024, combobox: 10 * 1024, datefield: 10 * 1024, daterangefield: 10 * 1024, suggestfield: 10.25 * 1024, messagebox: 12 * 1024, grid: 21 * 1024, filterbuilder: 16 * 1024, searchgrid: 22 * 1024, stepform: 11.25 * 1024, secretfield: 13 * 1024, lookupfield: 30.5 * 1024, viewmanager: 16.75 * 1024 };
 
 const dist = join(root, 'dist');
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 
 const comps = componentEntries();
-const entries = { index: 'src/index.ts', core: 'src/core/index.ts', data: 'src/data/index.ts', bind: 'src/bind/index.ts', motion: 'src/motion/index.ts', ui: 'src/ui/index.ts' };
+const entries = { index: 'src/index.ts', core: 'src/core/index.ts', data: 'src/data/index.ts', bind: 'src/bind/index.ts', motion: 'src/motion/index.ts', ui: 'src/ui/index.ts', testing: 'src/testing/index.ts', dev: 'src/dev/index.ts' };
 for (const [name, file] of Object.entries(comps)) entries[`components/${name}`] = relative(root, file);
 
 const common = { bundle: true, format: 'esm', target: 'es2022', minify: true, absWorkingDir: root, logLevel: 'warning' };
@@ -53,7 +54,7 @@ async function standalone(entry) {
 }
 
 const sizes = {};
-for (const key of ['core', 'data', 'bind', 'motion', 'ui', 'index']) sizes[key] = await standalone(entries[key]);
+for (const key of ['core', 'data', 'bind', 'motion', 'ui', 'testing', 'index']) sizes[key] = await standalone(entries[key]);
 const baseline = gz((await build({ ...common, stdin: { contents: "export { Component } from './src/core/component.ts'; export { register, create } from './src/core/registry.ts';", resolveDir: root }, write: false, outdir: 'out' })).outputFiles[0].contents);
 const rows = [];
 let failed = false;
@@ -75,6 +76,7 @@ console.log(`core ${kb(sizes.core)}  (budget ${kb(CORE_BUDGET)})${coreOver ? '  
 console.log(`data ${kb(sizes.data)}  (budget ${kb(DATA_BUDGET)})${dataOver ? '  OVER BUDGET' : ''}`);
 console.log(`bind ${kb(sizes.bind)}`);
 console.log(`motion ${kb(sizes.motion)}`);
+console.log(`testing ${kb(sizes.testing)}  (dev only: not part of the app bundle)`);
 console.log(`ui ${kb(sizes.ui)}  (enums + shortcuts; includes the fields they build)`);
 console.log(`runtime baseline (Component + register + create) ${kb(baseline)}`);
 console.log(`full ${kb(sizes.index)}  (all components, JS)`);

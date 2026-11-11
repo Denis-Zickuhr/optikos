@@ -140,3 +140,5 @@ export const MessageBox = {
     return id === 'ok' ? value : null;
   },
 };
+
+Window.ask = (text, o) => MessageBox.confirm(text, { danger: true, ...o });

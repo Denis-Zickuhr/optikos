@@ -2,6 +2,7 @@ import { Component, type ComponentConfig } from './component';
 import { h, uid } from './dom';
 import { t } from './i18n';
 import type { Validator } from './validators';
+import { getPath } from './path';
 
 export interface FieldConfig<V = unknown> extends ComponentConfig {
   name?: string;
@@ -14,6 +15,8 @@ export interface FieldConfig<V = unknown> extends ComponentConfig {
   validators?: Validator<V>[];
   /** When to validate on its own. After the first error it revalidates on every change. Default `blur`. */
   validateOn?: 'blur' | 'change' | 'submit';
+  /** Lookups and pickers: the key of the loaded record that holds the text to show for the value (`evento` + `displayFrom: 'eventoNome'`). */
+  displayFrom?: string;
   /** ms of quiet after the last change before `settled` fires (0 = right away). `change` itself is never delayed. */
   debounce?: number;
 }
@@ -114,6 +117,12 @@ export abstract class Field<V = unknown, C extends FieldConfig<V> = FieldConfig<
     this.value = v;
     if (this.rendered) this.applyValue(v);
     if (!this.isEqual(old, v)) this.changed(old, silent);
+  }
+
+  /** Silently takes this field's value from a record (by `name`); does nothing when the record lacks the key. */
+  fillFrom(record: Record<string, any>): void {
+    const v = this.name ? getPath(record, this.name) : undefined;
+    if (v !== undefined) this.setValue(v, true);
   }
 
   /** For subclasses: the user edited the control and the DOM already shows `v`. */

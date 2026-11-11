@@ -9,6 +9,14 @@ export interface NumberFieldConfig extends TextFieldConfig<number | null> {
   step?: number;
   /** Fixed decimals shown (and applied when the user leaves the field). */
   decimals?: number;
+  /** `currency` and `percent` show through `Intl` (`R$ 1.234,56`, `$1,234.56`, `15%`). Default: plain number. */
+  format?: 'decimal' | 'currency' | 'percent';
+  /** ISO 4217 code for `format: 'currency'`. Default: the locale's (`setCurrency`). */
+  currency?: string;
+  /** BCP 47 tag for this field's separators. Default: the active locale. */
+  locale?: string;
+  /** The value is the shown number times `scale`: `scale: 100` with currency keeps cents as an integer (`123456` shows `1.234,56`). */
+  scale?: number;
 }
 
 export class NumberField extends TextField<number | null, NumberFieldConfig> {
@@ -23,26 +31,34 @@ export class NumberField extends TextField<number | null, NumberFieldConfig> {
     return v == null;
   }
 
+  private get lang() {
+    return this.config.locale ?? getLocale()._lang;
+  }
   private get decimalSep() {
-    return getLocale()._lang.startsWith('pt') ? ',' : '.';
+    return new Intl.NumberFormat(this.lang).formatToParts(1.5).find((p) => p.type === 'decimal')!.value;
   }
 
   protected override parse(text: string): number | null {
     this.garbage = false;
     const s = text.trim();
     if (!s) return null;
-    const n = Number(this.decimalSep === ',' ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, ''));
-    if (Number.isNaN(n)) {
+    const { format, scale = 1 } = this.config;
+    const dec = this.decimalSep;
+    // what is neither a digit, a sign nor the decimal mark (currency sign, group separator, %) is dropped
+    const n = Number(s.replace(new RegExp(`[^\\d\\-${dec === '.' ? '.' : ','}]`, 'g'), '').replace(dec, '.')) * (format === 'percent' ? 0.01 : 1);
+    if (Number.isNaN(n) || !/\d/.test(s)) {
       this.garbage = true;
       return null;
     }
-    return n;
+    return Math.round(n * scale * 1e9) / 1e9;
   }
 
   protected override display(v: number | null): string {
     if (v == null) return '';
-    const d = this.config.decimals;
-    return (d == null ? String(v) : v.toFixed(d)).replace('.', this.decimalSep);
+    const { format = 'decimal', decimals: d, scale = 1 } = this.config;
+    const n = v / scale;
+    if (format === 'decimal' && d == null) return String(n).replace('.', this.decimalSep);
+    return new Intl.NumberFormat(this.lang, { style: format, currency: format === 'currency' ? (this.config.currency ?? getLocale()._currency) : undefined, ...(d != null && { minimumFractionDigits: d, maximumFractionDigits: d }), useGrouping: format !== 'decimal' }).format(n);
   }
 
   protected override createControl() {
@@ -99,10 +115,10 @@ export class NumberField extends TextField<number | null, NumberFieldConfig> {
   }
 
   private bump(times: number) {
-    const { step = 1, min, max, decimals } = this.config;
-    let n = (this.value ?? 0) + step * times;
+    const { step = 1, min, max, decimals, scale = 1 } = this.config;
+    let n = (this.value ?? 0) + step * scale * times;
     if (min != null || max != null) n = clamp(n, min ?? -Infinity, max ?? Infinity);
-    n = Number(n.toFixed(decimals ?? 10));
+    n = Number(n.toFixed(decimals == null ? 10 : Math.max(0, decimals + Math.log10(scale))));
     this.setValue(n);
   }
   increment() {

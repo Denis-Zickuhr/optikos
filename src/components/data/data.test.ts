@@ -1,5 +1,5 @@
 import { describe, it, expect, expectTypeOf, vi, afterEach } from 'vitest';
-import { create, Grid, Table, Pagination, Store, Model, cellEditing, registerFormat, registerLookup, localViewStorage, restViewStorage } from 'optikos';
+import { create, Select as SelectField, Grid, Table, Pagination, Store, Model, cellEditing, registerFormat, registerLookup, localViewStorage, restViewStorage } from 'optikos';
 
 const key = (el: Element, k: string, init: KeyboardEventInit = {}) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...init }));
 const type = (f: any, text: string) => {
@@ -581,6 +581,17 @@ describe('SearchGrid / LookupField', () => {
     sg.clear();
     expect(sg.getFilters()).toEqual([]);
     expect(sg.getStore().totalCount).toBe(40);
+  });
+
+  it('a filter may be a field instance (op/field in its config) and survives the SearchGrid', async () => {
+    const city = new SelectField({ name: 'city', options: ['Lisboa', 'Porto'], op: 'eq', field: 'city' } as any);
+    const sg = mk<any>({ type: 'searchgrid', lookup: def({ filters: [city] }) });
+    document.body.append(sg.el);
+    await wait();
+    city.setValue('Porto');
+    expect(sg.getFilters()).toEqual([{ field: 'city', op: 'eq', value: 'Porto' }]);
+    sg.destroy();
+    expect(city.destroyed).toBe(false);
   });
 
   it('two instances of a registered lookup do not share a store', () => {

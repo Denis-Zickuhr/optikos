@@ -67,7 +67,7 @@ const themeSelect = create<Select>({
 } as never);
 applyThemeState(state);
 
-const ORDER = ['base', 'layout', 'fields', 'form', 'data', 'dates', 'overlays', 'navigation', 'feedback', 'chat'];
+const ORDER = ['base', 'layout', 'fields', 'form', 'data', 'charts', 'dates', 'overlays', 'navigation', 'feedback', 'chat'];
 const byCategory = new Map<string, Comp[]>();
 for (const c of documented) byCategory.set(c.category, [...(byCategory.get(c.category) ?? []), c]);
 const sorted = [...byCategory].sort(([a], [b]) => ORDER.indexOf(a) - ORDER.indexOf(b));

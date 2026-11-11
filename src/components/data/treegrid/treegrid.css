@@ -1,0 +1,35 @@
+@layer optikos {
+  :root {
+    --op-grid-indent: 1.25rem;
+    --op-grid-expander-size: 1.25rem;
+  }
+  .op-grid--tree .op-grid__cell:has(> .op-grid__expander) {
+    padding-inline-start: calc(var(--op-grid-cell-padding-x, var(--op-control-padding-x)) + var(--_depth, 0) * var(--op-grid-indent));
+  }
+  .op-grid__expander {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--op-grid-expander-size);
+    block-size: var(--op-grid-expander-size);
+    margin-inline-end: var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    cursor: pointer;
+    transition: transform var(--op-duration) var(--op-easing);
+  }
+  .op-grid__body-row[aria-expanded='false'] .op-grid__expander:not(.is-leaf) {
+    transform: rotate(-90deg);
+  }
+  .op-grid__expander.is-leaf {
+    cursor: default;
+  }
+  .op-grid__expander.is-loading {
+    cursor: progress;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .op-grid__expander {
+      transition: none;
+    }
+  }
+}

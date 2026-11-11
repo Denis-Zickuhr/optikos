@@ -108,3 +108,16 @@ describe('admin demo', () => {
     expect(document.body.textContent).toContain('Settings');
   });
 });
+
+describe('panel demo', () => {
+  it('boots with the dashboard, and the role decides what is there (permissions)', async () => {
+    await import('../demos/panel/main');
+    await tick();
+    const tabs = () => [...document.querySelectorAll<HTMLElement>('.op-tabs__tab')].filter((t) => !t.hidden).map((t) => t.textContent!.trim());
+    expect(tabs()).toEqual(expect.arrayContaining(['Dashboard', 'Candidates', 'Schedule']));
+    expect(document.querySelectorAll('.op-stat')).toHaveLength(3);
+    expect(document.querySelectorAll('.op-chart').length).toBeGreaterThanOrEqual(3);
+    expect(document.documentElement.getAttribute('data-op-theme')).toBe('brand');
+    expect(document.documentElement.querySelector('style#op-theme-brand')!.textContent).toContain("[data-op-theme~='brand'][data-op-theme~='dark']");
+  });
+});

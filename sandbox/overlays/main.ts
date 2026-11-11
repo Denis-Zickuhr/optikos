@@ -1,4 +1,4 @@
-import { create, Window, MessageBox, Menu, Dropdown, toast, Form, validators, CommandPalette, setTheme, Widget, Chat, type Command } from 'optikos';
+import { create, shortcuts, setPermissionResolver, Window, MessageBox, Menu, Dropdown, toast, Form, validators, CommandPalette, setTheme, Widget, Chat, type Command } from 'optikos';
 import { page } from '../../dev/kit';
 
 const p = page('overlays');
@@ -108,4 +108,35 @@ p.section('Widget', 'floats over the page (nothing is pushed), attached to an ed
   create({ type: 'button', text: 'Set side → left (code)', renderTo: host, handler: () => user.setSide('left') });
   const docked = create<Widget>({ type: 'widget', floating: false, hidden: false, title: 'floating: false (an ordinary panel here)', height: 220, width: '100%', items: [{ type: 'label', text: 'Placed by the layout, not floating.', style: 'padding:1rem' }], renderTo: host });
   void docked; void Chat;
+});
+
+p.section('Window · confirmDiscard', 'closing (X, Esc, Cancel) while a field inside changed asks first; an untouched window closes at once.', (host) => {
+  create({ type: 'button', text: 'Open an editor', renderTo: host, handler: () => {
+    const w: Window = create({ type: 'window', title: 'Edit lot', width: 340, closable: true, confirmDiscard: true, items: [{ type: 'textfield', name: 'name', label: 'Name (change it, then close)', value: 'Lot 12' }], buttons: [{ text: 'Close', handler: () => w.close() }] } as never);
+    w.show();
+  } });
+});
+
+p.section('Shortcuts', 'global mod+g, a screen scope (switch it), and ? for the help panel (grouped by scope). Same keys twice in a scope warn in dev.', (host, { log }) => {
+  shortcuts.register({ keys: 'mod+g', title: 'Say hello', handler: () => log('hello') });
+  for (const scope of ['lots', 'events']) shortcuts.register({ keys: 'alt+n', title: `New (${scope})`, scope, handler: () => log(`new in ${scope}`) });
+  for (const scope of ['lots', 'events']) create({ type: 'button', text: `Scope: ${scope}`, renderTo: host, handler: () => (shortcuts.setScope(scope), log('scope', scope)) });
+  create({ type: 'button', text: 'Help (?)', renderTo: host, handler: () => shortcuts.help() });
+});
+
+p.section('Permission', 'one resolver, a `permission` on anything: hidden by default, or disabled. Toggle the role.', (host, { log }) => {
+  let admin = false;
+  setPermissionResolver((perm) => admin || perm === 'view');
+  const build = () => {
+    host.querySelectorAll('.pm').forEach((e) => e.remove());
+    const box = Object.assign(document.createElement('div'), { className: 'pm' });
+    host.append(box);
+    create({ type: 'button', text: 'Edit (view)', permission: 'view', renderTo: box });
+    create({ type: 'button', text: 'Delete (admin, hidden)', variant: 'danger', permission: 'delete', renderTo: box });
+    create({ type: 'button', text: 'Approve (admin, disabled)', permission: 'approve', permissionMode: 'disable', renderTo: box });
+    const m = create<Menu>({ type: 'menu', items: [{ text: 'Open' }, { text: 'Archive', permission: 'delete' }] });
+    create({ type: 'button', text: 'Menu', renderTo: box, handler: (b: { el: HTMLElement }) => m.showBy(b.el) } as never);
+  };
+  create({ type: 'button', text: 'Toggle admin', renderTo: host, handler: () => ((admin = !admin), log('admin', admin), build()) });
+  build();
 });

@@ -1,6 +1,7 @@
 import { Emitter, type Handler } from './emitter';
 import { h, uid, kebab, px } from './dom';
 import { t } from './i18n';
+import { allowed, permissionMode } from './permission';
 
 export interface ComponentConfig {
   type?: string;
@@ -17,6 +18,9 @@ export interface ComponentConfig {
   showIf?: (values: Record<string, any>) => boolean;
   /** Inside a Form: enabled only while this returns true (given the form values). */
   enableIf?: (values: Record<string, any>) => boolean;
+  /** A permission name: without it (per `setPermissionResolver`) the component is hidden, or disabled with `permissionMode: 'disable'`. */
+  permission?: string;
+  permissionMode?: 'hide' | 'disable';
   /** Component-scoped tokens: `{ radius: '0' }` on a button sets `--op-button-radius`. Keys starting with `--` are used as is. */
   theme?: Record<string, string | number>;
   /**
@@ -45,6 +49,8 @@ export interface Parent {
 
 export class Component<C extends ComponentConfig = ComponentConfig> extends Emitter {
   static type?: string;
+  /** Called with every new component, config in hand: `optikos/dev` uses it to warn about options nobody reads. */
+  static onCreate?: (c: Component<any>) => void;
   config: C;
   readonly id: string;
   parent?: Component & Parent;
@@ -59,9 +65,12 @@ export class Component<C extends ComponentConfig = ComponentConfig> extends Emit
 
   constructor(config: C = {} as C) {
     super();
-    this.config = { ...config };
+    this.config = { ...config, type: config.type ?? (new.target as typeof Component).type };
     this.id = config.id ?? uid('op');
+    Component.onCreate?.(this);
     for (const k in config.listeners) this.on(k, config.listeners[k]);
+    // `new` and `create` must agree: a microtask, because the subclass constructor has not finished yet. `create` mounts first.
+    if (config.renderTo) queueMicrotask(() => !this.mounted && !this.destroyed && !this.parent && this.mount(config.renderTo));
   }
 
   /** The root element. Built on first access. */
@@ -94,11 +103,11 @@ export class Component<C extends ComponentConfig = ComponentConfig> extends Emit
     if (c.flex != null) el.style.flex = String(c.flex);
     if (c.ariaLabel) el.setAttribute('aria-label', c.ariaLabel);
     this.setStableSize(c.stableSize !== false);
-    if (c.hidden) el.hidden = true;
+    if (c.hidden || this.denied('hide')) el.hidden = true;
     if (c.tooltip) el.dataset.opTip = c.tooltip;
     if (c.theme) this.setTheme(c.theme);
     this.onRender();
-    if (c.disabled) this.setDisabled(true);
+    if (c.disabled || this.denied('disable')) this.setDisabled(true);
     if (c.loading) this.setLoading(c.loading);
     return el;
   }
@@ -157,13 +166,20 @@ export class Component<C extends ComponentConfig = ComponentConfig> extends Emit
   protected onDisabled(_disabled: boolean): void {}
 
   setDisabled(disabled: boolean): void {
-    this.config.disabled = disabled;
+    this.config.disabled = disabled || this.denied('disable');
+    disabled = !!this.config.disabled;
     if (!this.rendered) return;
     this.el.classList.toggle('is-disabled', disabled);
     this.onDisabled(disabled);
   }
 
+  /** The user lacks `config.permission` and the way to deal with it is `mode`. */
+  private denied(mode: 'hide' | 'disable'): boolean {
+    return !allowed(this.config.permission) && (this.config.permissionMode ?? permissionMode()) === mode;
+  }
+
   show(): void {
+    if (this.denied('hide')) return;
     this.config.hidden = false;
     if (this.rendered) this.el.hidden = false;
     this.emit('show');

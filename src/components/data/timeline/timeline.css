@@ -1,0 +1,140 @@
+@layer optikos {
+  :root {
+    --op-timeline-marker: 0.875rem;
+    --op-timeline-when-width: 8rem;
+    --op-timeline-lane-width: 8rem;
+    --op-timeline-bar-height: 1.75rem;
+    --op-timeline-line: 2px;
+  }
+  .op-timeline {
+    font-family: var(--op-font-family);
+    color: var(--op-color-fg);
+    min-inline-size: 0;
+  }
+  .op-timeline--list {
+    display: flex;
+    flex-direction: column;
+  }
+  .op-timeline__item {
+    --op-timeline-c: var(--op-color-border-strong);
+    display: grid;
+    grid-template-columns: var(--op-timeline-when-width) var(--op-timeline-marker) 1fr;
+    gap: var(--op-space-3);
+    padding-block-end: var(--op-space-4);
+    border-radius: var(--op-radius);
+  }
+  .op-timeline__item:focus-visible,
+  .op-timeline__bar:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-timeline__item.is-success { --op-timeline-c: var(--op-color-success); }
+  .op-timeline__item.is-warning { --op-timeline-c: var(--op-color-warning); }
+  .op-timeline__item.is-danger { --op-timeline-c: var(--op-color-danger); }
+  .op-timeline__item.is-info { --op-timeline-c: var(--op-color-info); }
+  .op-timeline__when {
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    text-align: end;
+    padding-block-start: var(--op-space-1);
+  }
+  .op-timeline__marker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--op-timeline-marker);
+    block-size: var(--op-timeline-marker);
+    margin-block-start: var(--op-space-1);
+    border-radius: 50%;
+    background: var(--op-timeline-c);
+    color: var(--op-color-surface);
+    font-size: var(--op-font-size-sm);
+  }
+  .op-timeline__marker::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: calc(50% - var(--op-timeline-line) / 2);
+    block-size: calc(100% + var(--op-space-5));
+    inline-size: var(--op-timeline-line);
+    background: var(--op-color-border);
+  }
+  .op-timeline__item:last-child .op-timeline__marker::after {
+    display: none;
+  }
+  .op-timeline__title {
+    font-weight: 600;
+  }
+  .op-timeline__text {
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+  }
+
+  .op-timeline__axis,
+  .op-timeline__lane,
+  .op-timeline__nowrow {
+    display: grid;
+    grid-template-columns: var(--op-timeline-lane-width) 1fr;
+    gap: var(--op-space-2);
+    align-items: center;
+  }
+  .op-timeline__lane {
+    border-block-start: var(--op-border-width) solid var(--op-color-border);
+    padding-block: var(--op-space-1);
+  }
+  .op-timeline__lane-name {
+    font-size: var(--op-font-size-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-timeline__track {
+    position: relative;
+    block-size: var(--op-timeline-bar-height);
+  }
+  .op-timeline__axis .op-timeline__track {
+    block-size: auto;
+    min-block-size: var(--op-space-4);
+  }
+  .op-timeline__tick {
+    position: absolute;
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    white-space: nowrap;
+  }
+  .op-timeline__bar {
+    --op-timeline-c: var(--op-color-primary);
+    position: absolute;
+    inset-block: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-1);
+    padding-inline: var(--op-space-2);
+    overflow: hidden;
+    background: var(--op-timeline-c);
+    color: var(--op-color-primary-fg);
+    border-radius: var(--op-radius);
+    font-size: var(--op-font-size-sm);
+    cursor: pointer;
+  }
+  .op-timeline__bar.is-success { --op-timeline-c: var(--op-color-success); color: var(--op-color-surface); }
+  .op-timeline__bar.is-warning { --op-timeline-c: var(--op-color-warning); color: var(--op-color-surface); }
+  .op-timeline__bar.is-danger { --op-timeline-c: var(--op-color-danger); color: var(--op-color-danger-fg); }
+  .op-timeline__bar.is-info { --op-timeline-c: var(--op-color-info); color: var(--op-color-surface); }
+  .op-timeline__bar-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-timeline__nowrow {
+    block-size: 0;
+  }
+  .op-timeline__now {
+    position: absolute;
+    inset-block: calc(-1 * var(--op-space-6)) 0;
+    inline-size: var(--op-timeline-line);
+    background: var(--op-color-danger);
+    pointer-events: none;
+  }
+}

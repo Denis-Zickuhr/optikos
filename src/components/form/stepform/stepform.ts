@@ -92,7 +92,7 @@ export class StepForm extends Form {
       ...steps.map((s) => ({ type: 'container', title: s.title, cls: 'op-stepform__step', layout: s.layout ?? { type: 'grid', columns: 2, gap: 12 }, items: s.items })),
       ...(review ? [{ type: 'container', title: config.reviewTitle ?? t('stepReview'), cls: 'op-stepform__step', items: [review] }] : []),
     ];
-    const body = new Container({ cls: 'op-stepform__body', flex: 1, layout: { type: 'card' }, items: panels as never });
+    const body = new Container({ cls: 'op-stepform__body', flex: 1, layout: { type: 'card' }, items: panels });
     const backBtn = new Button({ text: config.backText ?? t('stepBack'), handler: () => me.back() });
     const nextBtn = new Button({ text: config.nextText ?? t('stepNext'), variant: 'primary', handler: () => me.next() });
     const finishBtn = new Button({ text: config.finishText ?? t('stepFinish'), variant: 'primary', htmlType: 'submit' });
@@ -264,14 +264,18 @@ export class StepForm extends Form {
     this.pane!.setContent(out);
   }
 
-  /** What the user sees for a field (its display text; ticks for booleans, dots for passwords). */
+  /** What the user sees for a field (its display text; ticks for booleans, dots for passwords; one line per FieldList row). */
   private show_(f: Field<any>): string {
+    const fl = f as Field<any> & { getRows?(): unknown[]; getRowFields(i: number): Field<any>[] };
+    if (fl.getRows)
+      return fl.getRows().map((_, i) => fl.getRowFields(i).map((x) => this.show_(x)).filter((t) => t !== '—').join(' · ')).join('\n') || '—';
     const v = f.getValue();
     if (typeof v === 'boolean') return v ? '✓' : '—';
     if ((f.config as { inputType?: string }).inputType === 'password') return v ? '••••••••' : '—';
     const text = f.getDisplayText();
     if (text) return text;
-    return v && typeof v === 'object' && !Array.isArray(v) ? Object.values(v).filter(Boolean).join(' – ') || '—' : Array.isArray(v) ? v.join(', ') || '—' : '—';
+    const flat = (x: unknown): string => (Array.isArray(x) ? x.map(flat).join(', ') : x && typeof x === 'object' ? Object.values(x).map(flat).join(' – ') : `${x ?? ''}`);
+    return flat(v) || '—';
   }
 
   /** Enter and the Finish button: Next on every step but the last; on the last, validate everything and `finish`. */

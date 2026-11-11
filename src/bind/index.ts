@@ -91,3 +91,5 @@ export function bind(cmp: Component<any>, map: Record<string, () => unknown>): v
     if (key === 'value' && write) cmp.own(cmp.on('change', (v) => write(v)));
   }
 }
+
+export { viewModel, bindVM, bindForm, type ViewModel, type ViewModelConfig } from './viewmodel';

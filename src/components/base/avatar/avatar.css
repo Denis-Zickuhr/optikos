@@ -1,0 +1,68 @@
+@layer optikos {
+  :root {
+    --op-avatar-size: 2.25rem;
+    --op-avatar-dot: 0.625rem;
+    --op-avatar-size-sm: 1.5rem;
+    --op-avatar-size-lg: 3rem;
+    --op-avatar-size-xl: 4.5rem;
+    --op-avatar-ring: 2px;
+  }
+  .op-avatar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    inline-size: var(--op-avatar-size);
+    block-size: var(--op-avatar-size);
+    background: var(--op-avatar-c, var(--op-chart-1, var(--op-color-primary)));
+    color: var(--op-color-surface);
+    font-family: var(--op-font-family);
+    font-size: calc(var(--op-avatar-size) * 0.4);
+    font-weight: 600;
+    line-height: 1;
+    user-select: none;
+  }
+  .op-avatar--circle {
+    border-radius: 50%;
+  }
+  .op-avatar--square {
+    border-radius: var(--op-avatar-radius, var(--op-radius));
+  }
+  .op-avatar--sm {
+    --op-avatar-size: var(--op-avatar-size-sm);
+  }
+  .op-avatar--lg {
+    --op-avatar-size: var(--op-avatar-size-lg);
+  }
+  .op-avatar--xl {
+    --op-avatar-size: var(--op-avatar-size-xl);
+  }
+  .op-avatar__img {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+  .op-avatar__status {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+    inline-size: var(--op-avatar-dot);
+    block-size: var(--op-avatar-dot);
+    border-radius: 50%;
+    background: var(--op-color-fg-muted);
+    box-shadow: 0 0 0 var(--op-avatar-ring) var(--op-color-surface);
+  }
+  .op-avatar__status.is-online {
+    background: var(--op-color-success);
+  }
+  .op-avatar__status.is-away {
+    background: var(--op-color-warning);
+  }
+  .op-avatar__status.is-busy {
+    background: var(--op-color-danger);
+  }
+}

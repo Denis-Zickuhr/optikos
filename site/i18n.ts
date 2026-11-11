@@ -73,7 +73,7 @@ const strings = {
     recipesLead: 'Small, complete screens. Each one runs here, and the code below it is the very file that runs.', whatToNotice: 'What to notice',
     demosLead: 'Complete apps that use only the public API. Open one, resize the window, switch the theme.', openDemo: 'Open live demo', viewCode: 'View code',
     tokenFilterHint: 'Filtered by "{q}"',
-    cat_base: 'Base', cat_layout: 'Layout', cat_fields: 'Fields', cat_form: 'Forms', cat_data: 'Data', cat_dates: 'Dates', cat_overlays: 'Overlays', cat_navigation: 'Navigation', cat_feedback: 'Feedback', cat_chat: 'Chat', cat_core: 'Core',
+    cat_base: 'Base', cat_layout: 'Layout', cat_fields: 'Fields', cat_form: 'Forms', cat_data: 'Data', cat_charts: 'Charts', cat_dates: 'Dates', cat_overlays: 'Overlays', cat_navigation: 'Navigation', cat_feedback: 'Feedback', cat_chat: 'Chat', cat_core: 'Core',
   },
   'pt-BR': {
     start: 'Início', components: 'Componentes', guides: 'Guias', recipes: 'Receitas', demos: 'Demos', tokens: 'Tokens e temas', mcp: 'Servidor MCP',
@@ -109,7 +109,7 @@ const strings = {
     recipesLead: 'Telas pequenas e completas. Cada uma roda aqui, e o código abaixo dela é o mesmo arquivo que roda.', whatToNotice: 'O que observar',
     demosLead: 'Apps completos que usam só a API pública. Abra um, redimensione a janela, troque o tema.', openDemo: 'Abrir a demo', viewCode: 'Ver o código',
     tokenFilterHint: 'Filtrado por "{q}"',
-    cat_base: 'Base', cat_layout: 'Layout', cat_fields: 'Campos', cat_form: 'Formulários', cat_data: 'Dados', cat_dates: 'Datas', cat_overlays: 'Sobreposições', cat_navigation: 'Navegação', cat_feedback: 'Feedback', cat_chat: 'Chat', cat_core: 'Núcleo',
+    cat_base: 'Base', cat_layout: 'Layout', cat_fields: 'Campos', cat_form: 'Formulários', cat_data: 'Dados', cat_charts: 'Gráficos', cat_dates: 'Datas', cat_overlays: 'Sobreposições', cat_navigation: 'Navegação', cat_feedback: 'Feedback', cat_chat: 'Chat', cat_core: 'Núcleo',
   },
 } satisfies Record<Lang, Record<string, string>>;
 

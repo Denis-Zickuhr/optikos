@@ -4,6 +4,7 @@ import { iconEl } from '../../base/icon/icon';
 import { Dropdown } from '../../overlays/dropdown/dropdown';
 import { ListBox, type ListItem } from '../listbox/listbox';
 import type { Store } from '../../../data/store';
+import { getPath } from '../../../core/path';
 
 export type { ListItem };
 export type Option = string | number | Record<string, any>;
@@ -94,6 +95,20 @@ export abstract class PickerField<V = unknown, C extends PickerConfig<V> = Picke
 
   getSelection(): ListItem | undefined {
     return this.selection;
+  }
+
+  /** Also takes `{ value, label }`: the value with the text to show, for a record that is not in the list. */
+  override setValue(v: V, silent = false): void {
+    const o = v as any;
+    if (o && typeof o === 'object' && 'value' in o && 'label' in o) this.setSelection({ value: o.value, label: String(o.label) }, silent);
+    else super.setValue(v, silent);
+  }
+
+  override fillFrom(record: Record<string, any>): void {
+    const text = this.config.displayFrom ? getPath(record, this.config.displayFrom) : undefined;
+    const v = this.name ? getPath(record, this.name) : undefined;
+    if (text != null && v != null) this.setSelection({ value: v, label: String(text) }, true);
+    else super.fillFrom(record);
   }
 
   /** Selects an item object directly (needed when the list does not contain it, e.g. a remote value). */

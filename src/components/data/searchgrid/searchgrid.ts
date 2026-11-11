@@ -9,8 +9,11 @@ import type { FilterOp, FilterSpec } from '../../../data/proxy';
 import { Button } from '../../base/button/button';
 import { Grid } from '../grid/grid';
 
-/** A filter field of a lookup: any field config, plus how its value is matched. */
-export type LookupFilter = AnyConfig & { name: string; op?: FilterOp; field?: string };
+/** A filter field of a lookup: a field config or a field instance (`ui.text(...)`); `op` and `field` say how its value is matched. */
+export type LookupFilter = (AnyConfig & { name: string; op?: FilterOp; field?: string }) | Component;
+
+/** `name`, `op`, `field` and `type` of a filter, whether it was given as a config or an instance. */
+export const filterInfo = (f: LookupFilter) => (f instanceof Component ? f.config : f) as { name: string; op?: FilterOp; field?: string; type?: string };
 
 /** Everything that describes "search for a record": shared by SearchGrid and LookupField. */
 export interface LookupDef {
@@ -55,7 +58,7 @@ export class SearchGrid extends Component<SearchGridConfig> {
   protected override baseCls = 'op-searchgrid';
   private def!: LookupDef;
   private store!: Store<any>;
-  private fields: Array<{ cfg: LookupFilter; cmp: Component }> = [];
+  private fields: Array<{ cfg: ReturnType<typeof filterInfo>; cmp: Component; own: boolean }> = [];
   private grid!: Grid;
   private form!: HTMLElement;
 
@@ -68,18 +71,19 @@ export class SearchGrid extends Component<SearchGridConfig> {
       new Button({ text: t('search'), icon: 'search', variant: 'primary', handler: () => void this.search() }),
       new Button({ text: t('clear'), handler: () => this.clear() }),
     ];
-    this.fields = (d.filters ?? []).map((cfg) => {
+    this.fields = (d.filters ?? []).map((f) => {
+      const cfg = filterInfo(f);
       const { op: _o, field: _f, ...fieldCfg } = cfg;
-      const cmp = create({ ...fieldCfg, renderTo: undefined } as AnyConfig);
+      const cmp = f instanceof Component ? f : create({ ...fieldCfg, renderTo: undefined } as AnyConfig);
       cmp.on('enter', () => void this.search());
-      return { cfg, cmp };
+      return { cfg, cmp, own: !(f instanceof Component) };
     });
     this.form.append(...this.fields.map((f) => f.cmp.el), h('div', 'op-searchgrid__buttons', {}, ...btns.map((b) => b.el)));
     this.grid = new Grid({ store: this.store, columns: d.columns, selection: d.selection ?? 'single', paging: d.paging !== false, flex: 1 });
     this.grid.on('select', (recs: Model[]) => this.emit('select', recs));
     this.grid.on('row-activate', () => this.confirm());
     this.grid.on('row-dblclick', () => this.confirm());
-    this.own(() => [...btns, this.grid, ...this.fields.map((f) => f.cmp)].forEach((c) => c.destroy()));
+    this.own(() => [...btns, this.grid, ...this.fields.filter((f) => f.own).map((f) => f.cmp)].forEach((c) => c.destroy()));
     return h('div', this.baseCls, {}, this.form, this.grid.el);
   }
 
@@ -126,7 +130,7 @@ export class SearchGrid extends Component<SearchGridConfig> {
 
   /** Fills the quick-search field (`queryField`, default the first filter) without searching. */
   setQuery(text: string): void {
-    const name = this.def.queryField ?? this.def.filters?.[0]?.name;
+    const name = this.def.queryField ?? (this.def.filters?.[0] && filterInfo(this.def.filters[0]).name);
     (this.fields.find((f) => f.cfg.name === name)?.cmp as any)?.setValue?.(text);
   }
 

@@ -1,0 +1,49 @@
+@layer optikos {
+  .op-grid__row--group {
+    display: flex;
+    background: var(--op-grid-group-bg, var(--op-color-surface-2));
+    font-weight: var(--op-font-weight-bold);
+    cursor: pointer;
+  }
+  .op-grid__row--group .op-grid__cell {
+    flex: none;
+  }
+  .op-grid__row--group .op-grid__cell.is-group-label {
+    flex: 1;
+    gap: var(--op-space-2);
+  }
+  .op-grid__row--group .op-grid__cell:not(.is-group-label):not(.op-grid__selcell) {
+    display: none;
+  }
+  .op-grid__twist {
+    display: inline-flex;
+    transition: transform var(--op-duration) var(--op-easing);
+  }
+  .op-grid__row--group[aria-expanded='false'] .op-grid__twist {
+    transform: rotate(-90deg);
+  }
+  .op-grid__group-count {
+    color: var(--op-color-fg-muted);
+    font-weight: normal;
+  }
+  .op-grid__row--total {
+    font-weight: var(--op-font-weight-bold);
+    background: var(--op-grid-total-bg, var(--op-color-surface-2));
+    cursor: default;
+  }
+  .op-grid__row--total.is-grand-total {
+    border-block-start: var(--op-border-width) solid var(--op-color-border-strong);
+  }
+  .op-grid__row--total:hover {
+    background: var(--op-grid-total-bg, var(--op-color-surface-2));
+  }
+  .op-grid__body-row.is-grouped > .op-grid__cell:first-child:not(.op-grid__selcell),
+  .op-grid__body-row.is-grouped > .op-grid__selcell + .op-grid__cell {
+    padding-inline-start: calc(var(--op-grid-cell-padding-x, var(--op-control-padding-x)) + var(--op-grid-indent, var(--op-space-4)));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .op-grid__twist {
+      transition: none;
+    }
+  }
+}

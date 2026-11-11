@@ -1,0 +1,34 @@
+@layer optikos {
+  .op-shortcuts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-space-1);
+    padding: var(--op-space-3) var(--op-space-4);
+    font-family: var(--op-font-family);
+  }
+  .op-shortcuts__group {
+    margin: var(--op-space-3) 0 var(--op-space-1);
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .op-shortcuts__group:first-child {
+    margin-block-start: 0;
+  }
+  .op-shortcuts__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--op-space-4);
+    padding-block: var(--op-space-1);
+  }
+  .op-shortcuts__kbd {
+    padding: 0 var(--op-space-2);
+    background: var(--op-color-surface-2);
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-radius);
+    font-family: inherit;
+    font-size: var(--op-font-size-sm);
+    white-space: nowrap;
+  }
+}

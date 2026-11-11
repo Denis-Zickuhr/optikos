@@ -4,6 +4,7 @@ import { h } from '../../../core/dom';
 import { t, addMessages } from '../../../core/i18n';
 import { toLayer, lockModal } from '../../../core/layer';
 import { trapFocus } from '../../../core/focus';
+import { allowed } from '../../../core/permission';
 import { iconEl } from '../../base/icon/icon';
 
 addMessages('en', {
@@ -25,6 +26,8 @@ addMessages('pt-BR', {
 
 export interface Command {
   id: string;
+  /** The command is left out while `setPermissionResolver` denies it. */
+  permission?: string;
   title: string;
   /** Groups the command and gives it a filter chip. */
   category?: string;
@@ -264,7 +267,7 @@ export class CommandPalette extends Component<CommandPaletteConfig> {
 
   /** Commands for the current query/filter, in display order. */
   private results(): Command[] {
-    const pool = this.level().commands.filter((c) => !c.hidden?.() && (!this.cat || c.category === this.cat));
+    const pool = this.level().commands.filter((c) => allowed(c.permission) && !c.hidden?.() && (!this.cat || c.category === this.cat));
     const q = this.query.trim();
     if (q) {
       return pool
@@ -309,7 +312,7 @@ export class CommandPalette extends Component<CommandPaletteConfig> {
   }
 
   private paintFilters(): void {
-    const cats = [...new Set(this.level().commands.filter((c) => !c.hidden?.() && c.category).map((c) => c.category!))];
+    const cats = [...new Set(this.level().commands.filter((c) => allowed(c.permission) && !c.hidden?.() && c.category).map((c) => c.category!))];
     this.filtersEl.hidden = this.config.filters === false || cats.length < 2;
     if (this.cat && !cats.includes(this.cat)) this.cat = null;
     const chip = (label: string, cat: string) => h('button', `op-palette__chip${(this.cat ?? '') === cat ? ' is-on' : ''}`, { type: 'button', 'data-cat': cat, 'aria-pressed': String((this.cat ?? '') === cat) }, label);

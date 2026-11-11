@@ -14,7 +14,9 @@ Prioridade: **P0** = necessário para os demos; **P1** = completa a lib; **P2** 
 | Badge | `badge` | P1 ✔ |
 | CodeViewer (código só leitura: cores, números de linha, linhas destacadas, copiar) | `codeviewer` | P1 ✔ |
 | Chip | `chip` | P1 ✔ |
-| Avatar | `avatar` | P2 |
+| ImageCanvas (imagem com zoom e arrastar) | `imagecanvas` | P1 ✔ |
+| Avatar (foto ou iniciais, status) | `avatar` | P1 ✔ |
+| Image (proporção, substituto) | `image` | P1 ✔ |
 
 ## Layout / Containers
 
@@ -26,6 +28,7 @@ Prioridade: **P0** = necessário para os demos; **P1** = completa a lib; **P2** 
 | FieldSet | `fieldset` | P0 |
 | Toolbar | `toolbar` | P0 |
 | Spacer | `spacer` | P0 |
+| Carousel (folheia quaisquer componentes) | `carousel` | P1 ✔ |
 | Card (layout `card`) | — | P0 (layout) |
 | Splitter | `splitter` | P1 |
 | Accordion | `accordion` | P1 |
@@ -40,6 +43,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
 | TextArea | `textarea` | P0 |
 | NumberField | `numberfield` | P0 |
 | DateField | `datefield` | P0 |
+| TimeField | `timefield` | P1 ✔ |
 | Checkbox | `checkbox` | P0 |
 | Radio / RadioGroup | `radio`, `radiogroup` | P0 |
 | Select | `select` | P0 |
@@ -53,8 +57,11 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (todos P0 no core).
 | Dial (régua plana ou mostrador de relógio, intervalo ou lista, mostrador que rola) | `dial` | P1 ✔ |
 | Toggle | `toggle` | P1 ✔ |
 | TagField | `tagfield` | P1 |
-| MaskField, CurrencyField | `maskfield`, `currencyfield` | P1 |
+| MaskField (padrões, valor `raw`) | `maskfield` | P1 ✔ |
+| Moeda, porcentagem | `numberfield` + `format` | P1 ✔ |
+| DateTimeField | `datetimefield` | P1 ✔ |
 | FileField | `filefield` | P1 |
+| ImageField (clicar ou soltar, prévias, limites de tipo e tamanho) | `imagefield` | P1 ✔ |
 | ColorField, Slider, Rating, HtmlEditor | — | P2 |
 
 ## Formulário
@@ -140,10 +147,20 @@ Dados (não visuais): Store, Model, Proxy (memória, função, REST) — P0 no c
 | Calendar `range: true` (intervalo) | `calendar` | P1 ✔ |
 | Scheduler | — | P2 |
 
-## Gráficos (P2)
+## Gráficos
 
-Decisão: **fora do core**. Se vier, será um bundle separado (`optikos-charts`), porque o custo em kB
-de um motor de gráficos quebra o pilar "Leve".
+Revertido (decisão 62): um gráfico SVG pequeno que desenha barra, linha, área, pizza, rosca e sparkline a partir de um
+`Store` vale o peso (cerca de 3,6 kB gzip) porque um dashboard de back-office precisa dele; um motor com zoom e 3D continua não valendo.
+
+| Componente | Type | Status |
+|---|---|---|
+| Chart (barra, linha, área, pizza, rosca, sparkline) | `chart` | P1 ✔ |
+| Stat (card de KPI com variação e sparkline) | `stat` | P1 ✔ |
+| Timeline (histórico de eventos, cronograma num eixo de tempo) | `timeline` (data) | P1 ✔ |
+
+Não são componentes, mas fazem parte do mesmo conjunto: `exportGrid` / `printGrid` (`gridexport`), `persistState` (`gridstate`),
+`shortcuts`, `store.connect` / `applyPatches` (dados ao vivo), `setPermissionResolver`, `defineTheme({ seeds })`, `optikos/dev`
+e `optikos/testing`. Veja as [receitas para back-office](erp.md).
 
 ## Motion
 

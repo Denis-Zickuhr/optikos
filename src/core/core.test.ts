@@ -84,6 +84,23 @@ describe('Component', () => {
   });
 });
 
+describe('new and create agree', () => {
+  it('new keeps config.type of the registered class and honors renderTo (after the constructor)', async () => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const b = new Box({ text: 'x', renderTo: host });
+    expect(b.config.type).toBe('box');
+    expect(host.children).toHaveLength(0);
+    await Promise.resolve();
+    expect(host.firstElementChild).toBe(b.el);
+    const c = create<Box>({ type: 'box', renderTo: host });
+    await Promise.resolve();
+    expect(host.querySelectorAll('.op-box')).toHaveLength(2);
+    expect(c.config.type).toBe('box');
+    host.remove();
+  });
+});
+
 describe('Container and layouts', () => {
   it('builds children from config with defaults and shared layout classes', () => {
     const c = create<Container>({ type: 'container', layout: { type: 'hbox', gap: 8 }, defaults: { text: 'd' }, defaultType: 'box', items: [{}, { type: 'box', text: 'own' }] });

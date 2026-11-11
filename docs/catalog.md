@@ -14,7 +14,9 @@ Priority: **P0** = needed by the demos; **P1** = completes the library; **P2** =
 | Badge | `badge` | P1 ✔ |
 | CodeViewer (read-only code: colors, line numbers, marked lines, copy) | `codeviewer` | P1 ✔ |
 | Chip | `chip` | P1 ✔ |
-| Avatar | `avatar` | P2 |
+| ImageCanvas (an image with zoom and pan) | `imagecanvas` | P1 ✔ |
+| Avatar (a picture or initials, status) | `avatar` | P1 ✔ |
+| Image (aspect ratio, fallback) | `image` | P1 ✔ |
 
 ## Layout / containers
 
@@ -26,6 +28,7 @@ Priority: **P0** = needed by the demos; **P1** = completes the library; **P2** =
 | FieldSet | `fieldset` | P0 |
 | Toolbar | `toolbar` | P0 |
 | Spacer | `spacer` | P0 |
+| Carousel (pages through any components) | `carousel` | P1 ✔ |
 | Card (`card` layout) | — | P0 (layout) |
 | Splitter | `splitter` | P1 |
 | Accordion | `accordion` | P1 |
@@ -40,6 +43,7 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (all P0, in the core).
 | TextArea | `textarea` | P0 |
 | NumberField | `numberfield` | P0 |
 | DateField | `datefield` | P0 |
+| TimeField | `timefield` | P1 ✔ |
 | Checkbox | `checkbox` | P0 |
 | Radio / RadioGroup | `radio`, `radiogroup` | P0 |
 | Select | `select` | P0 |
@@ -53,8 +57,11 @@ Layouts: `fit`, `hbox`, `vbox`, `border`, `grid`, `card` (all P0, in the core).
 | Dial (a flat ruler or a clock face, a range or a list, rolling readout) | `dial` | P1 ✔ |
 | Toggle | `toggle` | P1 ✔ |
 | TagField | `tagfield` | P1 |
-| MaskField, CurrencyField | `maskfield`, `currencyfield` | P1 |
+| MaskField (patterns, `raw` value) | `maskfield` | P1 ✔ |
+| Currency, percent | `numberfield` + `format` | P1 ✔ |
+| DateTimeField | `datetimefield` | P1 ✔ |
 | FileField | `filefield` | P1 |
+| ImageField (click or drop, previews, type and size limits) | `imagefield` | P1 ✔ |
 | ColorField, Rating, HtmlEditor | — | P2 |
 
 ## Forms
@@ -140,10 +147,20 @@ Non-visual data: Store, Model, Proxy (memory, function, REST) — P0, in `optiko
 | Calendar `range: true` | `calendar` | P1 ✔ |
 | Scheduler | — | P2 |
 
-## Charts (P2)
+## Charts
 
-Decision: **outside the core**. If it comes, it will be a separate bundle, because the size of a chart engine would
-break the "Light" pillar.
+Reversed (decision 62): a small SVG chart that draws bar, line, area, pie, donut and sparkline from a `Store` is worth
+its weight (about 3.6 kB gzip) because a back-office dashboard needs it; an engine with zooming and 3D still is not.
+
+| Component | Type | Status |
+|---|---|---|
+| Chart (bar, line, area, pie, donut, sparkline) | `chart` | P1 ✔ |
+| Stat (KPI tile with change and sparkline) | `stat` | P1 ✔ |
+| Timeline (event log, schedule on a time axis) | `timeline` (data) | P1 ✔ |
+
+Not components, but part of the same set: `exportGrid` / `printGrid` (`gridexport`), `persistState` (`gridstate`),
+`shortcuts`, `store.connect` / `applyPatches` (live data), `setPermissionResolver`, `defineTheme({ seeds })`, `optikos/dev`
+and `optikos/testing`. See the [back-office recipes](erp.md).
 
 ## Motion
 

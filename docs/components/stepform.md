@@ -13,7 +13,7 @@ Flow:          Next only moves on if the current step's fields validate (the 1st
                A step `validate` runs after its fields pass, when leaving it forward and again on Finish: Next and Finish show their loading state
                (`is-validating` on the form) and a second click does nothing; messages per field mark those fields, a string (or a thrown error) shows in
                an alert line above the step. Going back aborts it (the `signal`); with checks, Finish returns `false` and `finish` fires once they pass.
-States:        Stepper steps: current, done (already validated), error (failed to validate). The review step is rebuilt every time it is entered.
+States:        Stepper steps: current, done (already validated), error (failed to validate). The review step is rebuilt every time it is entered; a FieldList shows one line per row.
 Keyboard/ARIA: Enter moves on; the stepper has `aria-current="step"`; changing steps moves the focus to the new step's panel (`autoFocus: true`: to its first field, which pops up a phone keyboard); native buttons.
 Tokens:        `--op-stepform-gap`, `--op-stepform-step-padding` (+ those of Stepper).
 Sandbox cases: `form`: a 4-step sign-up with review, inside a modal `Window` and on the page, an optional step, non-linear mode, a step check against a (simulated) server.

@@ -4,6 +4,9 @@
 import { TextField, type TextFieldConfig } from '../components/fields/textfield/textfield';
 import { TextArea } from '../components/fields/textarea/textarea';
 import { NumberField } from '../components/fields/numberfield/numberfield';
+import { MaskField } from '../components/fields/maskfield/maskfield';
+import { TimeField } from '../components/fields/timefield/timefield';
+import { DateTimeField } from '../components/fields/datetimefield/datetimefield';
 import { DateField } from '../components/fields/datefield/datefield';
 import { DateRangeField } from '../components/fields/daterangefield/daterangefield';
 import { Checkbox } from '../components/fields/checkbox/checkbox';
@@ -40,7 +43,10 @@ export const ui = {
   password: (name: string, label?: string, c?: Cfg) => field(TextField, name, label, { inputType: 'password', ...c }),
   area: (name: string, label?: string, c?: Cfg) => field(TextArea, name, label, c),
   number: (name: string, label?: string, c?: Cfg) => field(NumberField, name, label, c),
+  mask: (name: string, label: string | undefined, mask: string | string[], c?: Cfg) => field(MaskField, name, label, { mask, ...c }),
+  time: (name: string, label?: string, c?: Cfg) => field(TimeField, name, label, c),
   date: (name: string, label?: string, c?: Cfg) => field(DateField, name, label, c),
+  datetime: (name: string, label?: string, c?: Cfg) => field(DateTimeField, name, label, c),
   dateRange: (name: string, label?: string, c?: Cfg) => field(DateRangeField, name, label, c),
   secret: (name: string, label?: string, c?: Cfg) => field(SecretField, name, label, c),
   slider: (name: string, label?: string, c?: Cfg) => field(Slider, name, label, c),

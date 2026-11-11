@@ -1,0 +1,39 @@
+@layer optikos {
+  .op-grid__body-row.is-row-editing {
+    z-index: 2;
+    background: var(--op-grid-row-selected-bg, var(--op-color-selected));
+  }
+  .op-grid__rowbar {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 100%;
+    inset-inline-start: var(--op-grid-scroll-x);
+    display: flex;
+    gap: var(--op-space-2);
+    padding: var(--op-space-2);
+    background: var(--op-color-surface);
+    border: var(--op-border-width) solid var(--op-color-border-strong);
+    border-block-start: 0;
+    border-end-start-radius: var(--op-radius);
+    border-end-end-radius: var(--op-radius);
+    box-shadow: var(--op-shadow);
+  }
+  .op-grid__rowbtn {
+    padding: var(--op-space-1) var(--op-space-3);
+    color: var(--op-color-fg);
+    background: var(--op-color-surface);
+    border: var(--op-border-width) solid var(--op-color-border-strong);
+    border-radius: var(--op-radius);
+    font: inherit;
+    cursor: pointer;
+  }
+  .op-grid__rowbtn.is-primary {
+    color: var(--op-color-primary-fg);
+    background: var(--op-color-primary);
+    border-color: var(--op-color-primary);
+  }
+  .op-grid__rowbtn:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+}

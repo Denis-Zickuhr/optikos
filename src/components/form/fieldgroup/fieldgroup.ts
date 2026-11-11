@@ -28,7 +28,7 @@ export class FieldGroup extends Container<FieldGroupConfig> {
     super(config);
     // the fields keep their labels for screen readers only: their own label position must not shape the row
     // a field that sets a width keeps it; the others share what is left
-    for (const c of this.items) if (c.config.width != null && c.config.flex == null) c.config.flex = 'none' as never;
+    for (const c of this.items) if (c.config.width != null && c.config.flex == null) c.config.flex = 'none';
     for (const f of this.getFields()) {
       f.config.labelPos = 'top';
       for (const ev of ['invalid', 'valid']) f.on(ev, () => this.paintError()); // also before the group is rendered

@@ -1,0 +1,35 @@
+@layer optikos {
+  .op-print-sheet {
+    display: none;
+  }
+  @media print {
+    html.op-printing body > *:not(.op-print-sheet) {
+      display: none !important;
+    }
+    html.op-printing .op-print-sheet {
+      display: block;
+      font-family: var(--op-font-family);
+      color: var(--op-color-fg);
+    }
+    .op-print-sheet table {
+      inline-size: 100%;
+      border-collapse: collapse;
+      font-size: var(--op-font-size-sm);
+    }
+    .op-print-sheet thead {
+      display: table-header-group;
+    }
+    .op-print-sheet tr {
+      break-inside: avoid;
+    }
+    .op-print-sheet th,
+    .op-print-sheet td {
+      padding: var(--op-space-1) var(--op-space-2);
+      border-block-end: var(--op-border-width) solid var(--op-color-border);
+      text-align: start;
+    }
+    .op-print-sheet th {
+      border-block-end-color: var(--op-color-fg);
+    }
+  }
+}

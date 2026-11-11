@@ -15,7 +15,7 @@ export interface CellEditingOptions {
 interface Editing { cell: GridCell; field: Field<any>; old: unknown }
 
 /** The field config for a column's editor: from `editor`, else from the type of the current value. */
-function editorConfig(col: Column, value: unknown): Record<string, any> {
+export function editorConfig(col: Column, value: unknown): Record<string, any> {
   const e = col.editor;
   if (e && typeof e === 'object') return { ...e };
   if (typeof e === 'string') return { type: e };

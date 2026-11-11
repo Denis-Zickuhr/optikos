@@ -54,6 +54,18 @@ export class Model<T extends Record<string, any> = Record<string, any>> {
     this.owner?.recordChanged(this as Model, field as string);
   }
 
+  /** Applies values that came from the server. It is not an edit (nothing becomes dirty), and a field the user already changed keeps their value. */
+  patch(raw: Partial<T>): boolean {
+    let changed = false;
+    for (const k in raw) {
+      const v = convert(raw[k], this.def.fields?.[k]) as T[typeof k];
+      if (k in this.original || this.data[k] === v) continue;
+      this.data[k] = v;
+      changed = true;
+    }
+    return changed;
+  }
+
   isDirty(): boolean {
     return Object.keys(this.original).length > 0;
   }

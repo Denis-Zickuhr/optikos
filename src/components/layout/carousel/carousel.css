@@ -1,0 +1,119 @@
+@layer optikos {
+  :root {
+    --op-carousel-dot-size: 0.5rem;
+    --op-carousel-gap: 0rem;
+  }
+  .op-carousel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-space-2);
+    min-inline-size: 0;
+    font-family: var(--op-font-family);
+  }
+  .op-carousel__viewport {
+    position: relative;
+  }
+  .op-carousel__track {
+    position: relative;
+    display: flex;
+    gap: var(--op-carousel-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    border-radius: var(--op-carousel-radius, var(--op-radius));
+  }
+  .op-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+  .op-carousel__track:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-carousel__track > * {
+    flex: 0 0 calc((100% - (var(--op-carousel-per-view, 1) - 1) * var(--op-carousel-gap)) / var(--op-carousel-per-view, 1));
+    min-inline-size: 0;
+    scroll-snap-align: start;
+  }
+  .op-carousel__prev,
+  .op-carousel__next {
+    position: absolute;
+    inset-block-start: 50%;
+    translate: 0 -50%;
+    display: inline-flex;
+    padding: var(--op-space-2);
+    color: var(--op-carousel-arrow-fg, var(--op-color-fg));
+    background: var(--op-carousel-arrow-bg, var(--op-color-surface));
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: 50%;
+    box-shadow: var(--op-shadow);
+    cursor: pointer;
+  }
+  .op-carousel__prev {
+    inset-inline-start: var(--op-space-2);
+  }
+  .op-carousel__next {
+    inset-inline-end: var(--op-space-2);
+  }
+  [dir='rtl'] .op-carousel__prev .op-icon,
+  [dir='rtl'] .op-carousel__next .op-icon {
+    scale: -1 1;
+  }
+  .op-carousel__prev:disabled,
+  .op-carousel__next:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .op-carousel__bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--op-space-3);
+  }
+  .op-carousel__bar:not(:has(:not([hidden]))) {
+    display: none;
+  }
+  .op-carousel__dots {
+    display: flex;
+    gap: var(--op-space-1);
+  }
+  .op-carousel__dot {
+    inline-size: var(--op-carousel-dot-size);
+    block-size: var(--op-carousel-dot-size);
+    padding: 0;
+    background: var(--op-carousel-dot-bg, var(--op-color-border-strong));
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .op-carousel__dot[aria-current] {
+    background: var(--op-carousel-dot-active-bg, var(--op-color-primary));
+  }
+  .op-carousel__toggle {
+    display: inline-flex;
+    padding: var(--op-space-1);
+    color: var(--op-color-fg);
+    background: none;
+    border: 0;
+    border-radius: var(--op-radius);
+    cursor: pointer;
+  }
+  .op-carousel__prev:focus-visible,
+  .op-carousel__next:focus-visible,
+  .op-carousel__dot:focus-visible,
+  .op-carousel__toggle:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-carousel__prev[hidden],
+  .op-carousel__next[hidden],
+  .op-carousel__toggle[hidden],
+  .op-carousel__dots[hidden] {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .op-carousel__track {
+      scroll-behavior: auto;
+    }
+  }
+}

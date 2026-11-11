@@ -19,6 +19,34 @@ afterEach(() => {
   setLocale('en');
 });
 
+describe('TimeField', () => {
+  it('normalizes typed digits to HH:mm, flags text that is not a time, steps with the arrows', () => {
+    const f = mk({ type: 'timefield', label: 'At' });
+    type(f, '930');
+    expect(f.getValue()).toBe('09:30');
+    type(f, '9');
+    expect(f.getValue()).toBe('09:00');
+    type(f, '2561');
+    expect(f.getValue()).toBeNull();
+    expect(f.validate()).toBe(false);
+    f.setValue('23:59');
+    key(f.getInput(), 'ArrowUp');
+    expect(f.getValue()).toBe('00:00');
+    key(f.getInput(), 'PageDown');
+    expect(f.getValue()).toBe('23:00');
+  });
+
+  it('min/max stop the arrows and validate typed values', () => {
+    const f = mk({ type: 'timefield', min: '08:00', max: '18:00', step: 15, value: '17:50' });
+    key(f.getInput(), 'ArrowUp');
+    expect(f.getValue()).toBe('18:00');
+    type(f, '1900');
+    expect(f.validate()).toBe(false);
+    type(f, '1200');
+    expect(f.validate()).toBe(true);
+  });
+});
+
 describe('NumberField', () => {
   it('parses to numbers, null when empty, flags garbage', () => {
     const f = mk({ type: 'numberfield', label: 'Qty' });

@@ -335,3 +335,12 @@ p.section('Validation and server errors', 'built-in validators, a cross-field ru
   create({ type: 'label', text: 'Try the username "admin" to get a server error.', renderTo: host, style: 'color:var(--op-color-fg-muted)' });
 });
 
+p.section('Form · server errors and lookup text', 'setErrors by dotted path (a FieldList row is list.index.field): the first one opens its tab and takes the focus; unmatched paths come back. The lookup shows its text from the record (displayFrom).', (host, { log }) => {
+  const form = create<Form>({ type: 'form', width: 420, renderTo: host, items: [
+    { type: 'textfield', name: 'slug', label: 'Slug' },
+    { type: 'lookupfield', name: 'manager', label: 'Manager (id 7, text from the record)', displayFrom: 'managerName', lookup: 'managers' },
+    { type: 'fieldlist', name: 'criteria', label: 'Criteria', items: [{ type: 'textfield', name: 'name', label: 'Name' }], value: [{ name: 'Poise' }, { name: 'Walk' }] },
+  ] } as never);
+  form.load({ slug: 'gala', manager: 7, managerName: 'Alan Torvalds', criteria: [{ name: 'Poise' }, { name: 'Walk' }] });
+  create({ type: 'button', text: 'Fail like a server', variant: 'primary', renderTo: host, handler: () => log('unmatched', form.setErrors({ slug: 'Already in use', 'criteria.1.name': 'Repeated', 'nope.x': 'Not on a field' })) });
+});

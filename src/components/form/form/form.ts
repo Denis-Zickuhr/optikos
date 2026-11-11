@@ -5,6 +5,7 @@ import type { Model } from '../../../data/model';
 import type { Component } from '../../../core/component';
 import type { LayoutSpec } from '../../../layout/layout';
 import { px } from '../../../core/dom';
+import { setPath } from '../../../core/path';
 
 export interface FormTab {
   title: string;
@@ -26,14 +27,6 @@ export interface FormConfig extends ContainerConfig {
   readonly?: boolean;
 }
 
-const getPath = (o: any, path: string) => path.split('.').reduce((v, k) => v?.[k], o);
-function setPath(o: any, path: string, value: unknown) {
-  const keys = path.split('.');
-  const last = keys.pop()!;
-  const target = keys.reduce((v, k) => (v[k] ??= {}), o);
-  target[last] = value;
-}
-
 export class Form extends Container<FormConfig> {
   protected override baseCls = 'op-form';
   protected override tag = 'form' as const;
@@ -48,7 +41,7 @@ export class Form extends Container<FormConfig> {
         type: 'tabs',
         flex: 1,
         items: config.tabs.map((t) => ({ type: 'container', title: t.title, icon: t.icon, cls: 'op-form__tab', layout: t.layout ?? { type: 'grid', columns: 2, gap: 12 }, items: t.items })),
-      } as never);
+      });
     }
     super({ ...config, items });
   }
@@ -143,10 +136,7 @@ export class Form extends Container<FormConfig> {
 
   /** Sets the fields present in `values` (silently). */
   setValues(values: Record<string, any>): void {
-    for (const f of this.getFields()) {
-      const v = f.name ? getPath(values, f.name) : undefined;
-      if (v !== undefined) f.setValue(v, true);
-    }
+    for (const f of this.getFields()) f.fillFrom(values);
   }
 
   /** Fills the form from a plain object or a Model, and makes it the "clean" state. */
@@ -220,6 +210,35 @@ export class Form extends Container<FormConfig> {
     }
     this.el.classList.toggle('is-invalid', !!bad.length);
     return !bad.length;
+  }
+
+  /**
+   * Marks server-side errors by dotted path (`slug`, `items.0.name` for a row of a FieldList), brings the first into
+   * view (its tab or step) and focuses it. Returns the paths that matched no field, for the caller to show some other way.
+   */
+  setErrors(errors: Record<string, string>): string[] {
+    this.clearErrors();
+    const unmatched: string[] = [];
+    let first: { host: Field<any>; target: Field<any> } | undefined;
+    for (const [path, msg] of Object.entries(errors)) {
+      const fields = this.getFields().filter((f) => f.name);
+      const host = fields.find((f) => f.name === path) ?? fields.filter((f) => path.startsWith(f.name + '.')).sort((a, b) => b.name!.length - a.name!.length)[0];
+      if (host) host.render();
+      const target = host?.name === path ? host : (host as any)?.fieldAt?.(path.slice(host!.name!.length + 1));
+      if (!target) unmatched.push(path);
+      else {
+        target.setError(msg);
+        first ??= { host: host!, target };
+      }
+    }
+    this.syncTabs();
+    if (first) {
+      this.el.classList.add('is-invalid');
+      this.emit('invalid', this.getFields().filter((f) => f.getError()));
+      this.reveal(first.host);
+      first.target.focus();
+    }
+    return unmatched;
   }
 
   submit(): boolean {

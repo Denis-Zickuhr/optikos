@@ -1,6 +1,7 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
 import { h } from '../../../core/dom';
+import { gate } from '../../../core/permission';
 import { iconEl } from '../../base/icon/icon';
 import { Menu, type MenuEntry } from '../../overlays/menu/menu';
 
@@ -12,6 +13,8 @@ export interface NavItem {
   items?: NavItem[];
   disabled?: boolean;
   hidden?: boolean;
+  /** Hidden (or disabled) while `setPermissionResolver` denies it. */
+  permission?: string;
   /** Groups: start open. */
   expanded?: boolean;
   data?: unknown;
@@ -44,7 +47,7 @@ export class NavMenu extends Component<NavMenuConfig> {
 
   protected override onRender() {
     const c = this.config;
-    this.items = c.items ?? [];
+    this.items = gate(c.items) ?? [];
     this.active = c.active;
     const seed = (list: NavItem[]) => list.forEach((i) => (i.expanded && this.open.add(i.id), i.items && seed(i.items)));
     seed(this.items);
@@ -202,7 +205,7 @@ export class NavMenu extends Component<NavMenuConfig> {
   }
 
   setItems(items: NavItem[]) {
-    this.items = items;
+    this.items = gate(items) ?? [];
     this.config.items = items;
     if (this.rendered) this.paint();
   }

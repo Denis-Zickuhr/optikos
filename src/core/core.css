@@ -85,4 +85,40 @@
     outline: var(--op-focus-width) solid var(--op-color-focus);
     outline-offset: var(--op-focus-offset);
   }
+
+  /* print: the page, not the application chrome (Grid has printGrid for what its virtual list does not render) */
+  @media print {
+    .op-no-print,
+    .op-layer,
+    .op-navmenu,
+    .op-formactions,
+    .op-pagination,
+    .op-toast,
+    .op-mask,
+    .op-tabs__list,
+    .op-viewport > .op-toolbar,
+    .op-button {
+      display: none !important;
+    }
+    .op-viewport,
+    .op-viewport > *,
+    .op-panel,
+    .op-form {
+      position: static !important;
+      overflow: visible !important;
+      block-size: auto !important;
+      box-shadow: none !important;
+    }
+    .op-field,
+    .op-panel,
+    .op-fieldset {
+      break-inside: avoid;
+    }
+    .op-field__control input,
+    .op-field__control textarea {
+      border-color: transparent;
+      background: none;
+      padding-inline: 0;
+    }
+  }
 }

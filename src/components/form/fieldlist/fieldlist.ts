@@ -6,6 +6,7 @@ import { addMessages, t } from '../../../core/i18n';
 import type { LayoutSpec } from '../../../layout/layout';
 import { Component } from '../../../core/component';
 import { iconEl } from '../../base/icon/icon';
+import { setPath } from '../../../core/path';
 
 addMessages('en', { flAdd: 'Add', flRemove: 'Remove {row}', flUp: 'Move {row} up', flDown: 'Move {row} down', flEmpty: 'Nothing added yet', flMin: 'Add at least {n}', flMax: 'At most {n}' });
 addMessages('pt-BR', { flAdd: 'Adicionar', flRemove: 'Remover {row}', flUp: 'Subir {row}', flDown: 'Descer {row}', flEmpty: 'Nada adicionado ainda', flMin: 'Adicione pelo menos {n}', flMax: 'No máximo {n}' });
@@ -23,13 +24,6 @@ export interface FieldListConfig extends FieldConfig<Row[]> {
   newRow?: Row | (() => Row);
   /** Layout of a row. Default `hbox` (the fields share the row). */
   rowLayout?: LayoutSpec;
-}
-
-const getPath = (o: any, path: string) => path.split('.').reduce((v, k) => v?.[k], o);
-function setPath(o: any, path: string, value: unknown) {
-  const keys = path.split('.');
-  const last = keys.pop()!;
-  keys.reduce((v, k) => (v[k] ??= {}), o)[last] = value;
 }
 
 /** A repeating block of fields: add, remove and reorder rows; the value is an array of row objects. */
@@ -78,8 +72,7 @@ export class FieldList extends Field<Row[], FieldListConfig> {
     const row = new Container({ cls: 'op-fieldlist__row', layout: this.config.rowLayout ?? { type: 'hbox', align: 'flex-start' }, items: (this.config.items ?? []).map(fresh) });
     for (const c of row.items) if (c.config.width != null && c.config.flex == null) c.config.flex = 'none'; // a set width is kept
     for (const f of this.rowFields(row)) {
-      const v = f.name ? getPath(values, f.name) : undefined;
-      if (v !== undefined) f.setValue(v, true);
+      f.fillFrom(values);
       f.on('change', () => this.syncing || this.commitRows());
     }
     return row;
@@ -181,6 +174,12 @@ export class FieldList extends Field<Row[], FieldListConfig> {
   }
   getRowFields(index: number): Field<any>[] {
     return this.rows[index] ? this.rowFields(this.rows[index]) : [];
+  }
+
+  /** The field of a row by path (`'0.name'` → field `name` of the first row): where a server error lands. */
+  fieldAt(path: string): Field<any> | undefined {
+    const [i, ...rest] = path.split('.');
+    return this.getRowFields(Number(i)).find((f) => f.name === rest.join('.'));
   }
 
   setAddText(text: string): void {

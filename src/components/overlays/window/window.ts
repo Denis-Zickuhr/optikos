@@ -5,6 +5,10 @@ import { toLayer, lockModal } from '../../../core/layer';
 import { trapFocus, focusables } from '../../../core/focus';
 import { popIn, popOut } from '../../../motion/core';
 import { motion } from '../../../motion/config';
+import { t, addMessages } from '../../../core/i18n';
+
+addMessages('en', { discardText: 'Discard your unsaved changes?', discard: 'Discard', keepEditing: 'Keep editing' });
+addMessages('pt-BR', { discardText: 'Descartar as alterações não salvas?', discard: 'Descartar', keepEditing: 'Continuar editando' });
 
 export interface WindowConfig extends PanelConfig {
   modal?: boolean;
@@ -18,6 +22,8 @@ export interface WindowConfig extends PanelConfig {
    * pop up. `true` focuses its first field instead. Default false.
    */
   autoFocus?: boolean;
+  /** Closing while a field inside is changed asks first. `true` uses a standard text; a string is the question. */
+  confirmDiscard?: boolean | string;
 }
 
 /** Floating dialog. Modal by default: the page behind becomes inert and Tab stays inside. */
@@ -77,11 +83,18 @@ export class Window extends Panel<WindowConfig> {
     return this.visible;
   }
 
-  /** Centers in the viewport (also done on show and on resize until the user drags it). */
+  /** Centers in the viewport (also done on show, on resize and when the content grows, until the user drags it). */
   center(): void {
     const el = this.el;
     el.style.left = `${Math.max(0, (innerWidth - el.offsetWidth) / 2)}px`;
     el.style.top = `${Math.max(0, (innerHeight - el.offsetHeight) / 3)}px`;
+  }
+
+  /** Keeps the window on screen: centered, or (once dragged) pulled up just enough to fit. */
+  private keepInView(): void {
+    if (!this.moved) return this.center();
+    const el = this.el;
+    el.style.top = `${Math.max(0, Math.min(parseFloat(el.style.top) || 0, innerHeight - el.offsetHeight))}px`;
   }
 
   override show(): void {
@@ -114,9 +127,11 @@ export class Window extends Panel<WindowConfig> {
       }
     };
     el.addEventListener('keydown', onKey);
-    const onResize = () => !this.moved && this.center();
+    const onResize = () => this.keepInView();
     window.addEventListener('resize', onResize);
-    this.cleanup.push(() => el.removeEventListener('keydown', onKey), () => window.removeEventListener('resize', onResize));
+    const grow = typeof ResizeObserver === 'function' ? new ResizeObserver(onResize) : null;
+    grow?.observe(el);
+    this.cleanup.push(() => el.removeEventListener('keydown', onKey), () => window.removeEventListener('resize', onResize), () => grow?.disconnect());
     if (c.autoFocus) this.focusFirst();
     else el.focus();
     this.emit('show');
@@ -126,6 +141,25 @@ export class Window extends Panel<WindowConfig> {
     const inBody = focusables(this.bodyEl)[0];
     const primary = this.el.querySelector<HTMLElement>('.op-panel__footer .op-button--primary');
     (inBody ?? primary ?? focusables(this.el).find((e) => !e.classList.contains('op-panel__tool')) ?? this.el).focus();
+  }
+
+  /**
+   * How `confirmDiscard` asks. MessageBox sets it when it is loaded (it needs Window itself, so Window cannot import it);
+   * without MessageBox the browser's own `confirm` is used.
+   */
+  static ask?: (text: string, o: { okText: string; cancelText: string }) => Promise<boolean>;
+
+  override close(): void {
+    const ask = this.config.confirmDiscard;
+    // a Form or a field: anything that knows whether it was changed
+    if (!ask || !this.query((c) => (c as { isDirty?: () => boolean }).isDirty?.() === true).length) return super.close();
+    const text = typeof ask === 'string' ? ask : t('discardText');
+    void (Window.ask ? Window.ask(text, { okText: t('discard'), cancelText: t('keepEditing') }) : Promise.resolve(confirm(text))).then((yes) => {
+      if (!yes || this.destroyed) return;
+      this.config.confirmDiscard = false;
+      super.close();
+      this.config.confirmDiscard = ask;
+    });
   }
 
   override hide(): void {

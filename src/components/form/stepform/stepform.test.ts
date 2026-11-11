@@ -331,3 +331,34 @@ describe('StepForm', () => {
     });
   });
 });
+
+describe('StepForm review with a FieldList', () => {
+  it('shows one line per row with what the user sees (not [object Object])', () => {
+    const f = mount(create<StepForm>({
+      type: 'stepform',
+      review: true,
+      steps: [{
+        title: 'Criteria',
+        items: [{ type: 'fieldlist', name: 'criteria', label: 'Criteria', items: [{ type: 'textfield', name: 'name', label: 'Name' }, { type: 'numberfield', name: 'weight', label: 'Weight' }] }],
+      }],
+    } as any));
+    f.load({ criteria: [{ name: 'Posture', weight: 3 }, { name: 'Charisma', weight: 2 }] });
+    f.goTo(1);
+    const dd = f.el.querySelector('.op-stepform__review-list dd')!;
+    expect(dd.textContent).toBe('Posture · 3\nCharisma · 2');
+  });
+});
+
+describe('StepForm review with object values', () => {
+  it('flattens a list of objects instead of [object Object]', () => {
+    const f = mount(create<StepForm>({
+      type: 'stepform',
+      review: true,
+      steps: [{ title: 'Jury', items: [{ type: 'checkboxgroup', name: 'jury', label: 'Jury', options: ['a'] }] }],
+    } as any));
+    (f.getField('jury') as any).getDisplayText = () => '';
+    f.getField('jury')!.setValue([{ name: 'Ana', role: 'chair' }, { name: 'Bia' }] as never, true);
+    f.goTo(1);
+    expect(f.el.querySelector('.op-stepform__review-list dd')!.textContent).toBe('Ana – chair, Bia');
+  });
+});

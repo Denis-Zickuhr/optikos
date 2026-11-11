@@ -1,0 +1,103 @@
+@layer optikos {
+  :root {
+    --op-imagefield-thumb-size: 4rem;
+    --op-imagefield-remove-icon: 0.875rem;
+  }
+  .op-imagefield__box {
+    display: flex;
+    flex-direction: column;
+    gap: var(--op-space-2);
+  }
+  .op-imagefield__picker {
+    display: none;
+  }
+  .op-imagefield__zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--op-space-2);
+    padding: var(--op-space-4);
+    min-block-size: calc(var(--op-imagefield-thumb-size) * 1.5);
+    box-sizing: border-box;
+    color: var(--op-color-fg-muted);
+    background: var(--op-imagefield-zone-bg, var(--op-color-surface));
+    border: var(--op-border-width) dashed var(--op-imagefield-zone-border, var(--op-color-border-strong));
+    border-radius: var(--op-imagefield-radius, var(--op-radius));
+    font: inherit;
+    font-size: var(--op-font-size-sm);
+    text-align: center;
+    cursor: pointer;
+  }
+  .op-imagefield__zone[hidden] {
+    display: none;
+  }
+  .op-imagefield__zone:hover:not(:disabled),
+  .op-imagefield.is-dragover .op-imagefield__zone {
+    background: var(--op-imagefield-zone-hover-bg, var(--op-color-primary-soft));
+    border-color: var(--op-color-primary);
+  }
+  .op-imagefield__zone:focus-visible,
+  .op-imagefield__remove:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-imagefield__zone:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .op-imagefield.is-invalid .op-imagefield__zone {
+    border-color: var(--op-color-danger);
+  }
+  .op-imagefield__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--op-space-2);
+  }
+  .op-imagefield__list:empty {
+    display: none;
+  }
+  .op-imagefield__item {
+    position: relative;
+    inline-size: var(--op-imagefield-thumb-size);
+  }
+  .op-imagefield__img {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: var(--op-color-surface-2, var(--op-color-bg));
+    border: var(--op-border-width) solid var(--op-color-border);
+    border-radius: var(--op-imagefield-radius, var(--op-radius));
+  }
+  .op-imagefield__name {
+    display: block;
+    overflow: hidden;
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .op-imagefield__remove {
+    position: absolute;
+    inset-block-start: var(--op-space-1);
+    inset-inline-end: var(--op-space-1);
+    display: inline-flex;
+    padding: var(--op-space-1);
+    color: var(--op-color-fg);
+    background: var(--op-color-surface);
+    border: var(--op-border-width) solid var(--op-color-border-strong);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .op-imagefield__remove[hidden] {
+    display: none;
+  }
+  .op-imagefield__remove:hover:not(:disabled) {
+    color: var(--op-color-danger);
+  }
+  .op-imagefield__remove .op-icon {
+    inline-size: var(--op-imagefield-remove-icon);
+    block-size: var(--op-imagefield-remove-icon);
+  }
+}

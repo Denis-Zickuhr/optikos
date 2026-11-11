@@ -5,6 +5,43 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-10
+
+### Added
+
+- Window token `--op-window-max-height`. The default is now `85dvh` (was the full viewport height minus a small
+  margin), so a long dialog keeps breathing room and scrolls inside.
+- TimeField (`timefield`, `ui.time`): a time of day as `'HH:mm'`, typed (`930`) or stepped with ↑/↓, with `min`/`max`/`step`.
+- `defineTheme` accepts the key `base` beside variants (`radius: { base: '8px', sm: '4px' }`).
+- A lookup filter may be a field instance, not only a config.
+- ImageField (`imagefield`): picks one or more images by click or drop, with previews, `accept`, `maxSize`, `maxFiles`,
+  a `reject` event and URLs of images already saved.
+- ImageCanvas (`imagecanvas`): shows an image with zoom and pan (buttons, keys, Ctrl+wheel, double click, pinch).
+- Carousel (`carousel`): a scroll-snap row of any components with arrows, dots, `perView`, `loop` and an autoplay that
+  stops on use and respects `prefers-reduced-motion`.
+- Back-office set: **Chart** (bar, line, area, pie, donut, sparkline, fed by a Store), **Stat** (KPI tile), **Timeline** (event log and schedule), **Avatar**, **Image**, **MaskField**, **DateTimeField**.
+- `NumberField`: `format: 'currency' | 'percent'` through `Intl`, `currency`, `locale`, and `scale` (cents as an integer); `setCurrency()`.
+- Permissions: `setPermissionResolver`, `setPermissionMode` and `permission` / `permissionMode` on components, menu and NavMenu items, command palette commands, grid columns and actions.
+- `form.setErrors({ 'items.0.name': '…' })` for server errors by dotted path; `displayFrom` and `setValue({ value, label })` so a lookup shows its text from the loaded record.
+- Live data: `store.applyPatches()` and `store.connect(source)`; `store.fetchAll()` reads every page of a remote store.
+- `exportGrid` (CSV, xlsx) and `printGrid`; print styles in the core.
+- `persistState(key)` (a Grid plugin) and `setStateStorage` / `loadState` / `saveState` for per-user state.
+- `shortcuts`: global and per-screen shortcuts with a help panel on `?`.
+- `Window.confirmDiscard`.
+- `defineTheme`: `seeds` (a light and dark theme from two colors), `fonts` (`@font-face`), `loadFonts`; `checkContrast()`; chart colors `--op-chart-1…8`.
+- `optikos/dev` (warns about ignored config options) and `optikos/testing` (test helpers for apps); `TabPanelConfig` types the tab options of any container.
+- Docs: the back-office recipes guide and the `panel` demo.
+- Grid, Ext parity: `grouping()` (group headers, counts, totals through `Column.summary`), `treeGrid()` (a tree column over flat records with `parentId`, lazy `load`, `flattenTree`), `rowEditing()` (a whole row under a Save / Cancel bar), locked columns (`Column.locked`, `setColumnLocked`, kept in `getColumnState`) and `Grid.setRowLayout()` for plugins that add rows of their own.
+- `optikos/bind`: `viewModel` (data, formulas, a linked record), `bindVM` (`'{record.name}'` bindings) and `bindForm` (a form bound to a record, both ways). New guide and `docs/internal/paridade-ext.md`.
+
+### Fixed
+
+- Window stays on screen when its content grows after opening (a FieldList gaining rows, a step change): it re-centers,
+  or, once dragged, moves up just enough to fit. Before, it grew past the bottom of the viewport with no way to scroll.
+- `new Component({ renderTo })` mounts like `create` does (it was ignored), and `config.type` is set on instances made with `new`.
+- Menu items typed from a variable (`const items = [{ text: 'a' }, '-']`) no longer need a cast.
+- StepForm review: a FieldList shows one line per row with what the user sees, instead of `[object Object]`.
+
 ## [0.3.0] - 2026-11-10
 
 ### Added
@@ -157,7 +194,8 @@ First public release.
   `corporate`, `soft`, `brutal`, `terminal`, `editorial` and `brand`.
 - Per-component entry points (`optikos/components/<name>`) and stylesheets (`optikos/css/<name>.css`).
 
-[Unreleased]: https://github.com/Denis-Zickuhr/optikos/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/Denis-Zickuhr/optikos/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/Denis-Zickuhr/optikos/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Denis-Zickuhr/optikos/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Denis-Zickuhr/optikos/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Denis-Zickuhr/optikos/releases/tag/v0.1.0

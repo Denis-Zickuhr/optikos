@@ -6,6 +6,7 @@ import { virtualize, measure } from '../../../core/virtual';
 import { Store } from '../../../data/store';
 import type { Model } from '../../../data/model';
 import { cellContent, type Column } from '../../../data/column';
+import { allowed, gate } from '../../../core/permission';
 import { iconEl } from '../../base/icon/icon';
 import { Pagination } from '../pagination/pagination';
 import { Button } from '../../base/button/button';
@@ -85,6 +86,22 @@ export interface GridPlugin<T extends Record<string, any> = any> {
   destroy?(): void;
 }
 
+/**
+ * One displayed row. Without a row layout every store record is a row; a plugin (grouping, tree) replaces the list with
+ * its own, mixing records with rows that are not records (a group header, a total).
+ */
+export interface RowEntry<T extends Record<string, any> = any> {
+  /** The record this row shows; absent on a header or total row (which cannot be selected). */
+  rec?: Model<T>;
+  /** `aria-level` and, with `expanded`, `aria-expanded`: for rows that open and close (a group, a tree node). */
+  level?: number;
+  expanded?: boolean;
+  /** Extra classes on the row (`op-grid__row--group`...). */
+  cls?: string;
+  /** Fills the row's cells after the grid did (or, on a row without a record, instead of it). */
+  paint?(cells: HTMLElement[], row: HTMLElement): void;
+}
+
 /** What `cellAt` finds under a DOM node: the row index, its record, the column and the cell element. */
 export interface GridCell<T extends Record<string, any> = any> {
   index: number;
@@ -97,12 +114,16 @@ export interface GridAction<T extends Record<string, any> = any> {
   text: string;
   icon?: string;
   variant?: 'default' | 'danger';
+  /** Left out (or disabled) while `setPermissionResolver` denies it. */
+  permission?: string;
   handler: (records: Model<T>[], grid: Grid<T>) => void;
 }
 export interface GridRowAction<T extends Record<string, any> = any> {
   text: string;
   icon?: string;
   variant?: 'default' | 'danger';
+  /** Left out (or disabled) while `setPermissionResolver` denies it. */
+  permission?: string;
   /** Disabled for the records where this returns true. */
   disabled?: (record: Model<T>) => boolean;
   handler: (record: Model<T>, grid: Grid<T>) => void;
@@ -111,12 +132,13 @@ export interface ColumnState {
   field: string;
   hidden: boolean;
   width?: number;
+  locked?: 'start' | 'end';
 }
 
 const SEL = '__select';
 const ACT = '__actions';
-const SEL_COL: Column = { field: SEL, width: 44, align: 'center', cls: 'op-grid__selcell' };
-const ACT_COL: Column = { field: ACT, width: 44, align: 'center', cls: 'op-grid__actcell' };
+const SEL_COL: Column = { field: SEL, width: 44, align: 'center', cls: 'op-grid__selcell', locked: 'start' };
+const ACT_COL: Column = { field: ACT, width: 44, align: 'center', cls: 'op-grid__actcell', locked: 'end' };
 
 const ROW = 'var(--op-grid-row-height, var(--op-row-height))';
 
@@ -134,6 +156,8 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
   private table!: HTMLElement;
   private pager?: Pagination;
   private v!: ReturnType<typeof virtualize>;
+  private entries?: RowEntry<T>[];
+  private lockEdge = [-1, -1];
   private selected = new Set<Model<T>>();
   private active = -1;
   private anchor = -1;
@@ -156,8 +180,10 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     const c = this.config;
     return [...(c.checkboxSelection ? [SEL_COL] : []), ...this.userCols(), ...(c.rowActions?.length ? [ACT_COL] : [])];
   }
+  /** Visible columns; the locked ones are kept together at their edge, whatever the order they were given or dragged to. */
   private userCols(): Column[] {
-    return (this.config.columns ?? []).filter((c) => !c.hidden);
+    const vis = (this.config.columns ?? []).filter((c) => !c.hidden);
+    return [...vis.filter((c) => c.locked === 'start'), ...vis.filter((c) => !c.locked), ...vis.filter((c) => c.locked === 'end')];
   }
   private visibleActions(): boolean {
     return this.config.rowActionsMode === 'visible' && !!this.config.rowActions?.length;
@@ -168,6 +194,9 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
 
   protected override build() {
     const c = this.config;
+    c.rowActions = gate(c.rowActions);
+    c.bulkActions = gate(c.bulkActions);
+    c.columns = c.columns.filter((col) => allowed(col.permission));
     const el = h('div', this.baseCls);
     this.headRow = h('div', 'op-grid__row op-grid__header-row', { role: 'row' });
     this.headEl = h('div', 'op-grid__header', {}, this.headRow);
@@ -196,7 +225,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     this.buildBar();
     this.v = virtualize({
       scroller: this.viewport,
-      count: this.store.count,
+      count: this.count(),
       rowHeight: c.rowHeight ?? (measure(this.el, ROW) || 36),
       render: (row, i) => this.renderRow(row, i),
       rowCls: 'op-grid__row op-grid__body-row',
@@ -204,7 +233,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     this.own(() => this.v.destroy());
     this.sync();
 
-    this.listen(this.viewport, 'scroll', () => (this.headEl.scrollLeft = this.viewport.scrollLeft), { passive: true });
+    this.listen(this.viewport, 'scroll', () => this.onScrollX(), { passive: true });
     this.listen(this.viewport, 'click', (e: MouseEvent) => this.onRowEvent(e, 'row-click'));
     this.listen(this.viewport, 'dblclick', (e: MouseEvent) => this.onRowEvent(e, 'row-dblclick'));
     this.listen(this.el, 'keydown', (e: KeyboardEvent) => this.onKey(e));
@@ -247,7 +276,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     const cell = (node as HTMLElement | null)?.closest?.<HTMLElement>('.op-grid__body-row .op-grid__cell');
     const index = Number(cell?.parentElement?.dataset.i);
     const column = cell && this.cols()[Number(cell.getAttribute('aria-colindex')) - 1];
-    const record = cell && this.store.getAt(index);
+    const record = cell && this.recAt(index);
     return column && record && ![SEL, ACT].includes(column.field) ? { index, record, column, el: cell } : undefined;
   }
 
@@ -273,6 +302,17 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     this.pager?.notifyMount();
   }
 
+  /** The header follows the body sideways; its locked cells hold still, and the edges say when there is more to scroll. */
+  private onScrollX() {
+    const v = this.viewport;
+    const end = Math.max(0, v.scrollWidth - v.clientWidth - v.scrollLeft);
+    this.headEl.scrollLeft = v.scrollLeft;
+    this.el.style.setProperty('--op-grid-scroll-x', `${v.scrollLeft}px`);
+    this.el.style.setProperty('--op-grid-scroll-end', `${end}px`);
+    this.el.classList.toggle('is-scrolled-start', v.scrollLeft > 0);
+    this.el.classList.toggle('is-scrolled-end', end > 0);
+  }
+
   /** Re-measures row height and scrollbar (needed after the grid becomes visible or resizes). */
   private layout() {
     if (!this.rendered) return;
@@ -282,6 +322,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     }
     this.headEl.style.paddingInlineEnd = `${this.viewport.offsetWidth - this.viewport.clientWidth}px`;
     this.v.refresh();
+    this.onScrollX();
   }
 
   // ---- store ---------------------------------------------------------------------------------
@@ -303,12 +344,12 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
   private sync() {
     const before = this.selected.size;
     if (!this.config.keepSelection) for (const r of this.selected) if (this.store.indexOf(r) < 0) this.selected.delete(r);
-    this.active = Math.min(this.active, this.store.count - 1);
-    this.v.setCount(this.store.count);
+    this.active = Math.min(this.active, this.count() - 1);
+    this.v.setCount(this.count());
     this.table.setAttribute('aria-rowcount', String(this.store.totalCount + 1));
     this.emptyEl.textContent = this.config.emptyText ?? t('empty');
-    this.emptyEl.hidden = this.store.count > 0 || !!this.config.loading;
-    this.el.classList.toggle('is-empty', this.store.count === 0);
+    this.emptyEl.hidden = this.count() > 0 || !!this.config.loading;
+    this.el.classList.toggle('is-empty', this.count() === 0);
     this.updateActiveDescendant();
     this.paintSelection();
     if (this.selected.size !== before) this.emit('select', this.getSelection());
@@ -329,6 +370,27 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     return this.store;
   }
 
+  private count(): number {
+    return this.entries ? this.entries.length : this.store.count;
+  }
+  private recAt(i: number): Model<T> | undefined {
+    return this.entries ? this.entries[i]?.rec : this.store.getAt(i);
+  }
+
+  /** For plugins: replaces the displayed rows (`undefined` goes back to one row per store record) and repaints. */
+  setRowLayout(rows: RowEntry<T>[] | undefined): void {
+    this.entries = rows;
+    if (this.rendered) this.sync();
+  }
+  /** The displayed row `i`: its record, or the header/total a plugin put there. */
+  getRowEntry(i: number): RowEntry<T> | undefined {
+    return this.entries ? this.entries[i] : ((rec) => rec && { rec })(this.store.getAt(i));
+  }
+  /** How many rows are displayed (records plus whatever a plugin added). */
+  getRowCount(): number {
+    return this.count();
+  }
+
   // ---- header / columns ----------------------------------------------------------------------
 
   /** Column widths → the CSS grid template shared by the header and every row. */
@@ -336,9 +398,24 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     const cols = this.cols();
     const n = this.visibleActions() ? this.config.rowActions!.length : 1;
     const wide = (c: Column) => (c.field === ACT ? `calc(${n} * var(--op-grid-action-size) + ${n + 1} * var(--op-grid-action-gap))` : `${c.width}px`);
-    const tpl = cols.map((c) => (c.field === ACT ? wide(c) : c.width ? `${c.width}px` : `minmax(${c.minWidth ?? 96}px, ${c.flex ?? 1}fr)`)).join(' ');
+    const px = (c: Column) => (c.field === ACT ? wide(c) : `${c.width ?? 140}px`);
+    const tpl = cols.map((c) => (c.locked ? px(c) : c.width ? `${c.width}px` : `minmax(${c.minWidth ?? 96}px, ${c.flex ?? 1}fr)`)).join(' ');
+    // a locked cell sticks at the sum of the locked widths before it (or, for the end, after it)
+    const sums = (list: Array<[number, Column]>) => list.reduce<string[]>((acc, [n, c]) => (this.el.style.setProperty(`--op-grid-lock-${n}`, acc.length ? `calc(${acc.join(' + ')})` : '0px'), [...acc, px(c)]), []);
+    const at = cols.map((c, n): [number, Column] => [n, c]);
+    sums(at.filter(([, c]) => c.locked === 'start'));
+    sums(at.filter(([, c]) => c.locked === 'end').reverse());
+    this.lockEdge = [cols.map((c) => c.locked).lastIndexOf('start'), cols.findIndex((c) => c.locked === 'end')];
     this.el.style.setProperty('--op-grid-cols', tpl);
-    this.el.style.setProperty('--op-grid-min-width', `${cols.reduce((sum, c) => sum + (c.field === ACT ? n * 36 : (c.width ?? c.minWidth ?? 96)), 0)}px`);
+    this.el.style.setProperty('--op-grid-min-width', `${cols.reduce((sum, c) => sum + (c.field === ACT ? n * 36 : (c.width ?? (c.locked ? 140 : (c.minWidth ?? 96)))), 0)}px`);
+  }
+
+  /** Classes and offset of a locked cell (header or body); `n` is the column's place. */
+  private lock(cell: HTMLElement, c: Column, n: number) {
+    if (!c.locked) return;
+    cell.classList.add('is-locked', `is-locked-${c.locked}`);
+    cell.classList.toggle('is-lock-edge', this.lockEdge[c.locked === 'start' ? 0 : 1] === n);
+    cell.style.setProperty('--_lock', `var(--op-grid-lock-${n})`);
   }
 
   private buildHeader() {
@@ -353,6 +430,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
       ...cols.map((c, i) => {
         const label = c.header ?? c.field;
         const cell = h('div', `op-grid__cell op-grid__hcell${c.align ? ` op-grid__cell--${c.align}` : ''}${c.sortable ? ' is-sortable' : ''}`, { role: 'columnheader', 'aria-colindex': i + 1, 'data-field': c.field });
+        this.lock(cell, c, i);
         if (c.field === SEL) cell.append((this.selAll = h('input', 'op-grid__check', { type: 'checkbox', 'aria-label': t('gridSelectPage') })));
         else if (c.field === ACT) cell.append(h('span', 'op-sr-only', {}, t('gridRowActions')));
         else if (c.sortable) cell.append(h('button', 'op-grid__sort', { type: 'button' }, h('span', 'op-grid__label', {}, label), h('span', 'op-grid__arrow', { 'aria-hidden': 'true' }, iconEl('arrow-up'))));
@@ -404,6 +482,14 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     this.emit('columns-change', this.getColumnState());
   }
 
+  /** Pins a column to the start or the end while the body scrolls sideways (`null` releases it). A locked column needs a `width` (default 140). */
+  setColumnLocked(field: string, locked: 'start' | 'end' | null): void {
+    const col = this.config.columns.find((c) => c.field === field);
+    if (!col || col.locked === (locked ?? undefined)) return;
+    this.setColumns(this.config.columns.map((c) => (c === col ? { ...c, locked: locked ?? undefined } : c)));
+    this.emit('columns-change', this.getColumnState());
+  }
+
   setColumns(columns: Column[]) {
     this.config.columns = columns;
     if (!this.rendered) return;
@@ -415,7 +501,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
 
   /** Order, visibility and width of every column; save it and give it back to `setColumnState`. */
   getColumnState(): ColumnState[] {
-    return this.config.columns.map((c) => ({ field: c.field, hidden: !!c.hidden, width: c.width }));
+    return this.config.columns.map((c) => ({ field: c.field, hidden: !!c.hidden, width: c.width, locked: c.locked }));
   }
   /** Restores a saved state: columns follow its order (unknown ones keep their place at the end). */
   setColumnState(state: ColumnState[]): void {
@@ -423,7 +509,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     const ordered = state.flatMap((s) => {
       const c = by.get(s.field);
       by.delete(s.field);
-      return c ? [{ ...c, hidden: s.hidden, width: s.width ?? c.width }] : [];
+      return c ? [{ ...c, hidden: s.hidden, width: s.width ?? c.width, locked: 'locked' in s ? s.locked : c.locked }] : [];
     });
     this.setColumns([...ordered, ...by.values()]);
     this.emit('columns-change', this.getColumnState());
@@ -611,24 +697,45 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
   }
 
   private renderRow(row: HTMLElement, i: number) {
-    const rec = this.store.getAt(i);
-    if (!rec) return;
+    const entry = this.getRowEntry(i);
+    if (!entry) return;
+    const rec = entry.rec;
     const cols = this.cols();
     row.id = `${this.id}-r${i}`;
     row.dataset.i = String(i);
     row.setAttribute('role', 'row');
     row.setAttribute('aria-rowindex', String(this.rowIndexOffset() + i + 2));
-    const sel = this.selected.has(rec);
-    row.setAttribute('aria-selected', this.mode() === 'none' ? 'false' : String(sel));
+    const sel = !!rec && this.selected.has(rec);
+    if (row.dataset.ec) row.classList.remove(...row.dataset.ec.split(' '));
+    row.dataset.ec = entry.cls ?? '';
+    if (entry.cls) row.classList.add(...entry.cls.split(' '));
+    for (const [a, v] of [['aria-level', entry.level], ['aria-expanded', entry.expanded]] as const) {
+      if (v == null) row.removeAttribute(a);
+      else row.setAttribute(a, String(v));
+    }
+    row.setAttribute('aria-selected', this.mode() === 'none' || !rec ? 'false' : String(sel));
     row.classList.toggle('is-selected', sel);
     row.classList.toggle('is-active', i === this.active);
     row.classList.toggle('is-odd', i % 2 === 1);
-    if (row.dataset.cv !== String(this.cv) || row.children.length !== cols.length) {
+    if (row.dataset.cv !== String(this.cv) || row.dataset.cn !== String(cols.length)) {
       row.dataset.cv = String(this.cv);
-      row.replaceChildren(...cols.map((c, n) => h('div', `op-grid__cell${c.align ? ` op-grid__cell--${c.align}` : ''}${c.cls ? ` ${c.cls}` : ''}`, { role: 'gridcell', 'aria-colindex': n + 1 })));
+      row.dataset.cn = String(cols.length);
+      row.replaceChildren(
+        ...cols.map((c, n) => {
+          const cell = h('div', `op-grid__cell${c.align ? ` op-grid__cell--${c.align}` : ''}${c.cls ? ` ${c.cls}` : ''}`, { role: 'gridcell', 'aria-colindex': n + 1 });
+          this.lock(cell, c, n);
+          return cell;
+        }),
+      );
+    }
+    const cells = (Array.from(row.children) as HTMLElement[]).filter((c) => c.classList.contains('op-grid__cell')); // a plugin may add its own child (an edit bar)
+    if (!rec) {
+      for (const cell of cells) cell.replaceChildren();
+      return entry.paint?.(cells, row);
     }
     cols.forEach((c, n) => {
       const cell = row.children[n] as HTMLElement;
+      if (cell.classList.contains('is-editing')) return; // an editor plugin owns this cell until it finishes
       if (c.field === SEL) {
         const box = (cell.firstElementChild as HTMLInputElement | null) ?? cell.appendChild(h('input', 'op-grid__check', { type: 'checkbox', tabindex: -1, 'aria-label': t('gridSelectRow') }));
         box.checked = sel;
@@ -650,6 +757,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
       if (typeof content === 'string') cell.textContent = content;
       else cell.replaceChildren(content);
     });
+    entry.paint?.(cells, row);
   }
 
   private indexOfEvent(e: Event): number {
@@ -659,7 +767,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
 
   private onRowEvent(e: MouseEvent, name: string) {
     const i = this.indexOfEvent(e);
-    const rec = this.store.getAt(i);
+    const rec = this.recAt(i);
     if (!rec) return;
     if (name === 'row-click') {
       const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.op-grid__actbtn');
@@ -682,7 +790,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
 
   /** Selects a record or row index. `add` keeps the current selection (multi mode). */
   select(target: Model<T> | number, opts: { add?: boolean } = {}): void {
-    const rec = typeof target === 'number' ? this.store.getAt(target) : target;
+    const rec = typeof target === 'number' ? this.recAt(target) : target;
     const mode = this.mode();
     if (!rec || mode === 'none') return;
     if (mode === 'single' || !opts.add) this.selected.clear();
@@ -712,11 +820,14 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
   /** Click semantics: plain = replace, ctrl/meta = toggle, shift = range from the anchor (multi only). */
   private pick(i: number, e: { ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean }) {
     const mode = this.mode();
-    const rec = this.store.getAt(i);
+    const rec = this.recAt(i);
     if (!rec || mode === 'none') return;
     if (mode === 'multi' && e.shiftKey && this.anchor >= 0) {
       if (!this.config.checkboxSelection) this.selected.clear();
-      for (const r of this.store.getRange(Math.min(this.anchor, i), Math.max(this.anchor, i) + 1)) this.selected.add(r);
+      for (let k = Math.min(this.anchor, i); k <= Math.max(this.anchor, i); k++) {
+        const r = this.recAt(k);
+        if (r) this.selected.add(r);
+      }
     } else if (mode === 'multi' && (e.ctrlKey || e.metaKey || this.config.checkboxSelection)) {
       if (!this.selected.delete(rec)) this.selected.add(rec);
       this.anchor = i;
@@ -736,13 +847,13 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
   }
 
   private updateActiveDescendant() {
-    if (this.active >= 0 && this.active < this.store.count) this.table.setAttribute('aria-activedescendant', `${this.id}-r${this.active}`);
+    if (this.active >= 0 && this.active < this.count()) this.table.setAttribute('aria-activedescendant', `${this.id}-r${this.active}`);
     else this.table.removeAttribute('aria-activedescendant');
   }
 
   focusRow(i: number) {
     this.render();
-    this.setActive(Math.max(0, Math.min(i, this.store.count - 1)));
+    this.setActive(Math.max(0, Math.min(i, this.count() - 1)));
     this.table.focus();
   }
 
@@ -758,11 +869,13 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     const target = e.target as HTMLElement;
     if (target.closest('.op-grid__header')) return; // header buttons keep their own keys
     if (target !== this.table && target.matches('input:not([type=checkbox]),textarea,select,[contenteditable]')) return; // an editor in a cell keeps its keys
-    const n = this.store.count;
+    const n = this.count();
     if (!n) return;
     if ((e.key === 'ContextMenu' || (e.shiftKey && e.key === 'F10')) && this.active >= 0 && this.config.rowActions?.length) {
       e.preventDefault();
-      return this.openRowMenu(this.store.getAt(this.active)!, document.getElementById(`${this.id}-r${this.active}`) ?? this.el);
+      const arec = this.recAt(this.active);
+      if (!arec) return;
+      return this.openRowMenu(arec, document.getElementById(`${this.id}-r${this.active}`) ?? this.el);
     }
     const page = Math.max(1, Math.floor((this.viewport.clientHeight || 400) / this.config.rowHeight! || 10));
     const cur = this.active < 0 ? 0 : this.active;
@@ -785,7 +898,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
       if (mode === 'multi') this.pick(this.active, { ctrlKey: true });
       else this.pick(this.active, e);
     } else if (e.key === 'Enter' && this.active >= 0) {
-      this.emit('row-activate', this.store.getAt(this.active), this.active);
+      this.emit('row-activate', this.recAt(this.active), this.active);
     } else if ((e.key === 'a' || e.key === 'A') && (e.ctrlKey || e.metaKey) && mode === 'multi') {
       e.preventDefault();
       this.store.each((r) => this.selected.add(r));

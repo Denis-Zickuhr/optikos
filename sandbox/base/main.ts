@@ -66,3 +66,37 @@ p.section('CodeViewer', 'read-only code: syntax colors per language, line number
   create({ type: 'codeviewer', title: 'wrap: true', wrap: true, code: ts, width: 360, renderTo: host });
   create({ type: 'codeviewer', title: 'maxHeight: 140', maxHeight: 140, code: Array.from({ length: 40 }, (_, i) => `console.log('line ${i + 1}');`).join('\n'), width: 560, renderTo: host });
 });
+
+const pic = (n: number, w = 800, h = 600) => {
+  const hue = (n * 67) % 360;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="hsl(${hue} 55% 55%)"/><circle cx="${w * 0.3}" cy="${h * 0.35}" r="${h * 0.12}" fill="#fff8"/><path d="M0 ${h}L${w * 0.35} ${h * 0.5}L${w * 0.6} ${h * 0.8}L${w * 0.8} ${h * 0.6}L${w} ${h}Z" fill="hsl(${hue} 45% 30%)"/><text x="${w / 2}" y="${h * 0.2}" font-size="${h * 0.08}" fill="#fff" text-anchor="middle" font-family="sans-serif">Picture ${n}</text></svg>`;
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+};
+
+p.section('ImageCanvas', 'contain and cover; zoom with the buttons, + / - / 0, Ctrl+wheel, double click or a pinch; drag or use the arrows to pan while zoomed.', (host, { watch }) => {
+  watch(create({ type: 'imagecanvas', src: pic(1), alt: 'Mountains', width: 320, renderTo: host } as never), ['load', 'zoom']);
+  create({ type: 'imagecanvas', src: pic(2, 600, 900), alt: 'Tall picture, contain', width: 320, renderTo: host } as never);
+  create({ type: 'imagecanvas', src: pic(2, 600, 900), alt: 'Tall picture, cover', fit: 'cover', width: 320, ratio: '16 / 9', renderTo: host } as never);
+});
+
+p.section('ImageCanvas · states', 'a broken URL shows a message; zoomable: false is just a picture; setSrc swaps the image and resets the zoom.', (host) => {
+  create({ type: 'imagecanvas', src: '/nope.png', alt: 'Missing', width: 320, renderTo: host } as never);
+  create({ type: 'imagecanvas', src: pic(3), alt: 'Fixed', zoomable: false, width: 320, renderTo: host } as never);
+  let n = 4;
+  const c = create({ type: 'imagecanvas', src: pic(4), alt: 'Swappable', width: 320, renderTo: host, showTools: false } as never) as unknown as { setSrc(s: string): void };
+  create({ type: 'button', text: 'Next picture', renderTo: host, handler: () => c.setSrc(pic(++n)) });
+});
+
+p.section('Avatar', 'initials on a color picked from the name (the same person always looks the same), a picture with a fallback when it fails, sizes, shapes and status.', (host) => {
+  for (const [name, extra] of [['Ada Lovelace', { size: 'sm' }], ['Grace Hopper', { status: 'online' }], ['Alan Turing', { size: 'lg', status: 'busy' }], ['Mary Jackson', { size: 'lg', shape: 'square', status: 'away' }], ['Katherine Johnson', { size: 'xl', src: '/missing.png' }]] as const) {
+    create({ type: 'avatar', name, renderTo: host, ...extra });
+  }
+});
+
+p.section('Image', 'keeps its aspect ratio while loading (no jump), lazy by default, an icon or a second URL when the file is missing.', (host) => {
+  const svg = (c: string) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90"><rect width="100%" height="100%" fill="${c}"/></svg>`)}`;
+  create({ type: 'image', width: 200, ratio: '16/9', rounded: true, alt: 'Poster', src: svg('#b45309'), renderTo: host });
+  create({ type: 'image', width: 200, ratio: '16/9', rounded: true, src: '/missing.png', renderTo: host });
+  create({ type: 'image', width: 200, ratio: '16/9', rounded: true, src: '/missing.png', fallback: svg('#1e7a4d'), renderTo: host });
+  create({ type: 'image', width: 90, ratio: '1', rounded: true, src: '/missing.png', fallback: 'user', renderTo: host });
+});

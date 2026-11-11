@@ -19,6 +19,14 @@ export interface Column<T extends Record<string, any> = any> {
   align?: 'left' | 'center' | 'right';
   sortable?: boolean;
   hidden?: boolean;
+  /** Pinned to the start or the end while the body scrolls sideways (give it a `width`; default 140). The columns of one edge stay together. */
+  locked?: 'start' | 'end';
+  /** With the `grouping()` plugin: what the total row shows for this column. */
+  summary?: 'sum' | 'avg' | 'min' | 'max' | 'count' | ((values: any[], recs: Model<T>[]) => unknown);
+  /** Text for the total of this column (default: the column's `format`, else the plain value). */
+  summaryRenderer?: (value: any, col: Column<T>) => string | Node;
+  /** Left out while `setPermissionResolver` denies it. */
+  permission?: string;
   /** Name registered with `registerFormat` (`money`, `date`, `number`, `percent`, `bool`) or a function. */
   format?: string | Formatter;
   /** Full control over the cell content. Text is escaped; return a Node for markup. */

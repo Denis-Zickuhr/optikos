@@ -3,7 +3,7 @@ Propósito:     Janela de comandos aberta por atalho (Ctrl/⌘+K): o usuário di
 Anatomia:      `body > .op-layer` > `.op-palette-backdrop` > `.op-palette[role=dialog]` > `__search` (input `role=combobox`) + `__filters` (chip "Todas" + um por categoria) +
                `__list[role=listbox]` com `__group` (título da categoria) e `__item[role=option]` (ícone, título com `<mark>`, descrição, atalho `<kbd>`) + `__empty`; rodapé com dicas de teclado.
 Config:        `commands: Command[]`, `hotkey: 'mod+k'` (`mod` = Ctrl no Windows/Linux, ⌘ no Mac; `false` desliga), `placeholder`, `emptyText`, `maxResults: 50`,
-               `categories: string[]` (ordem dos grupos; o resto vem depois), `filters: true` (chips de categoria).
+               `categories: string[]` (ordem dos grupos; o resto vem depois), `filters: true` (chips de categoria). Um comando aceita `permission` (fica de fora enquanto `setPermissionResolver` nega).
 Command:       `{ id, title, category?, icon?, description?, keywords?: string[], shortcut?: string (só exibe), disabled?, hidden?: () => boolean, handler(ctx) }`.
                `children: Command[] | () => Command[] | Promise<Command[]>` abre um segundo nível ("Trocar tema… → claro/escuro/..."); Backspace com o campo vazio volta. O `handler` roda **depois** que a paleta fechou (assim pode abrir uma janela modal).
 API:           `open()`, `close()`, `toggle()`, `isOpen()`, `setCommands(list)`, `register(cmd | cmds)` (devolve a função que desregistra), `run(id)`, `getCommands()`.

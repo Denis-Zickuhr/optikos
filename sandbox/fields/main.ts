@@ -29,7 +29,7 @@ p.section('TextField · other', 'clearable (Esc too), password, maxLength, selec
   mk({ label: 'Select on focus', selectOnFocus: true, value: 'selected on focus' });
 });
 
-import { create as c, Select, ComboBox, SuggestField, NumberField, Checkbox, RadioGroup, Store, LookupField, Slider, Dial } from 'optikos';
+import { create as c, Select, ComboBox, SuggestField, NumberField, TimeField, DateTimeField, MaskField, Checkbox, RadioGroup, Store, LookupField, Slider, Dial } from 'optikos';
 
 const fruits = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Date', 'Fig', 'Grape', 'Kiwi', 'Lemon', 'Mango', 'Orange'];
 const objects: { value: string; label: string; disabled?: boolean }[] = [{ value: 'br', label: 'Brazil' }, { value: 'pt', label: 'Portugal' }, { value: 'us', label: 'United States', disabled: true }, { value: 'jp', label: 'Japan' }];
@@ -47,6 +47,11 @@ p.section('stableSize · invalid and searching', 'left: stableSize (default), ri
   s(true);
   s(false);
   log('type in a City field: the spinner appears without moving the text when stableSize is on');
+});
+
+p.section('TimeField', 'Type 930 / 9:30, ↑/↓ by step, PageUp/PageDown by an hour; limits stop the value.', (host, { watch }) => {
+  watch(c<TimeField>({ type: 'timefield', label: 'Free', value: '09:30', width: 160, renderTo: host }), ['change']);
+  c({ type: 'timefield', label: '08:00–18:00, 15 min', min: '08:00', max: '18:00', step: 15, width: 200, renderTo: host });
 });
 
 p.section('NumberField · TextArea', 'min/max/step/decimals, arrow and Page keys; textarea with autoGrow.', (host, { watch }) => {
@@ -143,4 +148,37 @@ p.section('CheckboxGroup', 'several choices; the value is the list of checked va
   const g = create({ type: 'checkboxgroup', label: 'Notify me by', required: true, options: ['Email', 'SMS', { value: 'push', label: 'Push (disabled)', disabled: true }], renderTo: host } as never);
   create({ type: 'checkboxgroup', label: 'Days', direction: 'horizontal', options: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], value: ['Mon', 'Fri'], renderTo: host } as never);
   watch(g, ['change', 'invalid', 'valid']);
+});
+
+p.section('ImageField', 'click or drop an image; a preview with a remove button; a new image replaces the old one (single).', (host, { watch }) => {
+  watch(c({ type: 'imagefield', label: 'Avatar', help: 'PNG or JPG, up to 1 MB', accept: 'image/png,image/jpeg', maxSize: 1048576, width: 320, renderTo: host } as never), ['change', 'reject', 'invalid']);
+  c({ type: 'imagefield', label: 'Saved cover', value: 'https://example.com/covers/summer.jpg', width: 320, renderTo: host } as never);
+});
+
+p.section('ImageField · multiple', 'multiple with maxFiles 3: the zone goes away when full; extra files are rejected with a message.', (host, { watch }) => {
+  watch(c({ type: 'imagefield', label: 'Gallery', multiple: true, maxFiles: 3, renderTo: host } as never), ['change', 'reject']);
+  c({ type: 'imagefield', label: 'Disabled', disabled: true, value: 'cover.png', renderTo: host } as never);
+  c({ type: 'imagefield', label: 'Read-only', readonly: true, value: 'cover.png', renderTo: host } as never);
+});
+
+p.section('ImageField · in a Form', 'required: the form does not validate without an image; getValues returns the File.', (host, { log }) => {
+  const form = c<import('optikos').Form>({ type: 'form', width: 360, renderTo: host, items: [{ type: 'textfield', name: 'title', label: 'Title' }, { type: 'imagefield', name: 'photo', label: 'Photo', required: true }] } as never);
+  c({ type: 'button', text: 'Validate', renderTo: host, handler: () => log(`valid: ${form.validate()} · values: ${JSON.stringify(form.getValues())}`) });
+});
+
+p.section('DateTimeField', 'a date and a time in one value: local `YYYY-MM-DDTHH:mm`, or with utc an ISO instant of what was typed. One part alone is invalid.', (host, { watch }) => {
+  watch(c<DateTimeField>({ type: 'datetimefield', label: 'Starts at (local)', value: '2026-11-10T19:30', renderTo: host }), ['change']);
+  watch(c<DateTimeField>({ type: 'datetimefield', label: 'Deadline (utc)', utc: true, min: '2026-11-01', renderTo: host }), ['change']);
+});
+
+p.section('MaskField', 'type 12345678900 → 123.456.789-00; a list of patterns picks one by length (tax id, then company id); raw keeps only the digits; the check digit is the app\'s validator.', (host, { watch }) => {
+  watch(c<MaskField>({ type: 'maskfield', label: 'CPF / CNPJ (raw)', mask: ['000.000.000-00', '00.000.000/0000-00'], raw: true, width: 260, renderTo: host }), ['change']);
+  c({ type: 'maskfield', label: 'Plate', mask: 'AAA-0A00', width: 160, renderTo: host });
+  c({ type: 'maskfield', label: 'Not all equal digits', mask: '000.000.000-00', width: 200, validators: [(v: string) => (/^(\d)\1+$/.test(v.replace(/\D/g, '')) ? 'Invalid number' : true)], renderTo: host });
+});
+
+p.section('NumberField · money and percent', 'Intl formats from one code; scale 100 keeps cents as an integer; locale and currency per field or global (setLocale / setCurrency).', (host, { watch }) => {
+  watch(c<NumberField>({ type: 'numberfield', label: 'US, cents (value 123456)', format: 'currency', currency: 'USD', locale: 'en-US', scale: 100, value: 123456, width: 220, renderTo: host }), ['change']);
+  watch(c<NumberField>({ type: 'numberfield', label: 'BR, cents', format: 'currency', currency: 'BRL', locale: 'pt-BR', scale: 100, value: 123456, width: 220, renderTo: host }), ['change']);
+  watch(c<NumberField>({ type: 'numberfield', label: 'Percent (a fraction)', format: 'percent', decimals: 1, value: 0.15, width: 160, renderTo: host }), ['change']);
 });

@@ -1,0 +1,75 @@
+@layer optikos {
+  .op-imagecanvas {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--op-imagecanvas-bg, var(--op-color-surface-2));
+    border-radius: var(--op-imagecanvas-radius, var(--op-radius));
+    font-family: var(--op-font-family);
+  }
+  .op-imagecanvas__stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    touch-action: none;
+  }
+  .op-imagecanvas.is-zoomed .op-imagecanvas__stage {
+    cursor: grab;
+  }
+  .op-imagecanvas.is-dragging .op-imagecanvas__stage {
+    cursor: grabbing;
+  }
+  .op-imagecanvas__stage:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: calc(var(--op-focus-width) * -1);
+  }
+  .op-imagecanvas__img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    user-select: none;
+    transition: transform var(--op-duration) var(--op-easing);
+  }
+  .op-imagecanvas.is-dragging .op-imagecanvas__img {
+    transition: none;
+  }
+  .op-imagecanvas.is-error .op-imagecanvas__img {
+    visibility: hidden;
+  }
+  .op-imagecanvas__status {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: var(--op-space-3);
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    text-align: center;
+    pointer-events: none;
+  }
+  .op-imagecanvas__tools {
+    position: absolute;
+    inset-block-end: var(--op-space-2);
+    inset-inline-end: var(--op-space-2);
+    display: flex;
+    gap: var(--op-border-width);
+    overflow: hidden;
+    border-radius: var(--op-radius);
+    box-shadow: var(--op-shadow);
+  }
+  .op-imagecanvas__tool {
+    display: inline-flex;
+    padding: var(--op-space-2);
+    color: var(--op-imagecanvas-tools-fg, var(--op-color-fg));
+    background: var(--op-imagecanvas-tools-bg, var(--op-color-surface));
+    border: 0;
+    cursor: pointer;
+  }
+  .op-imagecanvas__tool:hover {
+    background: var(--op-color-primary-soft);
+  }
+  .op-imagecanvas__tool:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: calc(var(--op-focus-width) * -1);
+  }
+}

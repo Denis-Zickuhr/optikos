@@ -5,6 +5,7 @@ import { register, type AnyConfig } from '../../../core/registry';
 import { h } from '../../../core/dom';
 import { t, addMessages } from '../../../core/i18n';
 import { roving } from '../../../core/focus';
+import { allowed, permissionMode } from '../../../core/permission';
 import { iconEl } from '../../base/icon/icon';
 
 addMessages('en', {
@@ -40,6 +41,8 @@ export class Tabs extends Container<TabsConfig> {
 
   constructor(config: TabsConfig = {}) {
     super({ defaultType: 'container', ...config });
+    // a panel the user may not see is not a tab at all (a hidden panel would leave its header behind)
+    for (const p of this.items.filter((x) => !allowed(x.config.permission) && (x.config.permissionMode ?? permissionMode()) === 'hide')) this.remove(p);
   }
 
   override getBody() {

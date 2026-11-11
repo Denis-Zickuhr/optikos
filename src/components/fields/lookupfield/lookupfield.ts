@@ -6,7 +6,7 @@ import type { Model } from '../../../data/model';
 import type { Store } from '../../../data/store';
 import { iconEl } from '../../base/icon/icon';
 import { Window } from '../../overlays/window/window';
-import { SearchGrid, resolveLookup, lookupStore, type LookupDef } from '../../data/searchgrid/searchgrid';
+import { SearchGrid, resolveLookup, lookupStore, filterInfo, type LookupDef } from '../../data/searchgrid/searchgrid';
 
 addMessages('en', {
   lookupOpen: 'Open search',
@@ -47,8 +47,8 @@ export class LookupField<V = unknown> extends SuggestField<V> {
   /** Typing: filter a private store by the quick-search field and offer its page of records. */
   private async suggest(text: string) {
     const s = (this.suggestStore ??= lookupStore(this.def));
-    const name = this.def.queryField ?? this.def.filters?.[0]?.name ?? this.config.displayField!;
-    const field = this.def.filters?.find((f) => f.name === name)?.field ?? name;
+    const name = this.def.queryField ?? (this.def.filters?.[0] && filterInfo(this.def.filters[0]).name) ?? this.config.displayField!;
+    const field = this.def.filters?.map(filterInfo).find((f) => f.name === name)?.field ?? name;
     await s.filter({ field, op: 'contains', value: text });
     return s.getData();
   }
