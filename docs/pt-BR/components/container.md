@@ -1,7 +1,7 @@
 # Container  (type: 'container')
 Propósito:     Componente que tem filhos (`items`) e um layout; nó do Composite.
 Anatomia:      `<div class="op-container">`; filhos dentro de `getBody()` (= el). Layout aplicado por classe + custom properties.
-Config:        `items: (ComponentConfig|Component|string)[]`, `layout: 'fit'|'hbox'|'vbox'|'border'|'grid'|'card'|{type, ...}|Layout`, `defaults` (config mesclada em cada item),
+Config:        `items: (ComponentConfig|Component|string)[]`, `layout: 'fit'|'hbox'|'vbox'|'border'|'grid'|'card'|{type, ...}|Layout`, `defaults` (config mesclada em cada item), `narrowBelow` (px) é um atalho para a opção de mesmo nome do layout (as gavetas do `border`, `columns` numérico): `{ layout: 'border', narrowBelow: 700 }`.
                `defaultType` ('container'), `gap` (token), `activeItem` (card).
 API:           `add(item)`, `insert(i, item)`, `remove(itemOrId, destroy=true)`, `removeAll()`, `getItems()`, `get(id)`, `query(fn)`, `setLayout`, `setDisabled` (desce aos filhos).
 Eventos:       `add(child)`, `remove(child)`.

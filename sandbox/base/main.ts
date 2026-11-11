@@ -41,8 +41,10 @@ p.section('Icon', 'built-in set, color follows the text; custom icon through reg
   create<Icon>({ type: 'icon', name: 'success', style: 'font-size:2rem;color:var(--op-color-success)', renderTo: host });
 });
 
-p.section('Label', 'default, muted, title; associated to a field with `for`.', (host) => {
+p.section('Label', 'default, muted, title; associated to a field with `for`; `tag: h1` makes a heading, `src` / `icon` go before the text (a logo).', (host) => {
   for (const variant of ['default', 'muted', 'title'] as const) create<Label>({ type: 'label', text: `Label ${variant}`, variant, renderTo: host });
+  create<Label>({ type: 'label', tag: 'h1', variant: 'title', text: 'Sign in', icon: 'home', renderTo: host });
+  create<Label>({ type: 'label', tag: 'h2', text: 'With a logo', src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%232d6cdf'/%3E%3C/svg%3E", alt: '', renderTo: host });
 });
 
 p.section('Badge and Chip', 'badges in every tone (with a dot, an icon, a count); chips as filters (toggle, aria-pressed), removable tags (× or Delete) and disabled.', (host, { watch, log }) => {

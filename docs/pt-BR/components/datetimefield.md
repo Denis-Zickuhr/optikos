@@ -2,7 +2,7 @@
 Propósito:     Uma data e uma hora lado a lado, num só valor (início de evento, prazo, consulta).
 Anatomia:      `op-field op-datetimefield` > `op-datetimefield__parts` (role group) com um `DateField` e um `TimeField` (os rótulos próprios ficam ocultos; cada um se chama "Data" e "Hora").
 Valor:         `'YYYY-MM-DDTHH:mm'` (local) ou `null`. Com `utc: true` o valor é o instante ISO (`'2026-11-10T17:30:00.000Z'`) do que o usuário digitou no seu fuso, e volta a ser mostrado em hora local. Uma parte sem a outra ainda não é valor: `null`, e erro na validação.
-Config:        (Field) + `min`, `max` (datas, `YYYY-MM-DD`), `step` (minutos movidos por ↑/↓ na parte da hora), `utc`.
+Config:        (Field) + `min`, `max` (datas, `YYYY-MM-DD`), `step` (minutos movidos por ↑/↓ na parte da hora), `utc`. `defaultTime: 'HH:mm'`: usado (e mostrado) quando só a data foi preenchida, ex.: `'23:59'` para uma data final.
 API:           (Field) + `setMin`, `setMax`.
 Eventos:       `change(value, old)` quando as duas partes estão preenchidas ou uma é limpa.
 Estados:       Os do Field; desabilitado e somente leitura chegam às duas partes.

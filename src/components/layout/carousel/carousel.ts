@@ -23,6 +23,12 @@ export interface CarouselConfig extends ContainerConfig {
   /** Default `true`. */
   arrows?: boolean;
   active?: number;
+  /** `slide` (default) scrolls the row; `fade` stacks the items and cross-fades them (one at a time, no swipe). */
+  transition?: 'slide' | 'fade';
+  /** Puts the dots, the play button and the caption over the bottom of the content, on a scrim. */
+  overlay?: boolean;
+  /** One caption per item, shown for the active one. */
+  captions?: string[];
 }
 
 /** Pages through its items on a scroll-snap row: images, cards or any component. */
@@ -33,13 +39,14 @@ export class Carousel extends Container<CarouselConfig> {
   private nextBtn!: HTMLButtonElement;
   private dotsEl!: HTMLElement;
   private toggleBtn!: HTMLButtonElement;
+  private captionEl!: HTMLElement;
   private index = 0;
   private stopped = false;
   private scrollTimer?: ReturnType<typeof setTimeout>;
   private playTimer?: ReturnType<typeof setInterval>;
 
   private get perView() {
-    return Math.max(1, this.config.perView ?? 1);
+    return this.config.transition === 'fade' ? 1 : Math.max(1, this.config.perView ?? 1);
   }
   /** Positions the row can rest on: it moves one item at a time. */
   private get last() {
@@ -60,9 +67,10 @@ export class Carousel extends Container<CarouselConfig> {
     this.toggleBtn = btn('toggle', 'pause', 'carouselPause', () => (this.isPlaying() ? this.pause() : this.play()));
     this.track = h('div', 'op-carousel__track', { tabindex: 0 });
     this.dotsEl = h('div', 'op-carousel__dots');
+    this.captionEl = h('div', 'op-carousel__caption');
     return h('div', this.baseCls, { role: 'region', 'aria-roledescription': 'carousel' },
       h('div', 'op-carousel__viewport', {}, this.track, this.prevBtn, this.nextBtn),
-      h('div', 'op-carousel__bar', {}, this.dotsEl, this.toggleBtn));
+      h('div', 'op-carousel__footer', {}, this.captionEl, h('div', 'op-carousel__bar', {}, this.dotsEl, this.toggleBtn)));
   }
 
   override getBody(): HTMLElement {
@@ -73,6 +81,8 @@ export class Carousel extends Container<CarouselConfig> {
     const c = this.config;
     this.el.setAttribute('aria-label', c.ariaLabel ?? t('carousel'));
     this.track.setAttribute('aria-label', c.ariaLabel ?? t('carousel'));
+    this.el.classList.toggle('op-carousel--fade', c.transition === 'fade');
+    this.el.classList.toggle('op-carousel--overlay', !!c.overlay);
     this.el.style.setProperty('--op-carousel-per-view', String(this.perView));
     if (c.gap != null) this.el.style.setProperty('--op-carousel-gap', px(c.gap));
     super.onRender();
@@ -120,6 +130,7 @@ export class Carousel extends Container<CarouselConfig> {
   }
 
   private align(smooth: boolean) {
+    if (this.config.transition === 'fade') return;
     const sign = getComputedStyle(this.track).direction === 'rtl' ? -1 : 1;
     this.track.style.scrollBehavior = smooth ? '' : 'auto';
     this.track.scrollLeft = sign * this.index * this.stride();
@@ -143,7 +154,11 @@ export class Carousel extends Container<CarouselConfig> {
       c.el.setAttribute('aria-roledescription', 'slide');
       c.el.setAttribute('aria-label', t('carouselSlide', { n: i + 1, total: n }));
       c.el.toggleAttribute('inert', i < this.index || i >= this.index + this.perView);
+      c.el.classList.toggle('is-active', i === this.index);
     });
+    const caption = this.config.captions?.[this.index] ?? '';
+    this.captionEl.textContent = caption;
+    this.captionEl.hidden = !caption;
     const paged = n > this.perView;
     const dots = this.config.dots !== false && paged;
     this.dotsEl.hidden = !dots;
@@ -171,6 +186,11 @@ export class Carousel extends Container<CarouselConfig> {
     this.toggleBtn.replaceChildren(iconEl(playing ? 'pause' : 'play'));
     this.toggleBtn.setAttribute('aria-label', t(playing ? 'carouselPause' : 'carouselPlay'));
     this.track.setAttribute('aria-live', playing ? 'off' : 'polite');
+  }
+
+  setCaptions(captions: string[]): void {
+    this.config.captions = captions;
+    if (this.rendered) this.refresh();
   }
 
   getActive(): number {

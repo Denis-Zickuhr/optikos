@@ -1,4 +1,7 @@
 @layer optikos {
+  :root {
+    --op-label-image-size: 1.5em;
+  }
   .op-label {
     color: var(--op-label-fg, var(--op-color-fg));
   }
@@ -8,5 +11,16 @@
   .op-label--title {
     font-size: var(--op-label-title-size, var(--op-font-size-lg));
     font-weight: var(--op-label-title-weight, var(--op-font-weight-bold));
+  }
+  .op-label--media {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--op-space-2);
+  }
+  .op-label__image {
+    block-size: var(--op-label-image-size);
+    inline-size: auto;
+    max-inline-size: 100%;
+    object-fit: contain;
   }
 }

@@ -1,0 +1,60 @@
+@layer optikos {
+  :root {
+    --op-alert-accent: 0.25rem;
+    --op-alert-icon-offset: 0.125em;
+  }
+  .op-alert {
+    --_tone: var(--op-color-info);
+    --_soft: var(--op-color-info-soft);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--op-space-3);
+    padding: var(--op-space-3) var(--op-space-4);
+    color: var(--op-alert-fg, var(--op-color-fg));
+    background: var(--op-alert-bg, var(--_soft));
+    border: var(--op-border-width) solid var(--_tone);
+    border-inline-start-width: var(--op-alert-accent);
+    border-radius: var(--op-alert-radius, var(--op-radius));
+    font-family: var(--op-font-family);
+    min-inline-size: 0;
+  }
+  .op-alert--success { --_tone: var(--op-color-success); --_soft: var(--op-color-success-soft); }
+  .op-alert--warning { --_tone: var(--op-color-warning); --_soft: var(--op-color-warning-soft); }
+  .op-alert--danger { --_tone: var(--op-color-danger); --_soft: var(--op-color-danger-soft); }
+  .op-alert[hidden] {
+    display: none;
+  }
+  .op-alert__icon {
+    display: inline-flex;
+    flex: none;
+    margin-block-start: var(--op-alert-icon-offset);
+    color: var(--_tone);
+  }
+  .op-alert__body {
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .op-alert__title {
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-alert__text {
+    overflow-wrap: anywhere;
+  }
+  .op-alert__close {
+    display: inline-flex;
+    flex: none;
+    padding: var(--op-space-1);
+    color: inherit;
+    background: none;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    cursor: pointer;
+  }
+  .op-alert__close:hover {
+    background: color-mix(in srgb, var(--_tone) 15%, transparent);
+  }
+  .op-alert__close:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+}

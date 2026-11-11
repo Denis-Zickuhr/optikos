@@ -19,5 +19,5 @@ Out of scope:  what we will not do
 ```
 
 Conventions that apply to every sheet (do not repeat them): the common `Component` config (`id`, `cls`, `style`,
-`hidden`, `width`, `height`, `flex`, `tooltip`, `theme`, `permission`, `permissionMode`, `loading`, `stableSize`, `listeners`, `renderTo`), the common
+`hidden`, `width`, `height`, `flex`, `tooltip`, `theme` (tokens, or a string such as `'dark tenant-dark'` for scoped themes), `permission`, `permissionMode`, `loading`, `stableSize`, `listeners`, `renderTo`), the common
 methods (`show/hide`, `setDisabled`, `focus`, `destroy`, `on/off/once/emit`) and the `destroy` event.

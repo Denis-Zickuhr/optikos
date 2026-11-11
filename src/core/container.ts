@@ -15,6 +15,8 @@ export interface TabPanelConfig {
 export interface ContainerConfig extends ComponentConfig, TabPanelConfig {
   items?: Array<AnyConfig | Component | string>;
   layout?: LayoutSpec;
+  /** Shortcut for the layout option of the same name: under this width (px) a `border` layout turns its west/east regions into drawers and numeric `columns` collapse to one. */
+  narrowBelow?: number;
   /** Config merged into every item that does not set the key itself. */
   defaults?: Record<string, unknown>;
   /** `type` used by items that do not declare one. */
@@ -52,7 +54,9 @@ export class Container<C extends ContainerConfig = ContainerConfig> extends Comp
   }
 
   protected override onRender(): void {
-    const spec = this.config.layout ?? this.defaultLayout;
+    let spec = this.config.layout ?? this.defaultLayout;
+    const nb = this.config.narrowBelow;
+    if (spec && nb != null) spec = typeof spec === 'string' ? { type: spec, narrowBelow: nb } : 'type' in spec && typeof spec.type === 'string' && !('init' in spec) ? { narrowBelow: nb, ...spec } : spec;
     if (spec) (this.layout = createLayout(spec)).init(this);
     this.items.forEach((c, i) => this.attach(c, i));
   }

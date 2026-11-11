@@ -1,0 +1,13 @@
+@layer optikos {
+  :root {
+    --op-quicksearch-width: 14rem;
+  }
+  .op-quicksearch__group {
+    display: flex;
+    flex: none;
+    padding-inline: var(--op-space-2);
+  }
+  .op-quicksearch {
+    inline-size: var(--op-quicksearch-width);
+  }
+}

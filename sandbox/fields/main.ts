@@ -168,12 +168,14 @@ p.section('ImageField · in a Form', 'required: the form does not validate witho
 
 p.section('DateTimeField', 'a date and a time in one value: local `YYYY-MM-DDTHH:mm`, or with utc an ISO instant of what was typed. One part alone is invalid.', (host, { watch }) => {
   watch(c<DateTimeField>({ type: 'datetimefield', label: 'Starts at (local)', value: '2026-11-10T19:30', renderTo: host }), ['change']);
+  watch(c<DateTimeField>({ type: 'datetimefield', label: 'Ends at (defaultTime 23:59: pick only the date)', defaultTime: '23:59', renderTo: host }), ['change']);
   watch(c<DateTimeField>({ type: 'datetimefield', label: 'Deadline (utc)', utc: true, min: '2026-11-01', renderTo: host }), ['change']);
 });
 
 p.section('MaskField', 'type 12345678900 → 123.456.789-00; a list of patterns picks one by length (tax id, then company id); raw keeps only the digits; the check digit is the app\'s validator.', (host, { watch }) => {
   watch(c<MaskField>({ type: 'maskfield', label: 'CPF / CNPJ (raw)', mask: ['000.000.000-00', '00.000.000/0000-00'], raw: true, width: 260, renderTo: host }), ['change']);
   c({ type: 'maskfield', label: 'Plate', mask: 'AAA-0A00', width: 160, renderTo: host });
+  watch(c<MaskField>({ type: 'maskfield', label: 'CPF already saved (stored)', mask: '000.000.000-00', raw: true, stored: '***.***.***-12', required: true, width: 260, help: 'Click or Enter to replace; Esc on the empty field keeps it. getValue() is null until replaced.', renderTo: host }), ['change']);
   c({ type: 'maskfield', label: 'Not all equal digits', mask: '000.000.000-00', width: 200, validators: [(v: string) => (/^(\d)\1+$/.test(v.replace(/\D/g, '')) ? 'Invalid number' : true)], renderTo: host });
 });
 

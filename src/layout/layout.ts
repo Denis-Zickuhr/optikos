@@ -19,7 +19,8 @@ export interface Layout {
   setNarrow?(narrow: boolean): void;
 }
 
-export type LayoutConfig = { type: string; [option: string]: unknown };
+/** `type` plus that layout's options; the common ones are typed for the editor. */
+export type LayoutConfig = { type: string; narrowBelow?: number; gap?: number | string; columns?: number | string; open?: 'west' | 'east'; [option: string]: unknown };
 export type LayoutSpec = string | LayoutConfig | Layout;
 export type LayoutFactory = (config: Record<string, any>) => Layout;
 

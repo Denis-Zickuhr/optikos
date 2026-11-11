@@ -64,6 +64,20 @@
     opacity: 0.4;
     cursor: default;
   }
+  .op-carousel__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--op-space-1);
+  }
+  .op-carousel__footer:not(:has(:not([hidden]))) {
+    display: none;
+  }
+  .op-carousel__caption {
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    text-align: center;
+  }
   .op-carousel__bar {
     display: flex;
     align-items: center;
@@ -72,6 +86,49 @@
   }
   .op-carousel__bar:not(:has(:not([hidden]))) {
     display: none;
+  }
+  .op-carousel--fade .op-carousel__track {
+    display: grid;
+    overflow: hidden;
+    scroll-snap-type: none;
+  }
+  .op-carousel--fade .op-carousel__track > * {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--op-carousel-fade, 600ms) var(--op-easing), visibility 0s linear var(--op-carousel-fade, 600ms);
+  }
+  .op-carousel--fade .op-carousel__track > .is-active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--op-carousel-fade, 600ms) var(--op-easing);
+  }
+  .op-carousel--overlay {
+    position: relative;
+  }
+  .op-carousel--overlay .op-carousel__footer {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    padding: var(--op-space-6) var(--op-space-3) var(--op-space-3);
+    color: var(--op-carousel-overlay-fg, var(--op-color-surface));
+    background: linear-gradient(transparent, var(--op-carousel-scrim, color-mix(in srgb, var(--op-color-fg) 65%, transparent)));
+    border-end-start-radius: var(--op-carousel-radius, var(--op-radius));
+    border-end-end-radius: var(--op-carousel-radius, var(--op-radius));
+    pointer-events: none;
+  }
+  .op-carousel--overlay .op-carousel__footer > * {
+    pointer-events: auto;
+  }
+  .op-carousel--overlay .op-carousel__caption,
+  .op-carousel--overlay .op-carousel__toggle {
+    color: inherit;
+  }
+  .op-carousel--overlay .op-carousel__dot {
+    background: color-mix(in srgb, currentColor 45%, transparent);
+  }
+  .op-carousel--overlay .op-carousel__dot[aria-current] {
+    background: currentColor;
   }
   .op-carousel__dots {
     display: flex;
@@ -114,6 +171,9 @@
   @media (prefers-reduced-motion: reduce) {
     .op-carousel__track {
       scroll-behavior: auto;
+    }
+    .op-carousel--fade .op-carousel__track > * {
+      transition: none;
     }
   }
 }

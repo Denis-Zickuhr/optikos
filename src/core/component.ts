@@ -21,8 +21,11 @@ export interface ComponentConfig {
   /** A permission name: without it (per `setPermissionResolver`) the component is hidden, or disabled with `permissionMode: 'disable'`. */
   permission?: string;
   permissionMode?: 'hide' | 'disable';
-  /** Component-scoped tokens: `{ radius: '0' }` on a button sets `--op-button-radius`. Keys starting with `--` are used as is. */
-  theme?: Record<string, string | number>;
+  /**
+   * Component-scoped tokens: `{ radius: '0' }` on a button sets `--op-button-radius` (keys starting with `--` are used as is).
+   * A string names themes for this component and everything inside it: `'dark'`, `'dark tenant-dark'` (the `data-op-theme` attribute).
+   */
+  theme?: string | Record<string, string | number>;
   /**
    * Default `true`: the component keeps its size when only its *state* changes (loading, searching, invalid).
    * The CSS reserves room for the state's extra content instead of growing. `false` lets it fit the content.
@@ -228,7 +231,8 @@ export class Component<C extends ComponentConfig = ComponentConfig> extends Emit
     else delete this.el.dataset.opTip;
   }
 
-  setTheme(theme: Record<string, string | number>): void {
+  setTheme(theme: string | Record<string, string | number>): void {
+    if (typeof theme === 'string') return void (theme ? this.el.setAttribute('data-op-theme', theme) : this.el.removeAttribute('data-op-theme'));
     const prefix = '--' + this.baseCls + '-';
     for (const k in theme) this.el.style.setProperty(k.startsWith('--') ? k : prefix + kebab(k), String(theme[k]));
   }

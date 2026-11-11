@@ -16,6 +16,8 @@ export interface DateTimeFieldConfig extends FieldConfig<string | null> {
   step?: number;
   /** The value is the ISO instant (`2026-11-10T17:30:00.000Z`) of what the user typed, in their time zone. Default: the local `YYYY-MM-DDTHH:mm`. */
   utc?: boolean;
+  /** `HH:mm` used (and shown) when only the date is filled in, e.g. `'23:59'` for an end date. */
+  defaultTime?: string;
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -46,7 +48,8 @@ export class DateTimeField extends Field<string | null, DateTimeFieldConfig> {
   /** Both parts → the value. One part alone is not a value yet (`check` says so). */
   private compose() {
     const d = this.date.getValue();
-    const tm = this.time.getValue();
+    let tm = this.time.getValue();
+    if (d && !tm && this.config.defaultTime) this.time.setValue((tm = this.config.defaultTime), true);
     let v: string | null = null;
     if (d && tm) v = this.config.utc ? new Date(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8), +tm.slice(0, 2), +tm.slice(3)).toISOString() : `${d}T${tm}`;
     this.commit(v);

@@ -61,4 +61,18 @@
     inset-inline-end: var(--op-space-4);
     inline-size: var(--op-stat-spark-width);
   }
+  .op-stat.is-interactive {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background var(--op-duration) var(--op-easing), border-color var(--op-duration) var(--op-easing);
+  }
+  .op-stat.is-interactive:hover {
+    background: var(--op-stat-hover-bg, var(--op-color-hover));
+    border-color: var(--op-color-border-strong);
+  }
+  .op-stat.is-interactive:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
 }

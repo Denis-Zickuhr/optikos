@@ -1,7 +1,13 @@
-import { create, Panel, Spinner, Grid } from 'optikos';
+import { create, Panel, Spinner, Grid, Alert } from 'optikos';
 import { page } from '../../dev/kit';
 
 const p = page('feedback');
+
+p.section('Alert', 'four tones: danger and warning are role=alert (read at once), info and success are status; with a title, closable, an icon of your own, and as an empty state.', (host, { watch }) => {
+  for (const tone of ['info', 'success', 'warning', 'danger'] as const) create<Alert>({ type: 'alert', tone, title: tone === 'danger' ? 'Sign-in failed' : undefined, text: `A ${tone} message in the page.`, width: 420, renderTo: host });
+  watch(create<Alert>({ type: 'alert', tone: 'info', text: 'Closable: the button hides it.', closable: true, width: 420, renderTo: host }), ['close']);
+  create<Alert>({ type: 'alert', icon: 'calendar', text: 'No events ahead.', width: 420, renderTo: host });
+});
 
 p.section('Spinner', 'indeterminate indicator; size comes from --op-spinner-size.', (host) => {
   create<Spinner>({ type: 'spinner', renderTo: host });

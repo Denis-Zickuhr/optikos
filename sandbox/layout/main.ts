@@ -51,6 +51,10 @@ p.section('Carousel · images', 'arrows, dots, ← → Home End on the controls,
   watch(create({ type: 'carousel', width: 480, renderTo: host, ariaLabel: 'Pictures', items: [1, 2, 3, 4].map(slide) } as never), ['change']);
 });
 
+p.section('Carousel · fade, captions over the content', 'transition: fade (cross-fade, one at a time), overlay: dots, play and caption over the content, autoplay 6 s with loop.', (host, { watch }) => {
+  watch(create({ type: 'carousel', transition: 'fade', overlay: true, autoplay: 6000, loop: true, width: 480, captions: ['Plan the night', 'Sell the tickets', 'Count the votes'], renderTo: host, items: [1, 2, 3].map(slide) } as never), ['change']);
+});
+
 p.section('Carousel · cards', 'perView 3 with a gap: it moves one card at a time; loop wraps around.', (host) => {
   create({ type: 'carousel', perView: 3, gap: 12, loop: true, renderTo: host, items: [1, 2, 3, 4, 5, 6].map(card) } as never);
 });

@@ -23,6 +23,10 @@ export interface StatConfig extends ComponentConfig {
   icon?: string;
   /** Numbers for a sparkline beside the value. */
   trend?: number[];
+  /** Makes the tile a link. */
+  href?: string;
+  /** Makes the tile a button (focusable, Enter/Space): drill down, open a detail. */
+  handler?: (stat: Stat, ev: Event) => void;
 }
 
 /** A KPI tile: a label, a big value, the change since last time and an optional sparkline. */
@@ -39,7 +43,9 @@ export class Stat extends Component<StatConfig> {
     this.valueEl = h('div', 'op-stat__value');
     this.deltaEl = h('span', 'op-stat__delta');
     this.captionEl = h('span', 'op-stat__caption');
-    return h('div', this.baseCls, {}, this.labelEl, h('div', 'op-stat__row', {}, this.valueEl, this.deltaEl), this.captionEl);
+    const { href, handler } = this.config;
+    const el = h(href ? 'a' : 'div', this.baseCls + (href || handler ? ' is-interactive' : ''), href ? { href } : handler ? { role: 'button', tabindex: 0 } : {}, this.labelEl, h('div', 'op-stat__row', {}, this.valueEl, this.deltaEl), this.captionEl);
+    return el;
   }
 
   protected override onRender() {
@@ -49,17 +55,34 @@ export class Stat extends Component<StatConfig> {
     this.setDelta(c.delta);
     this.setCaption(c.caption ?? '');
     this.setTrend(c.trend);
+    if (c.handler) {
+      this.listen(this.el, 'click', (e: Event) => c.handler!(this, e));
+      this.listen(this.el, 'keydown', (e: KeyboardEvent) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        c.handler!(this, e);
+      });
+    }
   }
 
   setLabel(label: string) {
     this.config.label = label;
     if (!this.rendered) return;
     this.labelEl.replaceChildren(...(this.config.icon ? [iconEl(this.config.icon)] : []), label);
+    this.name();
+  }
+
+  /** An interactive tile reads as one sentence: "Open orders: 12". */
+  private name() {
+    const c = this.config;
+    if ((c.href || c.handler) && !c.ariaLabel) this.el.setAttribute('aria-label', `${c.label}: ${this.valueEl.textContent}`);
   }
 
   setValue(value: number | string | null) {
     this.config.value = value;
-    if (this.rendered) this.valueEl.textContent = value == null ? '—' : typeof value === 'number' ? format(this.config.format ?? 'number', value) : value;
+    if (!this.rendered) return;
+    this.valueEl.textContent = value == null ? '—' : typeof value === 'number' ? format(this.config.format ?? 'number', value) : value;
+    this.name();
   }
 
   setDelta(delta: number | undefined) {

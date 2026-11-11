@@ -137,6 +137,10 @@
      }
     ]
    }
+  },
+  {
+   "title": { "en": "Heading with a logo", "pt-BR": "Título com logo" },
+   "config": { "type": "label", "tag": "h1", "variant": "title", "text": "Sign in", "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%2214%22%20fill%3D%22%232d6cdf%22/%3E%3C/svg%3E", "alt": "" }
   }
  ],
  "spacer": [
@@ -2528,6 +2532,23 @@
      }
     ]
    }
+  },
+  {
+   "title": { "en": "Fade with captions over the content", "pt-BR": "Fade com legendas sobre o conteúdo" },
+   "config": {
+    "type": "carousel",
+    "width": 420,
+    "transition": "fade",
+    "overlay": true,
+    "autoplay": 6000,
+    "loop": true,
+    "captions": ["Plan the night", "Sell the tickets", "Count the votes"],
+    "items": [
+     { "type": "container", "cls": "demo-slide", "style": {"display":"grid","place-items":"center","min-height":"180px","background":"hsl(210 55% 45%)","color":"white","font-size":"2rem"}, "items": [{ "type": "label", "text": "One" }] },
+     { "type": "container", "cls": "demo-slide", "style": {"display":"grid","place-items":"center","min-height":"180px","background":"hsl(30 55% 45%)","color":"white","font-size":"2rem"}, "items": [{ "type": "label", "text": "Two" }] },
+     { "type": "container", "cls": "demo-slide", "style": {"display":"grid","place-items":"center","min-height":"180px","background":"hsl(140 55% 45%)","color":"white","font-size":"2rem"}, "items": [{ "type": "label", "text": "Three" }] }
+    ]
+   }
   }
  ],
  "chart": [
@@ -2744,6 +2765,10 @@
      }
     ]
    }
+  },
+  {
+   "title": { "en": "A tile that opens something", "pt-BR": "Um bloco que abre algo" },
+   "config": { "type": "stat", "label": "Open orders", "value": 12, "delta": 0.125, "caption": "vs last week", "href": "#orders" }
   }
  ],
  "avatar": [
@@ -2927,6 +2952,10 @@
      }
     ]
    }
+  },
+  {
+   "title": { "en": "End date: the time defaults to 23:59", "pt-BR": "Data final: a hora padrão é 23:59" },
+   "config": { "type": "datetimefield", "name": "ends", "label": "Ends at", "defaultTime": "23:59", "width": 320 }
   }
  ],
  "maskfield": [
@@ -2970,6 +2999,10 @@
     "pt-BR": "A máscara formata; o que é válido é do app: qualquer função entra em `validators`."
    },
    "code": "const checkDigit = (v) => (v.length === 11 && luhn(v) ? true : 'Invalid number');\ncreate({ type: 'maskfield', label: 'Card', mask: '0000 0000 0000 0000', raw: true, validators: [checkDigit], renderTo: host });"
+  },
+  {
+   "title": { "en": "A saved tax id, shown masked", "pt-BR": "Um CPF salvo, mostrado mascarado" },
+   "config": { "type": "maskfield", "name": "cpf", "label": "CPF", "mask": "000.000.000-00", "raw": true, "stored": "***.***.***-12", "width": 260 }
   }
  ],
  "columntotals": [
@@ -3018,6 +3051,53 @@
     ],
     "plugins": [
      { "$plugin": "exportBar", "filename": "candidates", "title": "Candidates" }
+    ]
+   }
+  }
+ ],
+ "alert": [
+  {
+   "title": { "en": "The four tones", "pt-BR": "Os quatro tons" },
+   "config": {
+    "type": "container",
+    "layout": "vbox",
+    "gap": 8,
+    "width": 420,
+    "items": [
+     { "type": "alert", "tone": "info", "title": "Heads up", "text": "Voting closes on Friday." },
+     { "type": "alert", "tone": "success", "text": "Your changes were saved." },
+     { "type": "alert", "tone": "warning", "title": "Almost full", "text": "Only 12 tickets left." },
+     { "type": "alert", "tone": "danger", "title": "Sign-in failed", "text": "Wrong email or password.", "closable": true }
+    ]
+   }
+  },
+  {
+   "title": { "en": "As an empty state", "pt-BR": "Como estado vazio" },
+   "config": { "type": "alert", "tone": "info", "icon": "calendar", "text": "No events ahead.", "width": 360 }
+  }
+ ],
+ "quicksearch": [
+  {
+   "title": { "en": "Search inside the grid", "pt-BR": "Busca dentro da grid" },
+   "config": {
+    "type": "grid",
+    "height": 300,
+    "paging": true,
+    "pageSize": 4,
+    "data": [
+     { "id": 1, "name": "Ana", "city": "Rio" },
+     { "id": 2, "name": "Bia", "city": "Sao Paulo" },
+     { "id": 3, "name": "Rita", "city": "Recife" },
+     { "id": 4, "name": "Caio", "city": "Rio" },
+     { "id": 5, "name": "Dora", "city": "Natal" }
+    ],
+    "columns": [
+     { "field": "name", "header": "Name", "sortable": true },
+     { "field": "city", "header": "City", "sortable": true }
+    ],
+    "plugins": [
+     { "$plugin": "quickSearch", "fields": ["name", "city"] },
+     { "$plugin": "exportBar" }
     ]
    }
   }

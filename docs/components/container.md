@@ -1,7 +1,7 @@
 # Container  (type: 'container')
 Purpose:       A component with children (`items`) and a layout; the node of the composite tree.
 Anatomy:       `<div class="op-container">`; children inside `getBody()` (= el). The layout is applied with a class and custom properties.
-Config:        `items: (ComponentConfig|Component|string)[]`, `layout: 'fit'|'hbox'|'vbox'|'border'|'grid'|'card'|{type, ...}|Layout`, `defaults` (config merged into every item),
+Config:        `items: (ComponentConfig|Component|string)[]`, `layout: 'fit'|'hbox'|'vbox'|'border'|'grid'|'card'|{type, ...}|Layout`, `defaults` (config merged into every item), `narrowBelow` (px) is a shortcut for the layout option of the same name (a `border` layout's drawers, numeric `columns`): `{ layout: 'border', narrowBelow: 700 }`.
                `defaultType` ('container'), `gap` (token), `activeItem` (card).
 API:           `add(item)`, `insert(i, item)`, `remove(itemOrId, destroy=true)`, `removeAll()`, `getItems()`, `get(id)`, `query(fn)`, `setLayout`, `setDisabled` (cascades to the children).
 Events:        `add(child)`, `remove(child)`.

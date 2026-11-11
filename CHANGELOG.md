@@ -5,6 +5,25 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-11-11
+
+### Added
+
+- Alert (`alert`): a message in the page with `tone`, `title`, `text`, an icon by tone, `closable` and `role=alert` for warning and danger.
+- Carousel `transition: 'fade'`, `overlay` (dots, play button and caption over the content) and `captions`.
+- Label `tag` (`h1`…`h6`, `p`, `div`), `icon` and `src` / `alt` (a logo before the text).
+- Stat `href` and `handler`: the tile becomes a link or a button (focusable, hover, named "label: value").
+- NavMenu `railWidth`: the parent container takes it while collapsed and gives its width back on expand.
+- `quickSearch()` (a Grid plugin): a search box in the grid's footer row, over several fields, combined with other filters.
+- MaskField `stored`: a value held by the app but shown masked (`***.***.***-12`) is read-only, `null` until replaced.
+- DateTimeField `defaultTime` (`'23:59'` for an end date).
+- `theme` also takes a string (`'dark tenant-dark'`) on any component: it sets `data-op-theme` on it.
+- Container `narrowBelow` shortcut, and typed common layout options (`narrowBelow`, `gap`, `columns`, `open`).
+
+### Changed
+
+- `MaskField` is typed `string | null` (its `getValue()` is `null` while a `stored` value is untouched), like `SecretField`.
+
 ## [0.5.0] - 2026-11-11
 
 ### Added

@@ -1,6 +1,6 @@
 import { Component, type ComponentConfig } from '../../../core/component';
 import { register } from '../../../core/registry';
-import { h } from '../../../core/dom';
+import { h, px } from '../../../core/dom';
 import { gate } from '../../../core/permission';
 import { iconEl } from '../../base/icon/icon';
 import { Menu, type MenuEntry } from '../../overlays/menu/menu';
@@ -26,6 +26,8 @@ export interface NavMenuConfig extends ComponentConfig {
   active?: string;
   /** Rail: icons only. */
   collapsed?: boolean;
+  /** Width (px or CSS) the parent container takes while collapsed, and gives back on expand: the sidebar follows the rail. */
+  railWidth?: number | string;
   /** Opening a group closes the others at its level. */
   accordion?: boolean;
 }
@@ -44,6 +46,7 @@ export class NavMenu extends Component<NavMenuConfig> {
   private flyout?: Menu;
   private flyoutOf?: string;
   private hoverTimer?: () => void;
+  private parentWidth?: string;
 
   protected override onRender() {
     const c = this.config;
@@ -54,6 +57,7 @@ export class NavMenu extends Component<NavMenuConfig> {
     if (this.active) this.openParents(this.active);
     this.root = h('ul', 'op-navmenu__tree', { role: 'tree', 'aria-label': c.ariaLabel ?? null });
     this.el.append(this.root);
+    this.fit();
     this.listen(this.root, 'click', (e: Event) => {
       const row = (e.target as HTMLElement).closest<HTMLElement>('.op-navmenu__item');
       if (row) this.activate(row.dataset.id!);
@@ -247,7 +251,20 @@ export class NavMenu extends Component<NavMenuConfig> {
   setCollapsed(collapsed: boolean) {
     this.config.collapsed = collapsed;
     if (!collapsed) this.flyout?.hide();
-    if (this.rendered) this.paint();
+    if (this.rendered) (this.fit(), this.paint());
+  }
+
+  private fit() {
+    const box = this.parent?.el;
+    const rail = this.config.railWidth;
+    if (!box || rail == null) return;
+    if (this.config.collapsed) {
+      this.parentWidth ??= box.style.inlineSize;
+      box.style.inlineSize = px(rail);
+    } else if (this.parentWidth !== undefined) {
+      box.style.inlineSize = this.parentWidth;
+      this.parentWidth = undefined;
+    }
   }
   /** Hides what does not match and opens the groups that have a match; empty text clears the filter. */
   filter(text: string) {

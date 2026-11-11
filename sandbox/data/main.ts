@@ -1,5 +1,5 @@
 import { buildGrid, buildForm, buildFilterFields, type FieldSpec } from 'optikos/build';
-import { create, grouping, timeEntry, columnTotals, exportBar, rowEditing, treeGrid, flattenTree, exportGrid, printGrid, persistState, setStateStorage, Stat, Timeline, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, type Form, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
+import { create, grouping, timeEntry, columnTotals, exportBar, quickSearch, rowEditing, treeGrid, flattenTree, exportGrid, printGrid, persistState, setStateStorage, Stat, Timeline, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, type Form, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
 import { viewModel, bindVM, bindForm } from 'optikos/bind';
 import { page } from '../../dev/kit';
 
@@ -252,6 +252,11 @@ p.section('Chart · live Store + KPI tiles', 'one store feeds a grid, a chart an
   log('patching every 1.5 s');
 });
 
+p.section('Stat · clickable', 'a handler (or href) makes the tile a button: Tab to it, Enter or Space opens; it is named "label: value".', (host, { log }) => {
+  create<Stat>({ type: 'stat', label: 'Open orders', value: 12, delta: 0.125, caption: 'vs last week', width: 220, handler: (s: Stat) => log('open', s.config.label), renderTo: host });
+  create<Stat>({ type: 'stat', label: 'Late invoices', value: 3, delta: 0.5, good: 'down', width: 220, href: '#invoices', renderTo: host });
+});
+
 p.section('Timeline · log and schedule', 'list mode (an event log) and range mode (phases and shifts on a time axis, lanes in order). Click or Enter on an item fires select.', (host, { watch }) => {
   watch(create<Timeline>({ type: 'timeline', width: 340, renderTo: host, items: [{ time: '2026-11-10T09:00', title: 'Voting opened', tone: 'success' }, { time: '2026-11-10T12:30', title: 'Sponsor added', text: 'Logo uploaded', icon: 'image' }, { time: '2026-11-10T16:00', title: 'Refund requested', tone: 'warning' }] }), ['select']);
   create({ type: 'timeline', mode: 'range', lanes: ['Stage', 'Backstage', 'Security'], width: '100%', renderTo: host, items: [
@@ -332,7 +337,7 @@ p.section('Grid · column totals', 'the ⋯ button on a header opens the totals:
 
 p.section('Grid · export, print, saved layout', 'the icons next to the pager (exportBar plugin) and, below, the same actions from your own buttons: CSV / Excel / Print of the visible columns, sort and filters (every page); the layout (widths, order, sort, page) is saved per user — resize a column and reload the page.', (host) => {
   setStateStorage(undefined);
-  const g = create<Grid>({ type: 'grid', store: new Store({ data: make(250), pageSize: 25 }), columns, paging: true, resizableColumns: true, reorderableColumns: true, plugins: [persistState('sandbox-data-grid'), exportBar({ filename: 'rows', title: 'Rows' })], height: 360, width: '100%', renderTo: host });
+  const g = create<Grid>({ type: 'grid', store: new Store({ data: make(250), pageSize: 25 }), columns, paging: true, resizableColumns: true, reorderableColumns: true, plugins: [persistState('sandbox-data-grid'), quickSearch({ fields: ['name'] }), exportBar({ filename: 'rows', title: 'Rows' })], height: 360, width: '100%', renderTo: host });
   create({ type: 'button', text: 'CSV', renderTo: host, handler: () => void exportGrid(g, { filename: 'rows' }) });
   create({ type: 'button', text: 'Excel', renderTo: host, handler: () => void exportGrid(g, { format: 'xlsx', filename: 'rows' }) });
   create({ type: 'button', text: 'This page only', renderTo: host, handler: () => void exportGrid(g, { scope: 'page', filename: 'page' }) });
