@@ -1,5 +1,5 @@
 import { buildGrid, buildForm, buildFilterFields, type FieldSpec } from 'optikos/build';
-import { create, grouping, timeEntry, rowEditing, treeGrid, flattenTree, exportGrid, printGrid, persistState, setStateStorage, Stat, Timeline, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, type Form, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
+import { create, grouping, timeEntry, columnTotals, exportBar, rowEditing, treeGrid, flattenTree, exportGrid, printGrid, persistState, setStateStorage, Stat, Timeline, cellEditing, Tree, Grid, Table, Pagination, Store, RestProxy, FilterBuilder, type Form, SearchGrid, DataView, registerLookup, toast, localViewStorage, restViewStorage, type Model } from 'optikos';
 import { viewModel, bindVM, bindForm } from 'optikos/bind';
 import { page } from '../../dev/kit';
 
@@ -260,13 +260,37 @@ p.section('Timeline · log and schedule', 'list mode (an event log) and range mo
   ] });
 });
 
-p.section('Timeline · time entry', 'drag an empty lane to create, a block to move, its ends to resize; Tab to a block: ←/→ move, Shift resizes, Delete removes; Tab to a lane: ←/→ then Enter adds. Lanes add up to 8h; Tue is locked, overlap is refused.', (host, { watch }) => {
+const askEntry = (item: { title?: string; text?: string }, mode: 'create' | 'edit') =>
+  new Promise<{ title: string; text: string } | false>((done) => {
+    const title = create({ type: 'textfield', label: 'Title', value: item.title === 'New entry' ? '' : item.title, required: true } as never) as any;
+    const text = create({ type: 'textarea', label: 'Notes', value: item.text ?? '' } as never) as any;
+    const w: any = create({
+      type: 'window', title: mode === 'create' ? 'New entry' : 'Edit entry', width: 360, autoFocus: true, closeAction: 'destroy', items: [title, text],
+      buttons: [{ text: 'Cancel', handler: () => w.close() }, { text: 'Save', variant: 'primary', handler: () => { if (!title.validate()) return; done({ title: title.getValue(), text: text.getValue() }); w.close(); } }],
+    });
+    w.on('hide', () => done(false));
+    w.show();
+  });
+
+p.section('Timeline · vertical', 'the same range timeline with time running top to bottom and one column per lane (direction: vertical).', (host) => {
+  create<Timeline>({ type: 'timeline', mode: 'range', direction: 'vertical', now: false, from: '08:00', to: '18:00', lanes: ['Room A', 'Room B', 'Room C'], width: '100%', renderTo: host, items: [
+    { title: 'Stand-up', lane: 'Room A', start: '09:00', end: '09:30', tone: 'info' }, { title: 'Workshop', lane: 'Room A', start: '10:00', end: '13:00' },
+    { title: 'Interview', lane: 'Room B', start: '09:30', end: '11:00', tone: 'success' }, { title: 'Demo', lane: 'Room C', start: '14:00', end: '16:30', tone: 'warning' },
+  ] });
+});
+
+p.section('Timeline · time entry', 'drag an empty lane to create, a block to move, its ends to resize; Tab to a block: ←/→ move, Shift resizes, Delete removes; Tab to a lane: ←/→ then Enter adds. A dialog (your callback) asks for the title and notes on create and on Enter / double click. Lanes add up to 8h; Tue is locked, overlap is refused.', (host, { watch }) => {
   const tl = create<Timeline>({
     type: 'timeline', mode: 'range', from: '07:00', to: '19:00', lanes: ['Mon', 'Tue', 'Wed'], width: '100%', renderTo: host,
     items: [{ title: 'Design review', lane: 'Mon', start: '09:00', end: '11:30', tone: 'info' }, { title: 'Build', lane: 'Mon', start: '13:00', end: '17:30' }, { title: 'Invoiced', lane: 'Tue', start: '08:00', end: '16:00', tone: 'success' }, { title: 'Support', lane: 'Wed', start: '08:00', end: '12:00', tone: 'warning' }],
-    plugins: [timeEntry({ step: 15, overlap: false, moveAcrossLanes: true, target: 480, editable: (it) => it.title !== 'Invoiced' })],
+    plugins: [timeEntry({ step: 15, overlap: false, moveAcrossLanes: true, target: 480, editable: (it) => it.title !== 'Invoiced', form: askEntry })],
   });
   watch(tl, ['create', 'change', 'remove', 'edit']);
+  create<Timeline>({
+    type: 'timeline', mode: 'range', direction: 'vertical', from: '08:00', to: '18:00', lanes: ['Ana', 'Bruno'], width: '100%', renderTo: host,
+    items: [{ title: 'Kick-off', lane: 'Ana', start: '09:00', end: '10:30', tone: 'info' }, { title: 'Review', lane: 'Bruno', start: '11:00', end: '12:00' }],
+    plugins: [timeEntry({ step: 15, moveAcrossLanes: true, form: askEntry })],
+  });
 });
 
 const orderSpecs: FieldSpec[] = [
@@ -278,16 +302,37 @@ const orderSpecs: FieldSpec[] = [
   { name: 'total', type: 'money', summary: 'sum' },
   { name: 'note', type: 'area', hide: ['grid', 'filter'] },
 ];
-p.section('Build · grid, form and filters from one field list', 'buildGrid / buildForm / buildFilterFields read the same FieldSpec[]; the grid total row sums the filtered rows (money: sum, due: latest).', (host) => {
+p.section('Build · grid, form and filters from one field list', 'buildGrid / buildForm / buildFilterFields read the same FieldSpec[]; the ⋯ button on a header picks a total over the filtered rows (total and due start with one).', (host) => {
   const store = new Store<any>({ data: Array.from({ length: 12 }, (_, i) => ({ number: `SO-${100 + i}`, customer: names[i % names.length], status: ['open', 'paid', 'late'][i % 3], paid: i % 3 === 1, due: `2026-1${i % 3}-${String(i + 10).padStart(2, '0')}`, total: 120 + i * 37.5 })) });
   create({ type: 'filterbuilder', store, fields: buildFilterFields(orderSpecs), renderTo: host });
-  buildGrid(orderSpecs, { store, height: 260, width: '100%', plugins: [grouping({ summary: 'grand' })] }).mount(host);
+  buildGrid(orderSpecs, { store, height: 260, width: '100%', plugins: [columnTotals()] }).mount(host);
   buildForm(orderSpecs, { width: 520 }).mount(host);
 });
 
-p.section('Grid · export, print, saved layout', 'CSV / Excel / Print of the visible columns, sort and filters (every page); the layout (widths, order, sort, page) is saved per user — resize a column and reload the page.', (host) => {
+p.section('Grid · column totals', 'the ⋯ button on a header opens the totals: sum, average, min, max, count and a custom one (Spread); the bar under the grid follows the filter. Dates offer earliest / latest.', (host) => {
+  const store = new Store<any>({ data: Array.from({ length: 40 }, (_, i) => ({ id: i + 1, customer: names[i % names.length], qty: 1 + (i % 5), spent: 45 + ((i * 37) % 400), price: 40 + i * 12.5, due: `2026-1${1 + (i % 2)}-${String(5 + (i % 20)).padStart(2, '0')}` })) });
+  const box = create({ type: 'textfield', placeholder: 'Filter by customer…', width: 240, renderTo: host }) as any;
+  box.on('change', () => store.filter(box.getValue() ? [{ field: 'customer', op: 'contains', value: box.getValue() }] : []));
+  create<Grid>({
+    type: 'grid', store, height: 320, width: '100%', renderTo: host,
+    plugins: [columnTotals({ operations: [{ text: 'Spread', run: (v: number[]) => Math.max(...v) - Math.min(...v) }] })],
+    columns: [
+      { field: 'customer', header: 'Customer', sortable: true },
+      { field: 'qty', header: 'Qty', align: 'right', sortable: true, summary: 'sum' },
+      { field: 'spent', header: 'Time spent', align: 'right', format: 'duration', sortable: true, summary: 'sum' },
+      { field: 'price', header: 'Price', align: 'right', format: 'money', sortable: true },
+      { field: 'due', header: 'Due', format: 'date', sortable: true },
+    ],
+  });
+  create<Grid>({
+    type: 'grid', store, height: 220, width: '100%', renderTo: host, plugins: [columnTotals({ show: 'modal' })],
+    columns: [{ field: 'customer', header: 'Customer' }, { field: 'qty', header: 'Qty (answers in a dialog)', align: 'right' }, { field: 'price', header: 'Price (answers in a dialog)', align: 'right', format: 'money' }],
+  });
+});
+
+p.section('Grid · export, print, saved layout', 'the icons next to the pager (exportBar plugin) and, below, the same actions from your own buttons: CSV / Excel / Print of the visible columns, sort and filters (every page); the layout (widths, order, sort, page) is saved per user — resize a column and reload the page.', (host) => {
   setStateStorage(undefined);
-  const g = create<Grid>({ type: 'grid', store: new Store({ data: make(250), pageSize: 25 }), columns, paging: true, resizableColumns: true, reorderableColumns: true, plugins: [persistState('sandbox-data-grid')], height: 360, width: '100%', renderTo: host });
+  const g = create<Grid>({ type: 'grid', store: new Store({ data: make(250), pageSize: 25 }), columns, paging: true, resizableColumns: true, reorderableColumns: true, plugins: [persistState('sandbox-data-grid'), exportBar({ filename: 'rows', title: 'Rows' })], height: 360, width: '100%', renderTo: host });
   create({ type: 'button', text: 'CSV', renderTo: host, handler: () => void exportGrid(g, { filename: 'rows' }) });
   create({ type: 'button', text: 'Excel', renderTo: host, handler: () => void exportGrid(g, { format: 'xlsx', filename: 'rows' }) });
   create({ type: 'button', text: 'This page only', renderTo: host, handler: () => void exportGrid(g, { scope: 'page', filename: 'page' }) });
@@ -297,8 +342,8 @@ p.section('Grid · export, print, saved layout', 'CSV / Excel / Print of the vis
 const tally = () => new Store({ data: ['Semi-final', 'Final'].flatMap((event, e) => ['Amara', 'Bianca', 'Chloe', 'Dalia'].map((name, i) => ({ id: e * 10 + i + 1, event, name, votes: 50 + ((i * 37 + e * 19) % 120), fee: 90000 + i * 25000 }))) });
 const tallyCols = [{ field: 'name', header: 'Candidate', sortable: true, summary: 'count' as const, editor: { type: 'textfield', required: true } }, { field: 'votes', header: 'Votes', align: 'right' as const, sortable: true, summary: 'sum' as const, format: 'number', editor: 'numberfield' }, { field: 'fee', header: 'Fee (cents)', align: 'right' as const, summary: 'avg' as const, renderer: (v: number) => (v / 100).toFixed(2) }];
 
-p.section('Grid · grouping with totals', 'a header per group (click, Enter/Space, → ←), a total per group and a grand total; sorting works inside the groups. Try the buttons.', (host, { watch }) => {
-  const g = grouping({ field: 'event', summary: 'both' });
+p.section('Grid · grouping with totals', 'a header per group (click, Enter/Space, → ←), a total per group and a grand total; sorting works inside the groups. The icons beside the pager (grouping controls) and the buttons below do the same.', (host, { watch }) => {
+  const g = grouping({ field: 'event', summary: 'both', controls: true, choices: [{ text: 'Event', field: 'event' }, { text: 'Leaders (≥100 votes)', by: (r) => (r.get('votes') >= 100 ? 'Leaders' : 'Chasing') }] });
   const grid = create<Grid>({ type: 'grid', store: tally(), columns: tallyCols.map(({ editor: _e, ...c }) => c), plugins: [g], height: 340, width: '100%', renderTo: host });
   watch(grid, ['group-toggle', 'sort']);
   create({ type: 'button', text: 'Collapse all', renderTo: host, handler: () => g.collapseAll() });

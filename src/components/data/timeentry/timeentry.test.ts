@@ -15,11 +15,11 @@ const bar = (tl: Timeline, title: string) => q(tl, '.op-timeline__bar').find((b)
 const lane = (tl: Timeline, name: string) => q(tl, '.op-timeline__lane').find((l) => l.getAttribute('aria-label') === name)!;
 
 /** happy-dom has no layout: the tracks are 1000 px wide (100 px per hour, from 08:00), lanes 40 px tall. */
-function layout(tl: Timeline) {
+function layout(tl: Timeline, vertical = false) {
   q(tl, '.op-timeline__lane').forEach((l, i) => {
-    l.getBoundingClientRect = () => ({ top: i * 40, bottom: i * 40 + 40, left: 0, right: 1000, width: 1000, height: 40 }) as DOMRect;
+    l.getBoundingClientRect = () => (vertical ? { top: 0, bottom: 1000, left: i * 40, right: i * 40 + 40, width: 40, height: 1000 } : { top: i * 40, bottom: i * 40 + 40, left: 0, right: 1000, width: 1000, height: 40 }) as DOMRect;
   });
-  q(tl, '.op-timeline__track').forEach((t) => (t.getBoundingClientRect = () => ({ top: 0, bottom: 40, left: 0, right: 1000, width: 1000, height: 40 }) as DOMRect));
+  q(tl, '.op-timeline__track').forEach((t) => (t.getBoundingClientRect = () => (vertical ? { top: 0, bottom: 1000, left: 0, right: 40, width: 40, height: 1000 } : { top: 0, bottom: 40, left: 0, right: 1000, width: 1000, height: 40 }) as DOMRect));
 }
 const ptr = (el: HTMLElement, type: string, x: number, y = 5) => {
   const e = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, button: 0 });
@@ -155,5 +155,47 @@ describe('timeEntry', () => {
     const tl = mk();
     tl.destroy();
     expect(document.querySelector('.op-timeentry__grand')).toBeNull();
+  });
+
+  it('form: fills a new entry from your dialog, and cancels on false', async () => {
+    const asked: string[] = [];
+    let answer: any = { title: 'Client call', text: 'Q4 plan' };
+    const tl = mk({ step: 30, form: (it, mode) => (asked.push(`${mode}:${it.start}-${it.end}`), answer) });
+    key(lane(tl, 'Tue'), 'Enter');
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(asked).toEqual(['create:08:00-09:00']);
+    expect(tl.getItems().find((i) => i.title === 'Client call')).toMatchObject({ lane: 'Tue', text: 'Q4 plan', start: '08:00' });
+    answer = false;
+    key(lane(tl, 'Tue'), 'Enter');
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(tl.getItems()).toHaveLength(4);
+  });
+
+  it('form: edit (Enter on a block) changes only what the dialog returns', async () => {
+    const changes: any[] = [];
+    const tl = mk({ form: async (it, mode) => (mode === 'edit' ? { title: `${it.title}!` } : false) });
+    tl.on('change', (it: any, next: any) => changes.push(next));
+    key(bar(tl, 'Build'), 'Enter');
+    await new Promise((r) => setTimeout(r, 0));
+    expect(tl.getItems().find((i) => i.title === 'Build!')).toMatchObject({ start: '09:00', end: '12:00' });
+    expect(changes).toEqual([{ title: 'Build!' }]);
+  });
+
+  it('vertical: ↑/↓ move in time, ←/→ change lane, the pointer reads y', () => {
+    const tl = mk({ step: 30, moveAcrossLanes: true }, { direction: 'vertical' });
+    expect(tl.el.classList.contains('op-timeline--vertical')).toBe(true);
+    key(bar(tl, 'Build'), 'ArrowDown');
+    expect(tl.getItems().find((i) => i.title === 'Build')).toMatchObject({ start: '09:30', end: '12:30' });
+    key(bar(tl, 'Build'), 'ArrowLeft');
+    expect(tl.getItems().find((i) => i.title === 'Build')!.lane).toBe('Mon');
+    layout(tl, true);
+    const b = bar(tl, 'Spec');
+    ptr(b, 'pointerdown', 5, 50);
+    ptr(b, 'pointermove', 5, 150);
+    ptr(b, 'pointerup', 5, 150);
+    expect(tl.getItems()[0]).toMatchObject({ start: '09:00', end: '11:00' });
+    expect(b.style.insetBlockStart).toMatch(/%$/);
   });
 });

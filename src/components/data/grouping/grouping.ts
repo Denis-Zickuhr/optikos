@@ -1,14 +1,18 @@
 // Row grouping with totals for the Grid, as a plugin: `plugins: [grouping({ field: 'event' })]`.
 import { format } from '../../../data/format';
 import type { Model } from '../../../data/model';
-import type { Column } from '../../../data/column';
+import { summarize } from '../../../data/column';
 import { h } from '../../../core/dom';
 import { t, addMessages } from '../../../core/i18n';
 import { iconEl } from '../../base/icon/icon';
+import { groupingControls, type GroupChoice, type GroupingControl } from './controls';
 import type { Grid, GridPlugin, RowEntry } from '../grid/grid';
 
 addMessages('en', { groupTotal: 'Total', groupCount: '{n}', groupToggle: 'Toggle group' });
 addMessages('pt-BR', { groupTotal: 'Total', groupCount: '{n}', groupToggle: 'Alternar grupo' });
+
+export { summarize };
+export type { GroupChoice, GroupingControl };
 
 export interface GroupingOptions {
   /** Record field to group by. */
@@ -21,6 +25,10 @@ export interface GroupingOptions {
   summary?: 'group' | 'grand' | 'both';
   /** Start with every group closed. */
   collapsed?: boolean;
+  /** Icon buttons inside the grid, beside the pager: expand all, collapse all and, with `choices`, a "Group by" menu. `false` leaves one out. */
+  controls?: boolean | { expand?: boolean; collapse?: boolean; by?: boolean };
+  /** The ways to group offered by the controls' menu (a field or a function each). */
+  choices?: GroupChoice[];
 }
 
 export interface Grouping extends GridPlugin {
@@ -30,26 +38,9 @@ export interface Grouping extends GridPlugin {
   setGroupBy(by: string | ((rec: Model) => unknown) | null): void;
   /** Opens or closes one group by its key. */
   toggle(key: unknown, open?: boolean): void;
-}
-
-const num = (v: unknown) => (typeof v === 'number' ? v : Number(v));
-const time = (v: unknown) => (v instanceof Date ? +v : typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v) ? Date.parse(v) : NaN);
-
-/** The value of a column's `summary` over some records. */
-export function summarize(col: Column, recs: Model[]): unknown {
-  const values = recs.map((r) => r.data[col.field]);
-  const nums = values.filter((v) => v != null && v !== '' && !isNaN(num(v))).map(num);
-  const s = col.summary;
-  if (typeof s === 'function') return s(values, recs);
-  if (s === 'count') return values.filter((v) => v != null && v !== '').length;
-  if (!nums.length) {
-    // dates have no sum: min/max give the earliest and the latest, as the value the record holds
-    const dates = s === 'min' || s === 'max' ? values.filter((v) => !isNaN(time(v))) : [];
-    return dates.length ? dates.reduce((a, b) => ((s === 'min' ? time(b) < time(a) : time(b) > time(a)) ? b : a)) : null;
-  }
-  if (s === 'sum') return nums.reduce((a, b) => a + b, 0);
-  if (s === 'avg') return nums.reduce((a, b) => a + b, 0) / nums.length;
-  return s === 'min' ? Math.min(...nums) : Math.max(...nums);
+  /** The in-grid controls: show or hide one. */
+  setControlVisible(control: GroupingControl, visible: boolean): void;
+  setControlDisabled(control: GroupingControl, disabled: boolean): void;
 }
 
 /**
@@ -64,6 +55,7 @@ export function grouping(options: GroupingOptions = {}): Grouping {
   let all = !!options.collapsed;
   let keys: unknown[] = [];
   let off: Array<() => void> = [];
+  let controls: ReturnType<typeof groupingControls> | undefined;
 
   const where = options.summary ?? 'group';
 
@@ -90,10 +82,7 @@ export function grouping(options: GroupingOptions = {}): Grouping {
   function build() {
     const store = grid.getStore();
     const recs = store.getRange();
-    if (!by) {
-      if (where === 'group' || !grid.getColumns().some((c) => c.summary)) return grid.setRowLayout(undefined);
-      return grid.setRowLayout([...recs.map((rec) => ({ rec })), totals(t('groupTotal'), recs, 'is-grand-total')]);
-    }
+    if (!by) return grid.setRowLayout(undefined);
     const groups = new Map<unknown, Model[]>();
     for (const r of recs) {
       const k = by(r);
@@ -146,7 +135,7 @@ export function grouping(options: GroupingOptions = {}): Grouping {
     return row ? keys.find((k) => String(k) === row.dataset.group) : undefined;
   };
 
-  return {
+  const plugin: Grouping = {
     init(g) {
       grid = g;
       const el = g.el;
@@ -172,6 +161,11 @@ export function grouping(options: GroupingOptions = {}): Grouping {
       el.addEventListener('keydown', onKey, true);
       off = [store(g), () => el.removeEventListener('click', onClick), () => el.removeEventListener('keydown', onKey, true), () => grid.setRowLayout(undefined)];
       build();
+      if (options.controls) {
+        const c = options.controls === true ? {} : options.controls;
+        controls = groupingControls(g, plugin, { ...c, choices: options.choices ?? [], current: options.field });
+        off.push(controls.destroy);
+      }
       return () => off.forEach((f) => f());
     },
     expandAll() {
@@ -183,12 +177,15 @@ export function grouping(options: GroupingOptions = {}): Grouping {
       build();
     },
     toggle,
+    setControlVisible: (c, visible) => controls?.set(c, visible),
+    setControlDisabled: (c, disabled) => controls?.disable(c, disabled),
     setGroupBy(next) {
       by = next === null ? undefined : typeof next === 'string' ? (r: Model) => r.data[next] : next;
       closed.clear();
       build();
     },
   };
+  return plugin;
 
   function store(g: Grid) {
     return g.getStore().subscribe((c) => queueMicrotask(() => !g.destroyed && build()));

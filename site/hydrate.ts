@@ -2,9 +2,9 @@
 //   { "$store": [rows] }   → new Store({ data: rows })
 //   { "$tpl": "{name}" }   → (record) => text with {field} replaced
 //   { "$plugin": "cellEditing", ...options } → the grid plugin (cellEditing, rowEditing, grouping, treeGrid, timeEntry)
-import { Store, cellEditing, grouping, rowEditing, treeGrid, timeEntry } from 'optikos';
+import { Store, cellEditing, grouping, rowEditing, treeGrid, timeEntry, columnTotals, exportBar } from 'optikos';
 
-const PLUGINS: Record<string, (o: object) => unknown> = { cellEditing, grouping, rowEditing, treeGrid, timeEntry };
+const PLUGINS: Record<string, (o: object) => unknown> = { cellEditing, grouping, rowEditing, treeGrid, timeEntry, columnTotals, exportBar };
 
 export function hydrate<T>(value: T): T {
   if (Array.isArray(value)) return value.map(hydrate) as T;

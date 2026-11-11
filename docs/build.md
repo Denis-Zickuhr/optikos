@@ -13,7 +13,7 @@ const fields: FieldSpec[] = [
   { name: 'note', type: 'area', hide: ['grid', 'filter'] },
 ];
 
-const grid = buildGrid(fields, { store, selection: 'multi', plugins: [grouping({ summary: 'grand' })] });
+const grid = buildGrid(fields, { store, selection: 'multi', plugins: [columnTotals()] });
 const form = buildForm(fields, { columns: 2 });
 const filters = new FilterBuilder({ store, fields: buildFilterFields(fields) });
 ```
@@ -23,11 +23,11 @@ const filters = new FilterBuilder({ store, fields: buildFilterFields(fields) });
 | Property | Meaning |
 |---|---|
 | `name` | The record's property. `label` defaults to the name as words (`unitPrice` → "Unit price"). |
-| `type` | `text` (default), `email`, `area`, `number`, `money`, `date`, `datetime`, `select`, `bool`. |
+| `type` | `text` (default), `email`, `area`, `number`, `money`, `duration` (minutes, shown as `7h 30m`), `date`, `datetime`, `select`, `bool`. |
 | `options` · `lookup` | Choices for `select`; a LookupDef or `registerLookup` name for a lookup window. |
 | `required` · `readonly` | Form field flags. |
 | `group` | A band over the grid header, a group in the filter picker and a `FieldSet` in the form. |
-| `width` · `summary` | Grid column width; total of the filtered rows (needs `grouping({ summary: 'grand' })`). |
+| `width` · `summary` | Grid column width; total of the filtered rows (starts the `columnTotals()` bar). |
 | `hide` | `['grid' \| 'form' \| 'filter']`: leaves the field out of those builds. |
 | `column` · `field` · `filter` | Overrides merged into what each build makes. |
 

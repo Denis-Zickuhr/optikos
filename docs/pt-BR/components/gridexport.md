@@ -1,6 +1,6 @@
 # GridExport  (type: 'gridexport')
 Propósito:     Exportar uma grid em CSV ou Excel (.xlsx) e imprimi-la como tabela simples. Sem biblioteca: o .xlsx é escrito à mão.
-Anatomia:      Funções, não um componente: `exportGrid(grid, options)` e `printGrid(grid, options)`. A impressão usa uma `op-print-sheet` temporária e a classe `op-printing` no `<html>`.
+Anatomia:      Funções, não um componente (`exportBar()` põe botões para elas dentro da grid): `exportGrid(grid, options)` e `printGrid(grid, options)`. A impressão usa uma `op-print-sheet` temporária e a classe `op-printing` no `<html>`.
 Config:        `exportGrid`: `format: 'csv'|'xlsx'` (csv), `filename` (`export`), `scope: 'all'|'page'` (all: todos os registros que passam pela ordenação e filtros, em todas as páginas; um store remoto é lido página a página pelo proxy), `pageSize` (500, para store remoto), `download: false` (só monta o arquivo). `printGrid`: `title`, `scope`, `pageSize`.
 API:           `exportGrid(grid, o): Promise<Blob>`, `printGrid(grid, o): Promise<void>`; `Store.fetchAll(pageSize?)` é quem lê "tudo".
 Eventos:       —

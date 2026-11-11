@@ -157,6 +157,8 @@ its weight (about 3.6 kB gzip) because a back-office dashboard needs it; an engi
 | Chart (bar, line, area, pie, donut, sparkline) | `chart` | P1 ✔ |
 | Stat (KPI tile with change and sparkline) | `stat` | P1 ✔ |
 | Timeline (event log, schedule on a time axis) | `timeline` (data) | P1 ✔ |
+| ExportBar (export and print buttons inside the grid, next to the pager) | `exportbar` (plugin) | P1 ✔ |
+| ColumnTotals (a header button: sum, average, min, max, count on filtered rows) | `columntotals` (plugin) | P1 ✔ |
 | TimeEntry (time tracking on a Timeline: create, move, resize, totals) | `timeentry` (plugin) | P1 ✔ |
 
 Not components, but part of the same set: `exportGrid` / `printGrid` (`gridexport`), `persistState` (`gridstate`),

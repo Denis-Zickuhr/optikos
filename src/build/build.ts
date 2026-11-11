@@ -7,7 +7,7 @@ import type { FilterField } from '../components/data/filterbuilder/filterbuilder
 import type { Column } from '../data/column';
 import type { Component } from '../core/component';
 
-export type FieldKind = 'text' | 'email' | 'area' | 'number' | 'money' | 'date' | 'datetime' | 'select' | 'bool';
+export type FieldKind = 'text' | 'email' | 'area' | 'number' | 'money' | 'duration' | 'date' | 'datetime' | 'select' | 'bool';
 type Cfg = Record<string, any>;
 
 export interface FieldSpec {
@@ -15,7 +15,7 @@ export interface FieldSpec {
   name: string;
   /** Default: the name as words (`unitPrice` → "Unit price"). */
   label?: string;
-  /** Default `text`. */
+  /** Default `text`. `duration` is a number of minutes, shown as `7h 30m`. */
   type?: FieldKind;
   /** For `select`. */
   options?: Array<string | number | { value: string | number; label: string }>;
@@ -25,7 +25,7 @@ export interface FieldSpec {
   readonly?: boolean;
   /** A band over the grid header and a section of the form. */
   group?: string;
-  /** Total of the (filtered) rows in the grid: needs the `grouping({ summary: 'grand' })` plugin. */
+  /** Total of the (filtered) rows in the grid: the starting total of the `columnTotals()` plugin. */
   summary?: Column['summary'];
   /** Grid column width in px. */
   width?: number;
@@ -49,6 +49,7 @@ export function buildColumns(specs: FieldSpec[]): Column[] {
   return shown(specs, 'grid').map((s) => {
     const col: Column = { field: s.name, header: label(s), sortable: true, width: s.width, group: s.group, summary: s.summary };
     if (s.type === 'number') col.align = 'right';
+    else if (s.type === 'duration') Object.assign(col, { format: 'duration', align: 'right' });
     else if (s.type === 'money') Object.assign(col, { format: 'money', align: 'right' });
     else if (s.type === 'date' || s.type === 'datetime') col.format = 'date';
     else if (s.type === 'bool') Object.assign(col, { format: 'bool', align: 'center' });
@@ -66,6 +67,7 @@ export function buildFields(specs: FieldSpec[]): Component[] {
       case 'email': return ui.email(s.name, l, c);
       case 'area': return ui.area(s.name, l, { colspan: 'full', ...c });
       case 'number': return ui.number(s.name, l, c);
+      case 'duration': return ui.number(s.name, l, { min: 0, ...c });
       case 'money': return ui.number(s.name, l, { decimals: 2, min: 0, ...c });
       case 'date': return ui.date(s.name, l, c);
       case 'datetime': return ui.datetime(s.name, l, c);
@@ -79,7 +81,7 @@ export function buildFields(specs: FieldSpec[]): Component[] {
 /** Fields for a `FilterBuilder`; `bool` filters as a Yes/No choice. */
 export function buildFilterFields(specs: FieldSpec[]): FilterField[] {
   return shown(specs, 'filter').map((s) => {
-    const type = s.type === 'number' || s.type === 'money' ? 'number' : s.type === 'date' || s.type === 'datetime' ? 'date' : s.type === 'select' || s.type === 'bool' ? 'select' : 'text';
+    const type = s.type === 'number' || s.type === 'money' || s.type === 'duration' ? 'number' : s.type === 'date' || s.type === 'datetime' ? 'date' : s.type === 'select' || s.type === 'bool' ? 'select' : 'text';
     const options = s.type === 'bool' ? [{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }] : s.type === 'select' ? s.options : undefined;
     return { name: s.name, label: label(s), type, group: s.group, options, ...s.filter };
   });

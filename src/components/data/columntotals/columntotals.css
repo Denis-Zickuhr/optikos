@@ -1,0 +1,56 @@
+@layer optikos {
+  .op-columntotals {
+    display: grid;
+    grid-template-columns: var(--op-grid-cols);
+    box-sizing: border-box;
+    flex: none;
+    overflow: hidden;
+    min-block-size: var(--op-grid-row-height, var(--op-row-height));
+    border-block-start: var(--op-border-width) solid var(--op-grid-header-border, var(--op-color-border-strong));
+    background: var(--op-grid-total-bg, var(--op-color-surface-2));
+    font-weight: var(--op-font-weight-bold);
+  }
+  .op-columntotals[hidden] {
+    display: none;
+  }
+  .op-columntotals__cell {
+    display: flex;
+    align-items: center;
+    gap: var(--op-space-2);
+    min-inline-size: 0;
+    padding-inline: var(--op-grid-cell-padding-x, var(--op-control-padding-x));
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .op-columntotals__cell--right { justify-content: flex-end; }
+  .op-columntotals__cell--center { justify-content: center; }
+  .op-columntotals__op {
+    color: var(--op-color-fg-muted);
+    font-size: var(--op-font-size-sm);
+    font-weight: var(--op-font-weight-normal, normal);
+  }
+  .op-columntotals__btn {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    margin-inline-start: auto;
+    padding: var(--op-space-1);
+    border: 0;
+    border-radius: var(--op-radius-sm);
+    background: transparent;
+    color: var(--op-color-fg-muted);
+    cursor: pointer;
+  }
+  .op-columntotals__btn:hover {
+    background: var(--op-color-hover);
+    color: var(--op-color-fg);
+  }
+  .op-columntotals__btn:focus-visible {
+    outline: var(--op-focus-width) solid var(--op-color-focus);
+    outline-offset: var(--op-focus-offset);
+  }
+  .op-columntotals--top {
+    border-block-start: 0;
+    border-block-end: var(--op-border-width) solid var(--op-grid-header-border, var(--op-color-border-strong));
+  }
+}

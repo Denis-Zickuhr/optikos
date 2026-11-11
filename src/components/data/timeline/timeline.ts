@@ -36,6 +36,8 @@ export interface TimelineConfig extends ComponentConfig {
   to?: string;
   /** `range`: a marker at the current time. Default true. */
   now?: boolean;
+  /** `range`: `horizontal` (time runs left to right, one row per lane, default) or `vertical` (time runs top to bottom, one column per lane). */
+  direction?: 'horizontal' | 'vertical';
   /** Optional features (`timeEntry()`...). See `TimelinePlugin`. */
   plugins?: TimelinePlugin[];
 }
@@ -50,6 +52,7 @@ export interface TimelineScale {
   lo: number;
   hi: number;
   clock: boolean;
+  vertical: boolean;
   parse(v: string): number;
   format(ms: number): string;
 }
@@ -72,6 +75,7 @@ export class Timeline extends Component<TimelineConfig> {
 
   protected override onRender() {
     this.el.classList.add(`op-timeline--${this.config.mode ?? 'list'}`);
+    if (this.config.mode === 'range' && this.config.direction === 'vertical') this.el.classList.add('op-timeline--vertical');
     const store = this.config.store;
     if (store) this.own(store.subscribe(() => this.setItems(store.getFiltered().map((r) => r.data))));
     this.setItems(store ? store.getFiltered().map((r) => r.data) : (this.config.items ?? []));
@@ -127,14 +131,15 @@ export class Timeline extends Component<TimelineConfig> {
     if (!spans.length && !(c.from && c.to)) return [];
     const lo = c.from ? ms(c.from) : Math.min(...spans.map((s) => s.a));
     const hi = c.to ? ms(c.to) + (/^\d{4}-\d{2}-\d{2}$/.test(c.to) ? DAY : 0) : Math.max(...spans.map((s) => s.b), lo + 1);
+    const vertical = c.direction === 'vertical';
     const pct = (v: number) => `${(Math.min(Math.max((v - lo) / (hi - lo), 0), 1) * 100).toFixed(3)}%`;
     const lanes = [...(c.lanes ?? []), ...spans.map((s) => s.x.lane ?? '').filter((l, i, a) => a.indexOf(l) === i && !(c.lanes ?? []).includes(l))];
-    this.scale = { lo, hi, clock, parse: ms, format: (v) => (clock ? `${pad(Math.floor(v / 3600000))}:${pad(Math.round(v / 60000) % 60)}` : ((d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`)(new Date(v))) };
+    this.scale = { lo, hi, clock, vertical, parse: ms, format: (v) => (clock ? `${pad(Math.floor(v / 3600000))}:${pad(Math.round(v / 60000) % 60)}` : ((d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`)(new Date(v))) };
     const long = !clock && hi - lo > 62 * DAY;
     const tickEls: HTMLElement[] = [];
     const tickAt = (at: number, text: string) => {
       const tick = h('span', 'op-timeline__tick', {}, text);
-      tick.style.insetInlineStart = pct(at);
+      tick.style[vertical ? 'insetBlockStart' : 'insetInlineStart'] = pct(at);
       tickEls.push(tick);
     };
     if (clock) for (let at = Math.ceil(lo / 3600000) * 3600000, hop = (hi - lo) / 3600000 > 14 ? 7200000 : 3600000; at < hi; at += hop) tickAt(at, this.scale.format(at));
@@ -149,17 +154,22 @@ export class Timeline extends Component<TimelineConfig> {
       const bars = spans.filter((s) => (s.x.lane ?? '') === lane).map(({ x, a, b }) => {
         const bar = h('div', `op-timeline__bar${x.tone && x.tone !== 'default' ? ` is-${x.tone}` : ''}`, { role: 'listitem', tabindex: 0, 'data-i': this.items.indexOf(x), 'aria-label': `${x.title}, ${t('tlFromTo', { from: when(x.start!, { dateStyle: 'medium', timeStyle: /T/.test(x.start!) ? 'short' : undefined }), to: when(x.end ?? x.start!, { dateStyle: 'medium', timeStyle: /T/.test(x.end ?? '') ? 'short' : undefined }) })}` }, x.icon ? iconEl(x.icon) : null, h('span', 'op-timeline__bar-text', {}, x.title));
         bar.title = x.text ?? x.title;
-        bar.style.insetInlineStart = pct(a);
-        bar.style.insetInlineEnd = `calc(100% - ${pct(Math.max(b, a + (hi - lo) / 200))})`;
+        bar.style[vertical ? 'insetBlockStart' : 'insetInlineStart'] = pct(a);
+        bar.style[vertical ? 'insetBlockEnd' : 'insetInlineEnd'] = `calc(100% - ${pct(Math.max(b, a + (hi - lo) / 200))})`;
         return bar;
       });
       out.push(h('div', 'op-timeline__lane', { role: 'group', 'aria-label': lane }, h('span', 'op-timeline__lane-name', {}, lane), h('div', 'op-timeline__track', {}, ...bars)));
     }
+    this.el.style.gridTemplateColumns = vertical ? `var(--op-timeline-axis-width) repeat(${lanes.length}, minmax(0, 1fr))` : '';
     const now = Date.now();
     if (c.now !== false && !clock && now >= lo && now <= hi) {
-      const mark = h('div', 'op-timeline__now', { 'aria-hidden': 'true', title: t('tlNow') });
-      mark.style.insetInlineStart = pct(now);
-      out.push(h('div', 'op-timeline__nowrow', { 'aria-hidden': 'true' }, h('span', 'op-timeline__lane-name'), h('div', 'op-timeline__track', {}, mark)));
+      const mark = () => {
+        const m = h('div', 'op-timeline__now', { 'aria-hidden': 'true', title: t('tlNow') });
+        m.style[vertical ? 'insetBlockStart' : 'insetInlineStart'] = pct(now);
+        return m;
+      };
+      if (vertical) for (const track of out.slice(1).map((l) => l.querySelector('.op-timeline__track')!)) track.append(mark());
+      else out.push(h('div', 'op-timeline__nowrow', { 'aria-hidden': 'true' }, h('span', 'op-timeline__lane-name'), h('div', 'op-timeline__track', {}, mark())));
     }
     return out;
   }

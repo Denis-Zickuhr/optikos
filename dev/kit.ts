@@ -26,6 +26,14 @@ body{margin:0;padding-top:3.25rem;overflow-x:hidden;background:var(--op-color-bg
 .kit-bar{position:fixed;inset:0 0 auto 0;z-index:5;display:flex;flex-wrap:wrap;gap:.25rem 1rem;align-items:center;padding:.5rem 1rem;background:var(--op-color-surface);border-bottom:1px solid var(--op-color-border);box-shadow:var(--op-shadow-sm)}
 .kit-nav{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}.kit-bar label{display:flex;gap:.35rem;align-items:center}
 .kit-section{scroll-margin-top:4rem}
+.kit-toc{display:none}
+@media (min-width:64rem){body{padding-inline-start:15rem}.kit-toc{display:flex;flex-direction:column;gap:.5rem;position:fixed;inset:3.25rem auto 0 0;inline-size:15rem;box-sizing:border-box;padding:.75rem;background:var(--op-color-surface);border-inline-end:1px solid var(--op-color-border);z-index:4}
+.kit-toc input{inline-size:100%;box-sizing:border-box;padding:.35rem .5rem;border:1px solid var(--op-color-border);border-radius:var(--op-radius-sm);background:var(--op-color-bg);color:var(--op-color-fg);font:inherit}
+.kit-toc nav{display:flex;flex-direction:column;overflow:auto;margin-inline:-.25rem}
+.kit-toc a{padding:.3rem .5rem;border-radius:var(--op-radius-sm);color:var(--op-color-fg-muted);text-decoration:none;font-size:var(--op-font-size-sm);line-height:1.3}
+.kit-toc a:hover{background:var(--op-color-hover);color:var(--op-color-fg)}
+.kit-toc a.is-active{background:var(--op-color-primary-soft);color:var(--op-color-primary);font-weight:600}
+.kit-toc a[hidden]{display:none}}
 @media (max-width:40rem){body{padding-top:6rem}.kit-main{padding:.5rem}.kit-section{padding:.75rem}.kit-section{scroll-margin-top:6.5rem}}
 .kit-main{max-width:68rem;margin:0 auto;padding:1rem;display:grid;gap:1.5rem}
 .kit-section{background:var(--op-color-surface);border:1px solid var(--op-color-border);border-radius:var(--op-radius);padding:1rem}
@@ -53,7 +61,18 @@ export function page(title: string) {
   installShortcuts();
   const main = document.createElement('main');
   main.className = 'kit-main';
-  document.body.append(bar, main);
+  const toc = document.createElement('aside');
+  toc.className = 'kit-toc';
+  toc.innerHTML = '<input type="search" placeholder="Find a section…" aria-label="Find a section"><nav aria-label="Sections"></nav>';
+  const links = toc.querySelector('nav')!;
+  toc.querySelector('input')!.addEventListener('input', (e) => {
+    const q = (e.target as HTMLInputElement).value.trim().toLowerCase();
+    for (const a of links.querySelectorAll('a')) a.hidden = !!q && !a.textContent!.toLowerCase().includes(q);
+  });
+  const spy = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) for (const a of links.querySelectorAll('a')) a.classList.toggle('is-active', a.hash === `#${e.target.id}`);
+  }, { rootMargin: '-10% 0px -80% 0px' });
+  document.body.append(bar, toc, main);
 
   const theme = bar.querySelector<HTMLSelectElement>('#kit-theme')!;
   const compact = bar.querySelector<HTMLInputElement>('#kit-compact')!;
@@ -84,6 +103,8 @@ export function page(title: string) {
         out.textContent = `${n} ${text}\n` + (out.textContent ?? '').split('\n').slice(0, 30).join('\n');
       };
       main.append(sec);
+      links.append(Object.assign(document.createElement('a'), { href: `#${sec.id}`, textContent: name }));
+      spy.observe(sec);
       build(host, { log, watch: (cmp, events) => events.forEach((e) => cmp.on(e, (...a) => log(e, ...a))) });
     },
   };

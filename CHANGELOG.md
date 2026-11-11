@@ -13,7 +13,15 @@ and the project uses [Semantic Versioning](https://semver.org/). Until 1.0, mino
   `buildForm`, groups become fieldsets) and the filter fields (`buildFilterFields`).
 - `timeEntry()` (a Timeline plugin): create, move, resize and remove entries by pointer or keyboard, with snapping,
   overlap control, locked entries, a total per lane against a `target`, and `before-*` / `create` / `change` / `remove` / `edit` events.
-- `grouping({ summary: 'grand' })` works without `field`/`by`: a total row over the rows the filter left.
+- `grouping({ controls, choices })`: expand all, collapse all and a "Group by" menu as icon buttons inside the grid, beside the
+  pager (and the `exportBar()` buttons, which share the row); each one switchable. Icons `expand`, `collapse`.
+- `exportBar()` (a Grid plugin): CSV, Excel, this-page and Print buttons inside the grid, in one row with the pager, each
+  one switchable; `exportGrid` / `printGrid` still work from your own buttons. New icons `download`, `printer`, `table`.
+- Column `format: 'duration'` (minutes as `7h 30m`) and `FieldSpec` type `duration`, so totals of time spent read "Sum 72h".
+- Timeline `direction: 'vertical'` (range mode: time runs top to bottom, one column per lane); `timeEntry()` works on it too.
+- `timeEntry({ form })`: your own dialog fills a new entry and edits one.
+- `columnTotals()` (a Grid plugin): a button on each column header opens a menu of totals (sum, average, minimum, maximum,
+  count, your own); the choice shows in a bar under the grid, over every filtered row, or (`show: 'modal' | 'toast'`) as a one-off answer; `position: 'top'` puts the bar under the header. The grid fires `header-paint`.
 - Column `summary` on dates: `min` (earliest), `max` (latest) and `count`.
 
 ## [0.4.0] - 2026-11-10

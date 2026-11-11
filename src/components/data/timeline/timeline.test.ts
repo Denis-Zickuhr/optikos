@@ -71,4 +71,17 @@ describe('Image', () => {
     expect(i.el.querySelector('img')).toBeNull();
     expect(mk<any>({ type: 'image', renderTo: document.body }).el.querySelector('.op-image__fallback svg')).not.toBeNull();
   });
+
+  it('range mode, vertical: one column per lane, bars placed along the block axis', () => {
+    const tl = create<Timeline>({
+      type: 'timeline', mode: 'range', direction: 'vertical', now: false, from: '08:00', to: '18:00', lanes: ['Mon', 'Tue'], renderTo: document.body,
+      items: [{ title: 'Stand-up', lane: 'Mon', start: '08:00', end: '09:00' }, { title: 'Build', lane: 'Tue', start: '13:00', end: '18:00' }],
+    });
+    expect(tl.el.classList.contains('op-timeline--vertical')).toBe(true);
+    expect(tl.el.style.gridTemplateColumns).toContain('repeat(2');
+    const [build] = q(tl, '.op-timeline__bar').filter((b) => b.textContent === 'Build');
+    expect(build.style.insetBlockStart).toBe('50.000%');
+    expect(build.style.insetInlineStart).toBe('');
+    expect(tl.getScale()!.vertical).toBe(true);
+  });
 });

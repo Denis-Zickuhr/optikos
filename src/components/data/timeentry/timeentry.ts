@@ -31,6 +31,11 @@ export interface TimeEntryOptions {
   editable?: (item: TimelineItem) => boolean;
   /** Fields of a new entry besides `lane`, `start` and `end`. */
   defaults?: Partial<TimelineItem>;
+  /**
+   * Opens your own dialog to fill a new entry (`'create'`, after the drag or Enter) or to edit one (`'edit'`, double click
+   * or Enter on a block). Resolve with the fields to set (`title`, `text`, ...), or with `false` to cancel.
+   */
+  form?: (item: TimelineItem, mode: 'create' | 'edit') => Promise<Partial<TimelineItem> | false | void> | Partial<TimelineItem> | false | void;
 }
 
 type Span = { lane: string; start: number; end: number };
@@ -86,6 +91,8 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
       let off: Array<() => void> = [];
 
       const sc = () => tl.getScale()!;
+      /** Time runs along ←/→ (horizontal) or ↑/↓ (vertical); lanes change along the other pair. */
+      const keys = () => (sc().vertical ? { earlier: 'ArrowUp', later: 'ArrowDown', prev: 'ArrowLeft', next: 'ArrowRight' } : { earlier: 'ArrowLeft', later: 'ArrowRight', prev: 'ArrowUp', next: 'ArrowDown' });
       const lock = (it: TimelineItem) => options.editable?.(it) === false;
       const lanes = () => Array.from(el.querySelectorAll<HTMLElement>('.op-timeline__lane'));
       const laneName = (lane: HTMLElement) => lane.getAttribute('aria-label') ?? '';
@@ -94,20 +101,25 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
       const snap = (v: number) => sc().lo + Math.round((v - sc().lo) / stepMs) * stepMs;
       const pct = (v: number) => `${(((v - sc().lo) / (sc().hi - sc().lo)) * 100).toFixed(3)}%`;
       const place = (node: HTMLElement, s: Span) => {
-        node.style.insetInlineStart = pct(s.start);
-        node.style.insetInlineEnd = `calc(100% - ${pct(s.end)})`;
+        node.style[sc().vertical ? 'insetBlockStart' : 'insetInlineStart'] = pct(s.start);
+        node.style[sc().vertical ? 'insetBlockEnd' : 'insetInlineEnd'] = `calc(100% - ${pct(s.end)})`;
       };
       const range = (s: Span) => `${sc().format(s.start)}–${sc().format(s.end)}`.replace(/\d{4}-\d{2}-\d{2}T/g, '');
       const say = (key: string, it: Partial<TimelineItem>, s: Span) => (live.textContent = t(key, { title: it.title ?? t('teNew'), range: range(s), lane: s.lane }));
       const store = () => tl.config.store;
       const recOf = (it: TimelineItem): Model | undefined => store()?.getFiltered().find((r) => r.data === it);
 
-      const msAt = (track: HTMLElement, x: number) => {
+      const msAt = (track: HTMLElement, x: number, y: number) => {
         const r = track.getBoundingClientRect();
-        const f = r.width ? Math.min(1, Math.max(0, (x - r.left) / r.width)) : 0;
+        const [at, from, size] = sc().vertical ? [y, r.top, r.height] : [x, r.left, r.width];
+        const f = size ? Math.min(1, Math.max(0, (at - from) / size)) : 0;
         return sc().lo + f * (sc().hi - sc().lo);
       };
-      const laneAt = (y: number, fallback: HTMLElement) => lanes().find((l) => { const r = l.getBoundingClientRect(); return y >= r.top && y < r.bottom; }) ?? fallback;
+      const laneAt = (x: number, y: number, fallback: HTMLElement) =>
+        lanes().find((l) => {
+          const r = l.getBoundingClientRect();
+          return sc().vertical ? x >= r.left && x < r.right : y >= r.top && y < r.bottom;
+        }) ?? fallback;
       const trackOf = (lane: HTMLElement) => lane.querySelector<HTMLElement>('.op-timeline__track')!;
 
       const fits = (s: Span, skip?: TimelineItem) => open || !inLane(s.lane, skip).some((x) => { const o = span(x); return s.start < o.end && o.start < s.end; });
@@ -121,8 +133,8 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
 
       function candidate(d: Drag, x: number, y: number): Span {
         const own = d.holder.closest<HTMLElement>('.op-timeline__lane')!;
-        const track = trackOf(laneAt(y, own));
-        const at = snap(msAt(trackOf(own), x));
+        const track = trackOf(laneAt(x, y, own));
+        const at = snap(msAt(trackOf(own), x, y));
         const { from } = d;
         if (d.kind === 'create') return limit({ lane: from.lane, start: Math.min(d.anchor, at), end: Math.max(d.anchor + minMs, at) }, { ...from, start: d.anchor, end: d.anchor });
         if (d.kind === 'start') return limit({ ...from, start: Math.max(sc().lo, Math.min(at, from.end - minMs)) }, from, d.item);
@@ -159,11 +171,16 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
         apply(d.kind, d.item, s, d.from);
       }
 
-      function apply(kind: Drag['kind'] | 'key', item: TimelineItem | undefined, s: Span, from?: Span) {
+      async function apply(kind: Drag['kind'] | 'key', item: TimelineItem | undefined, s: Span, from?: Span) {
         const values = { lane: s.lane, start: sc().format(s.start), end: sc().format(s.end) };
         if (!item) {
           if (tl.emit('before-create', values) === false) return void tl.setItems(tl.getItems());
           const made = { title: t('teNew'), ...options.defaults, ...values } as TimelineItem;
+          if (options.form) {
+            const filled = await options.form(made, 'create');
+            if (!filled) return void tl.setItems(tl.getItems());
+            Object.assign(made, filled);
+          }
           const item = store() ? store()!.add(made)[0].data : made;
           refocus = item;
           tl.setItems(store() ? tl.getItems() : [...tl.getItems(), item]);
@@ -181,6 +198,24 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
         }
         say(kind === 'move' || kind === 'key' ? 'teMoved' : 'teResized', item, s);
         tl.emit('change', item, values, old);
+      }
+
+      /** The dialog's answer to an edit: the fields land on the entry (or its record) like any change. */
+      async function edit(item: TimelineItem) {
+        tl.emit('edit', item);
+        if (!options.form) return;
+        const patch = await options.form({ ...item }, 'edit');
+        if (!patch) return;
+        const old = { ...item };
+        if (tl.emit('before-change', item, patch, old) === false) return;
+        refocus = item;
+        const rec = recOf(item);
+        if (rec) for (const [k, v] of Object.entries(patch)) rec.set(k, v);
+        else {
+          Object.assign(item, patch);
+          tl.setItems([...tl.getItems()]);
+        }
+        tl.emit('change', item, patch, old);
       }
 
       function remove(item: TimelineItem) {
@@ -219,10 +254,10 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
           if (!item || lock(item)) return;
           const kind = target.closest('.op-timeentry__handle--start') ? 'start' : target.closest('.op-timeentry__handle--end') ? 'end' : 'move';
           e.preventDefault();
-          return begin(e, { kind, item, bar, holder: track, from: span(item), anchor: snap(msAt(track, e.clientX)) });
+          return begin(e, { kind, item, bar, holder: track, from: span(item), anchor: snap(msAt(track, e.clientX, e.clientY)) });
         }
         if (!target.closest('.op-timeline__track')) return;
-        const go = () => begin(e, { kind: 'create', holder: track, from: { lane: laneName(lane), start: 0, end: 0 }, anchor: snap(msAt(track, e.clientX)) });
+        const go = () => begin(e, { kind: 'create', holder: track, from: { lane: laneName(lane), start: 0, end: 0 }, anchor: snap(msAt(track, e.clientX, e.clientY)) });
         if (e.pointerType === 'touch') {
           press = setTimeout(() => ((press = undefined), go()), LONG_PRESS);
           return;
@@ -246,12 +281,12 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
       const onTouchMove = (e: TouchEvent) => drag && e.cancelable && e.preventDefault();
       const onDouble = (e: Event) => {
         const item = itemOf((e.target as HTMLElement).closest('.op-timeline__bar'));
-        if (item && !lock(item)) tl.emit('edit', item);
+        if (item && !lock(item)) void edit(item);
       };
 
       const move = (item: TimelineItem, key: string, e: KeyboardEvent) => {
         const s = span(item);
-        const dir = key === 'ArrowRight' ? 1 : -1;
+        const dir = key === keys().later ? 1 : -1;
         const len = s.end - s.start;
         let next: Span;
         if (e.altKey && e.shiftKey) next = { ...s, start: Math.min(s.end - minMs, Math.max(sc().lo, s.start + dir * stepMs)) };
@@ -282,15 +317,17 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
         const item = itemOf(bar);
         if (item && bar === target) {
           if (lock(item)) return;
-          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') move(item, e.key, e);
-          else if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && options.moveAcrossLanes) hop(item, e.key === 'ArrowUp' ? -1 : 1);
-          else if (e.key === 'Enter') tl.emit('edit', item);
+          const k = keys();
+          if (e.key === k.earlier || e.key === k.later) move(item, e.key, e);
+          else if ((e.key === k.prev || e.key === k.next) && options.moveAcrossLanes) hop(item, e.key === k.prev ? -1 : 1);
+          else if (e.key === 'Enter') void edit(item);
           else if (e.key === 'Delete' || e.key === 'Backspace') remove(item);
           else return;
         } else if (target.classList.contains('op-timeline__lane')) {
           const name = laneName(target);
           const at = cursors.get(name) ?? sc().lo;
-          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') cursors.set(name, Math.min(sc().hi - stepMs, Math.max(sc().lo, at + (e.key === 'ArrowRight' ? stepMs : -stepMs))));
+          const k = keys();
+          if (e.key === k.earlier || e.key === k.later) cursors.set(name, Math.min(sc().hi - stepMs, Math.max(sc().lo, at + (e.key === k.later ? stepMs : -stepMs))));
           else if (e.key === 'Enter') {
             const end = Math.min(sc().hi, at + (options.duration ?? 60) * MIN);
             const s = limit({ lane: name, start: at, end }, { lane: name, start: at, end: at });
@@ -322,7 +359,7 @@ export function timeEntry(options: TimeEntryOptions = {}): TimelinePlugin {
           lane.querySelector('.op-timeentry__cursor')?.remove();
           if (cur !== undefined) {
             const c = h('div', 'op-timeentry__cursor', { 'aria-hidden': 'true' });
-            c.style.insetInlineStart = pct(cur);
+            c.style[sc().vertical ? 'insetBlockStart' : 'insetInlineStart'] = pct(cur);
             trackOf(lane).append(c);
           }
         }

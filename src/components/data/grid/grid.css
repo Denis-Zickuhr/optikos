@@ -133,6 +133,18 @@
     padding: var(--op-space-2);
     border-block-start: var(--op-border-width) solid var(--_border);
   }
+  .op-grid__footer {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    border-block-start: var(--op-border-width) solid var(--_border);
+  }
+  .op-grid__footer .op-grid__pager {
+    flex: 1 1 auto;
+    border-block-start: 0;
+  }
   .op-grid .op-virtual {
     min-inline-size: var(--op-grid-min-width);
   }

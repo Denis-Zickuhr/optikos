@@ -13,7 +13,7 @@ const fields: FieldSpec[] = [
   { name: 'note', type: 'area', hide: ['grid', 'filter'] },
 ];
 
-const grid = buildGrid(fields, { store, selection: 'multi', plugins: [grouping({ summary: 'grand' })] });
+const grid = buildGrid(fields, { store, selection: 'multi', plugins: [columnTotals()] });
 const form = buildForm(fields, { columns: 2 });
 const filters = new FilterBuilder({ store, fields: buildFilterFields(fields) });
 ```
@@ -23,11 +23,11 @@ const filters = new FilterBuilder({ store, fields: buildFilterFields(fields) });
 | Propriedade | Significado |
 |---|---|
 | `name` | A propriedade do registro. `label` vem do nome em palavras (`unitPrice` → "Unit price"). |
-| `type` | `text` (padrão), `email`, `area`, `number`, `money`, `date`, `datetime`, `select`, `bool`. |
+| `type` | `text` (padrão), `email`, `area`, `number`, `money`, `duration` (minutos, mostrados como `7h 30m`), `date`, `datetime`, `select`, `bool`. |
 | `options` · `lookup` | Opções do `select`; um LookupDef ou o nome dado a `registerLookup`. |
 | `required` · `readonly` | Flags do campo do formulário. |
 | `group` | Faixa sobre o cabeçalho do grid, grupo no seletor de filtros e `FieldSet` no formulário. |
-| `width` · `summary` | Largura da coluna; total das linhas filtradas (precisa de `grouping({ summary: 'grand' })`). |
+| `width` · `summary` | Largura da coluna; total das linhas filtradas (inicia a barra do `columnTotals()`). |
 | `hide` | `['grid' \| 'form' \| 'filter']`: tira o campo dessas construções. |
 | `column` · `field` · `filter` | Ajustes mesclados no que cada construção gera. |
 

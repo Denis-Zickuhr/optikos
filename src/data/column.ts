@@ -21,13 +21,13 @@ export interface Column<T extends Record<string, any> = any> {
   hidden?: boolean;
   /** Pinned to the start or the end while the body scrolls sideways (give it a `width`; default 140). The columns of one edge stay together. */
   locked?: 'start' | 'end';
-  /** With the `grouping()` plugin: what the total row shows. Numbers: `sum`, `avg`, `min`, `max`, `count`; dates: `min` (earliest), `max` (latest), `count`; or your own function of the values. */
+  /** With `grouping()` or `columnTotals()`: what the total shows. Numbers: `sum`, `avg`, `min`, `max`, `count`; dates: `min` (earliest), `max` (latest), `count`; or your own function of the values. */
   summary?: 'sum' | 'avg' | 'min' | 'max' | 'count' | ((values: any[], recs: Model<T>[]) => unknown);
   /** Text for the total of this column (default: the column's `format`, else the plain value). */
   summaryRenderer?: (value: any, col: Column<T>) => string | Node;
   /** Left out while `setPermissionResolver` denies it. */
   permission?: string;
-  /** Name registered with `registerFormat` (`money`, `date`, `number`, `percent`, `bool`) or a function. */
+  /** Name registered with `registerFormat` (`money`, `date`, `number`, `percent`, `bool`, `duration`: minutes as `7h 30m`) or a function. */
   format?: string | Formatter;
   /** Full control over the cell content. Text is escaped; return a Node for markup. */
   renderer?: (value: any, rec: Model<T>, col: Column<T>) => string | Node;
@@ -44,4 +44,24 @@ export function cellContent<T extends Record<string, any>>(col: Column<T>, rec: 
   if (col.renderer) return col.renderer(v, rec, col);
   if (col.format) return format(col.format, v);
   return v == null ? '' : String(v);
+}
+
+const num = (v: unknown) => (typeof v === 'number' ? v : Number(v));
+const time = (v: unknown) => (v instanceof Date ? +v : typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v) ? Date.parse(v) : NaN);
+
+/** The value of a column's `summary` over some records. */
+export function summarize(col: Column, recs: Model[]): unknown {
+  const values = recs.map((r) => r.data[col.field]);
+  const nums = values.filter((v) => v != null && v !== '' && !isNaN(num(v))).map(num);
+  const s = col.summary;
+  if (typeof s === 'function') return s(values, recs);
+  if (s === 'count') return values.filter((v) => v != null && v !== '').length;
+  if (!nums.length) {
+    // dates have no sum: min/max give the earliest and the latest, as the value the record holds
+    const dates = s === 'min' || s === 'max' ? values.filter((v) => !isNaN(time(v))) : [];
+    return dates.length ? dates.reduce((a, b) => ((s === 'min' ? time(b) < time(a) : time(b) > time(a)) ? b : a)) : null;
+  }
+  if (s === 'sum') return nums.reduce((a, b) => a + b, 0);
+  if (s === 'avg') return nums.reduce((a, b) => a + b, 0) / nums.length;
+  return s === 'min' ? Math.min(...nums) : Math.max(...nums);
 }

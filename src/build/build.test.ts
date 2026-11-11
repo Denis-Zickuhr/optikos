@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildColumns, buildFields, buildFilterFields, buildGrid, buildForm, type FieldSpec } from 'optikos/build';
-import { Store, Grid, Form, FieldSet, grouping } from 'optikos';
+import { Store, Grid, Form, FieldSet, columnTotals } from 'optikos';
 
 const specs: FieldSpec[] = [
   { name: 'unitPrice', type: 'money', summary: 'sum', required: true },
@@ -46,12 +46,12 @@ describe('build', () => {
     expect(form.validate()).toBe(false);
   });
 
-  it('a grand total without grouping sums what the filter left', async () => {
+  it('a column total sums what the filter left', async () => {
     const store = new Store<any>({ data: [{ unitPrice: 5, name: 'A' }, { unitPrice: 7, name: 'B' }] });
-    const grid = buildGrid(specs.slice(0, 2), { store, plugins: [grouping({ summary: 'grand' })] });
+    const grid = buildGrid(specs.slice(0, 2), { store, plugins: [columnTotals()] });
     grid.mount(document.body);
     await store.filter([{ field: 'name', op: 'eq', value: 'B' }]);
-    expect(grid.el.querySelector('.is-grand-total')?.textContent).toContain('7');
+    expect(grid.el.querySelector('.op-columntotals')?.textContent).toContain('7');
   });
 
   it('summaries: numbers add up, dates give the earliest and the latest, a function does anything', async () => {
@@ -61,11 +61,11 @@ describe('build', () => {
       { name: 'd', type: 'date', summary: 'min' },
       { name: 'c', summary: (v) => v.join('+') },
     ]);
-    const grid = new Grid({ columns: cols, store, plugins: [grouping({ summary: 'grand' })] });
+    const grid = new Grid({ columns: cols, store, plugins: [columnTotals()] });
     grid.mount(document.body);
-    const cells = [...grid.el.querySelectorAll('.is-grand-total .op-grid__cell')].map((c) => c.textContent);
+    const cells = [...grid.el.querySelectorAll('.op-columntotals__cell')].map((c) => c.textContent);
     expect(cells.join('|')).toContain('7');
     expect(cells.join('|')).toContain('a+b');
-    expect(grid.el.querySelector('.is-grand-total')?.textContent).toMatch(/15.*2024|2024.*15/);
+    expect(grid.el.querySelector('.op-columntotals')?.textContent).toMatch(/15.*2024|2024.*15/);
   });
 });

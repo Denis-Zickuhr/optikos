@@ -448,6 +448,7 @@ export class Grid<T extends Record<string, any> = any> extends Component<GridCon
     const band = this.groupBand(cols);
     this.headEl.replaceChildren(...(band ? [band] : []), this.headRow);
     this.paintSort();
+    this.emit('header-paint');
   }
 
   /** Labels over runs of neighbouring columns that share a group (a dragged column can split a group: it shows twice). */

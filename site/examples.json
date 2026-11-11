@@ -2818,6 +2818,24 @@
      { "$plugin": "timeEntry", "step": 15, "overlap": false, "moveAcrossLanes": true, "target": 480 }
     ]
    }
+  },
+  {
+   "title": { "en": "Vertical day planner", "pt-BR": "Agenda do dia na vertical" },
+   "config": {
+    "type": "timeline",
+    "mode": "range",
+    "direction": "vertical",
+    "from": "08:00",
+    "to": "18:00",
+    "lanes": ["Ana", "Bruno"],
+    "items": [
+     { "title": "Kick-off", "lane": "Ana", "start": "09:00", "end": "10:30", "tone": "info" },
+     { "title": "Review", "lane": "Bruno", "start": "11:00", "end": "12:00" }
+    ],
+    "plugins": [
+     { "$plugin": "timeEntry", "step": 15, "moveAcrossLanes": true }
+    ]
+   }
   }
  ],
  "timeline": [
@@ -2862,6 +2880,24 @@
       "end": "2026-11-14",
       "tone": "warning"
      }
+    ]
+   }
+  },
+  {
+   "title": { "en": "Vertical schedule (rooms)", "pt-BR": "Cronograma vertical (salas)" },
+   "config": {
+    "type": "timeline",
+    "mode": "range",
+    "direction": "vertical",
+    "now": false,
+    "from": "08:00",
+    "to": "18:00",
+    "lanes": ["Room A", "Room B", "Room C"],
+    "items": [
+     { "title": "Stand-up", "lane": "Room A", "start": "09:00", "end": "09:30", "tone": "info" },
+     { "title": "Workshop", "lane": "Room A", "start": "10:00", "end": "13:00" },
+     { "title": "Interview", "lane": "Room B", "start": "09:30", "end": "11:00", "tone": "success" },
+     { "title": "Demo", "lane": "Room C", "start": "14:00", "end": "16:30", "tone": "warning" }
     ]
    }
   }
@@ -2936,6 +2972,56 @@
    "code": "const checkDigit = (v) => (v.length === 11 && luhn(v) ? true : 'Invalid number');\ncreate({ type: 'maskfield', label: 'Card', mask: '0000 0000 0000 0000', raw: true, validators: [checkDigit], renderTo: host });"
   }
  ],
+ "columntotals": [
+  {
+   "title": { "en": "Pick a total from the column button", "pt-BR": "Escolha um total no botão da coluna" },
+   "config": {
+    "type": "grid",
+    "height": 300,
+    "data": [
+     { "id": 1, "task": "Design review", "hours": 150, "price": 52.5, "due": "2026-11-05" },
+     { "id": 2, "task": "Build", "hours": 600, "price": 65, "due": "2026-11-18" },
+     { "id": 3, "task": "Support", "hours": 255, "price": 77.5, "due": "2026-12-02" },
+     { "id": 4, "task": "Deploy", "hours": 90, "price": 90, "due": "2026-11-27" }
+    ],
+    "columns": [
+     { "field": "task", "header": "Task" },
+     { "field": "hours", "header": "Time spent", "align": "right", "format": "duration", "summary": "sum" },
+     { "field": "price", "header": "Price", "align": "right", "format": "money" },
+     { "field": "due", "header": "Due", "format": "date" }
+    ],
+    "plugins": [
+     { "$plugin": "columnTotals" }
+    ]
+   }
+  }
+ ],
+ "exportbar": [
+  {
+   "title": { "en": "Export and print inside the grid", "pt-BR": "Exportar e imprimir dentro da grid" },
+   "config": {
+    "type": "grid",
+    "height": 320,
+    "paging": true,
+    "pageSize": 5,
+    "data": [
+     { "id": 1, "name": "Amara", "votes": 120 },
+     { "id": 2, "name": "Bianca", "votes": 95 },
+     { "id": 3, "name": "Chloe", "votes": 210 },
+     { "id": 4, "name": "Dalia", "votes": 150 },
+     { "id": 5, "name": "Elena", "votes": 80 },
+     { "id": 6, "name": "Farah", "votes": 175 }
+    ],
+    "columns": [
+     { "field": "name", "header": "Candidate", "sortable": true },
+     { "field": "votes", "header": "Votes", "align": "right", "format": "number" }
+    ],
+    "plugins": [
+     { "$plugin": "exportBar", "filename": "candidates", "title": "Candidates" }
+    ]
+   }
+  }
+ ],
  "gridexport": [
   {
    "title": { "en": "CSV, Excel and print", "pt-BR": "CSV, Excel e imprimir" },
@@ -2984,7 +3070,7 @@
      { "field": "fee", "header": "Fee", "align": "right", "summary": "avg", "format": "money" }
     ],
     "plugins": [
-     { "$plugin": "grouping", "field": "event", "summary": "both" }
+     { "$plugin": "grouping", "field": "event", "summary": "both", "controls": true, "choices": [{ "text": "Event", "field": "event" }, { "text": "Candidate", "field": "name" }] }
     ]
    }
   },

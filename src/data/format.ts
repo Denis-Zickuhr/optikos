@@ -17,6 +17,13 @@ const formats: Record<string, Formatter> = {
   date: (v, o) => date(v, { dateStyle: 'medium', ...o }),
   datetime: (v, o) => date(v, { dateStyle: 'medium', timeStyle: 'short', ...o }),
   bool: (v) => (v ? '✓' : ''),
+  duration: (v) => {
+    if (v == null || v === '' || isNaN(Number(v))) return v == null ? '' : String(v);
+    const total = Math.round(Number(v));
+    const unit = (n: number, u: string) => new Intl.NumberFormat(lang(), { style: 'unit', unit: u, unitDisplay: 'narrow' }).format(n);
+    const [h, m] = [Math.floor(Math.abs(total) / 60), Math.abs(total) % 60];
+    return `${total < 0 ? '-' : ''}${[h && unit(h, 'hour'), (m || !h) && unit(m, 'minute')].filter(Boolean).join(' ')}`;
+  },
 };
 
 /** Registers a named formatter, usable as `format: 'name'` in columns. */

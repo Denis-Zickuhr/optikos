@@ -46,4 +46,11 @@
       transition: none;
     }
   }
+  .op-groupcontrols {
+    display: flex;
+    flex: none;
+    gap: var(--op-space-1);
+    margin-inline-start: auto;
+    padding-inline: var(--op-space-2);
+  }
 }

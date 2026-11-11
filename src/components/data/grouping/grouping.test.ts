@@ -86,4 +86,36 @@ describe('grouping', () => {
     expect(g.getSelection().map((r) => r.id)).toEqual([1]);
     g.destroy();
   });
+
+  describe('controls', () => {
+    const btn = (g: Grid, label: string) => [...g.el.querySelectorAll<HTMLElement>('.op-groupcontrols button')].find((b) => b.getAttribute('aria-label') === label)!;
+    const rowsOf = (g: Grid) => g.el.querySelectorAll('.is-grouped').length;
+
+    it('icon buttons sit in the footer row, beside the pager', () => {
+      const { g } = mk({ controls: true }, { paging: true });
+      expect(g.el.querySelector('.op-grid__footer .op-grid__pager')).toBeTruthy();
+      expect(g.el.querySelectorAll('.op-groupcontrols button')).toHaveLength(3);
+    });
+
+    it('collapse and expand all work the same as the methods', async () => {
+      const { g } = mk({ controls: true });
+      await tick();
+      expect(rowsOf(g)).toBeGreaterThan(0);
+      btn(g, 'Collapse all').click();
+      expect(rowsOf(g)).toBe(0);
+      btn(g, 'Expand all').click();
+      expect(rowsOf(g)).toBeGreaterThan(0);
+    });
+
+    it('choices make a "Group by" menu; each button can be left out or hidden', async () => {
+      const { g, plugin } = mk({ controls: { collapse: false }, choices: [{ text: 'Event', field: 'event' }, { text: 'Big votes', by: (r: any) => (r.get('votes') >= 20 ? 'Big' : 'Small') }] });
+      await tick();
+      expect([...g.el.querySelectorAll('.op-groupcontrols button')].filter((b) => !(b as HTMLElement).hidden).map((b) => b.getAttribute('aria-label'))).toEqual(['Expand all', 'Group by']);
+      btn(g, 'Group by').click();
+      [...document.querySelectorAll<HTMLElement>('.op-menu__item')].find((i) => i.textContent === 'Big votes')!.click();
+      expect([...g.el.querySelectorAll('.op-grid__group-name')].map((n) => n.textContent).sort()).toEqual(['Big', 'Small']);
+      plugin.setControlVisible('expand', false);
+      expect(btn(g, 'Expand all').hidden).toBe(true);
+    });
+  });
 });

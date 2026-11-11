@@ -3,6 +3,8 @@
     --op-timeline-marker: 0.875rem;
     --op-timeline-when-width: 8rem;
     --op-timeline-lane-width: 8rem;
+    --op-timeline-axis-width: 4rem;
+    --op-timeline-height: 32rem;
     --op-timeline-bar-height: 1.75rem;
     --op-timeline-line: 2px;
   }
@@ -136,5 +138,48 @@
     inline-size: var(--op-timeline-line);
     background: var(--op-color-danger);
     pointer-events: none;
+  }
+
+  .op-timeline--vertical.op-timeline--range {
+    display: grid;
+    gap: var(--op-space-2);
+  }
+  .op-timeline--vertical .op-timeline__axis,
+  .op-timeline--vertical .op-timeline__lane {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border-block-start: 0;
+    border-inline-start: var(--op-border-width) solid var(--op-color-border);
+    padding-block: 0;
+    padding-inline: var(--op-space-1);
+    min-inline-size: 0;
+  }
+  .op-timeline--vertical .op-timeline__axis {
+    border-inline-start: 0;
+  }
+  .op-timeline--vertical .op-timeline__lane-name {
+    text-align: center;
+    padding-block-end: var(--op-space-1);
+  }
+  .op-timeline--vertical .op-timeline__track,
+  .op-timeline--vertical .op-timeline__axis .op-timeline__track {
+    block-size: var(--op-timeline-height);
+  }
+  .op-timeline--vertical .op-timeline__tick {
+    inset-inline-start: 0;
+    transform: translateY(-50%);
+  }
+  .op-timeline--vertical .op-timeline__bar {
+    inset-block: auto;
+    inset-inline: 0;
+    align-items: flex-start;
+    padding-block: var(--op-space-1);
+  }
+  .op-timeline--vertical .op-timeline__now {
+    inset-block: auto;
+    inset-inline: 0;
+    inline-size: auto;
+    block-size: var(--op-timeline-line);
   }
 }

@@ -1,0 +1,11 @@
+# ColumnTotals  (plugin: `columnTotals()`)
+Purpose:       A button on every grid column header opens a menu of totals (sum, average, minimum, maximum, count, your own); the choice shows in a bar under the grid, over every filtered row.
+Anatomy:       Each header cell gets `op-columntotals__btn` (a "⋯" button that does not sort or drag). Under the grid, `op-columntotals` (hidden until a total is chosen) with one `op-columntotals__cell` per column (`--right`, `--center` like the column) holding `op-columntotals__op` (the operation's name) and the value. It uses the grid's column template, so cells line up with the columns and follow a sideways scroll.
+Config:        `columnTotals({ operations? })`: `operations` are your own, `{ text, run(values, recs) }`, offered on every column; `position: 'bottom' | 'top'` (bottom) puts the bar under the grid, or right under the header above the rows (a `role=row` of the grid, so it stays in view); `show: 'bar' | 'modal' | 'toast'` (bar) says where the answer goes: `bar` keeps it under the grid, `modal` answers in a dialog and `toast` in a notice, once ("Sum of Qty: 15", with the row count), and nothing stays on the grid. The menu offers what fits the values: numbers sum, average, minimum, maximum, count; dates earliest, latest, count; text count. A time-spent column is a number of minutes with `format: 'duration'`: the total reads "Sum 72h", "Average 10h 23m". A column's `summary` (and `summaryRenderer`, `format`) is where it starts, and the choice is written back to it.
+API:           —; the Grid fires `header-paint` after each header build (the plugin hooks there).
+Events:        —
+States:        Bar hidden when no column has a total. It follows the store: filter, sort, page (a remote store: the rows it loaded).
+Keyboard/ARIA: The button is a tab stop in the header (`aria-haspopup=menu`, label "Column actions: <name>"); the menu is a normal Menu (arrows, Enter, Esc). Choosing the checked operation, or "No total", clears the column. The bar is a `group` labelled "Totals".
+Tokens:        `--op-grid-total-bg`, `--op-grid-header-border` (shared with the grid).
+Sandbox cases: `data`: totals over a filtered list with a custom operation.
+Out of scope:  Totals by group (that is `grouping()`), saving the choice (the app reads `grid.getColumns()`), pinned (locked) cells in the bar.

@@ -157,6 +157,8 @@ Revertido (decisão 62): um gráfico SVG pequeno que desenha barra, linha, área
 | Chart (barra, linha, área, pizza, rosca, sparkline) | `chart` | P1 ✔ |
 | Stat (card de KPI com variação e sparkline) | `stat` | P1 ✔ |
 | Timeline (histórico de eventos, cronograma num eixo de tempo) | `timeline` (data) | P1 ✔ |
+| ExportBar (botões de exportar e imprimir dentro da grid, ao lado da paginação) | `exportbar` (plugin) | P1 ✔ |
+| ColumnTotals (botão no cabeçalho: soma, média, mín, máx, contagem das linhas filtradas) | `columntotals` (plugin) | P1 ✔ |
 | TimeEntry (apontamento de horas na Timeline: criar, mover, redimensionar, totais) | `timeentry` (plugin) | P1 ✔ |
 
 Não são componentes, mas fazem parte do mesmo conjunto: `exportGrid` / `printGrid` (`gridexport`), `persistState` (`gridstate`),
